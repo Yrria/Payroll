@@ -11,7 +11,7 @@ body {
     background-color: #f4f4f4;
     margin-left: 200px;
     transition: margin-left 0.3s;
-    margin-top: 40px;
+    margin-top: 30px;
 }
 
 .minimized+.main {
@@ -26,7 +26,34 @@ body {
     overflow-y: auto;
 }
 
-h1 {
+.head-title {
     margin: 10px;
 }
+
+.content {
+    margin: 100px 10px 10px 10px;
+    border: 1px solid gray;
+}
+
+h1{
+    margin: 10px 0px 10px 0px;
+}
+
+h5{
+    margin: 20px 0px 10px 0px;
+    text-decoration: none;
+    color: black;
+}
+
+hr {
+    border: 0.5px, solid gray;
+    margin: 10px 0px 10px 0px;;
+
+}
+
+p {
+    margin: 20px;
+}
+
+
 /* MAIN BODY END */

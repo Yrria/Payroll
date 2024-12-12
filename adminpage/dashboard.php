@@ -14,8 +14,22 @@
     <div class="container">
         <?php include 'sidenav.php'; ?>
         <div id="mainContent" class="main">
-            <h1>Welcome!</h1>
-            <p>This is a simple responsive page with a header and a side navigation bar that can be minimized.</p>
+            <div class="head-title">
+                <h1>Welcome Admin!</h1>
+                <h5>Dashboard</h5>
+                <hr>
+            </div>
+            <div class="content">
+                <p>This is a simple responsive page with a header and a side navigation bar that can be minimized.</p>
+                <br>
+                <p>This is a simple responsive page with a header and a side navigation bar that can be minimized.</p>
+                <br>
+                <p>This is a simple responsive page with a header and a side navigation bar that can be minimized.</p>
+                <br>
+                <p>This is a simple responsive page with a header and a side navigation bar that can be minimized.</p>
+                <br>
+                <p>This is a simple responsive page with a header and a side navigation bar that can be minimized.</p>
+            </div>
         </div>
     </div>
     <!-- SCRIPT -->
