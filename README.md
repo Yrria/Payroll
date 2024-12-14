@@ -47,11 +47,11 @@ ITEC 80A - Simple Project
 ## Authors
 
 Contributors
-* [Jj](https://github.com)
-* [Rod](https://github.com)
+* [Jj](https://github.com/jjharvey00)
+* [Rod](https://github.com/Rodney22-blimp)
 * [Yrria](https://github.com/Yrria)
 * [DH-Nyel](https://github.com/karinaonly)
-* [Jps](https://github.com)
+* [Jps](https://github.com/JPMacaspac)
 * [Nix](https://github.com/6nix)
 
 
