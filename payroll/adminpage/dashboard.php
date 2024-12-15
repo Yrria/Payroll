@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="../assets/logo.png" type="image/svg+xml">
+    <link rel="stylesheet" href="./css/main.css">
     <link rel="stylesheet" href="./css/dashboard.css">
     <title>Dasboard</title>
 </head>
@@ -17,7 +18,7 @@
             <div class="head-title">
                 <h1>Welcome Admin!</h1>
                 <div class="breadcrumb">
-                    <h5><a href="#">Dashboard </a></h5>
+                    <h5><a href="./dashboard.php">Dashboard </a></h5>
                 </div>
                 <hr>
             </div>

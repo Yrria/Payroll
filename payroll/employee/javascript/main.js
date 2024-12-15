@@ -1,3 +1,4 @@
+// MAIN FUNCTION
 function toggleNav() {
     const sidenav = document.getElementById('sidenav');
     const mainContent = document.getElementById('mainContent');
@@ -14,3 +15,16 @@ function toggleNav() {
         toggleButton.style.marginLeft = '5px';
     }
 }
+
+// DASHBOARD
+
+
+// PROFILE
+
+
+// LEAVE
+
+
+// SALARY
+
+

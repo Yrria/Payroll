@@ -16,10 +16,9 @@
 
 .current-date-time {
     font-size: 16px;
-    flex-grow: 1;
-    /* Make it take available space */
     text-align: center;
-    /* Center text */
+    flex-grow: 1; /* This ensures it takes the available space */
+    margin-right: 160px;
 }
 
 .header .toggle-btn {
@@ -29,7 +28,6 @@
     font-size: 18px;
     position: absolute;
     left: 200px;
-    /* Align the button to the right */
 }
 
 .toggle-btn {
@@ -42,4 +40,87 @@
 
 .comp-name {
     margin-left: 10px;
+    color: black;
 }
+
+/* Profile styles */
+.profile {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 20px;
+    position: absolute;
+    right: 55px;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/* Profile icon hover effect */
+.profile i {
+    font-size: 23px;
+    line-height: 0.5;
+    transition: transform 0.3s;
+}
+
+/* Profile hover effect */
+.profile:hover {
+    background-color: #E0F7FA;
+    color: black;
+}
+
+.profile:hover i {
+    transform: scale(1.1);
+}
+
+/* Active profile style (when dropdown is active) */
+.profile.active {
+    background-color: #E0F7FA;
+    color: black;
+}
+
+/* Dropdown styles */
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 40px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    list-style: none;
+    padding: 5px 0;
+    margin: 0;
+    border-radius: 5px;
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1);
+}
+
+.dropdown-menu.show {
+    display: block;
+}
+
+.dropdown-menu li {
+    display: block;
+    padding: 8px 29px;
+    cursor: pointer;
+    color: #333;
+    font-size: medium;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.dropdown-menu li a {
+    text-decoration: none;
+    color: #333;
+    display: block;
+    width: 100%;
+}
+
+/* Hover effect for list items */
+.dropdown-menu li:hover {
+    background-color: #f1f1f1;
+    color: #007B83;
+}
+
+.dropdown-menu li a:hover {
+    color: #007B83;
+}
+

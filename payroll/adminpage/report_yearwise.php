@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="../assets/logo.png" type="image/svg+xml">
     <link rel="stylesheet" href="./css/main.css">
-    <link rel="stylesheet" href="./css/attendance.css">
-    <title>Attendance</title>
+    <link rel="stylesheet" href="./css/report.css">
+    <title>Report - Year Wise</title>
 </head>
 
 <body>
@@ -16,11 +16,11 @@
         <?php include 'sidenav.php'; ?>
         <div id="mainContent" class="main">
             <div class="head-title">
-                <h1>Attendance</h1>
+                <h1>Report</h1>
                 <div class="breadcrumb">
                     <h5><a href="./dashboard.php">Dashboard </a></h5>
                     <span> > </span>
-                    <h5><a href="./attendance.php">Attendance </a></h5>
+                    <h5><a href="./report_yearwise.php">Report-Yearwise </a></h5>
                 </div>
                 <hr>
             </div>

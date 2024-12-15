@@ -23,3 +23,11 @@ updateDateTime();
 
 // Update the time every second
 setInterval(updateDateTime, 1000);
+
+// Toggle the dropdown menu and add/remove the 'active' class to profile
+function toggleDropdown() {
+    var dropdown = document.querySelector('.dropdown-menu');
+    var profile = document.querySelector('.profile');
+    dropdown.classList.toggle('show');
+    profile.classList.toggle('active');
+}

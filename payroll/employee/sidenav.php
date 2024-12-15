@@ -15,19 +15,19 @@
             <img src="../assets/logo.png" alt="logo">
         </span>
         <ul>
-            <a href="#">
+            <a href="./dashboard.php">
                 <li>
                     <i class="bi bi-house-door-fill"></i>
                     <span class="span-text">Dashboard</span>
                 </li>
             </a>
-            <a href="#">
+            <a href="./leave.php">
                 <li>
                     <i class="bi bi-calendar-check-fill"></i>
                     <span class="span-text">Leave</span>
                 </li>
             </a>
-            <a href="#">
+            <a href="./salary.php">
                 <li>
                     <i class="bi bi-people-fill"></i>
                     <span class="span-text">Salary</span>
