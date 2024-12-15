@@ -18,6 +18,8 @@ img {
     width: 200px;
     min-width: 60px;
     transition: width 0.3s;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+    background: linear-gradient(180deg, #20242C, #343A40);
     overflow: hidden;
     position: fixed;
     top: 40px;
@@ -43,8 +45,9 @@ img {
 }
 
 .sidenav ul li:hover {
-    transition: 0.3s ease;
     background-color: #0a0b0c;
+    transition: background 0.2s ease, transform 0.15s ease; /* Faster transitions */
+    transform: scale(1.01); /* Minimal scaling effect */
 }
 
 a {
@@ -55,15 +58,16 @@ a {
 li i {
     /* space between icon and text */
     margin-right: 8px;
+    margin-bottom: 3px;
+}
+
+.span-text{
+    margin-top: 3px;
 }
 
 /* sidenav w/ dropdown */
 .second-option {
     font-size: 12px;
-}
-
-.span-text{
-    margin-top: 2%;
 }
 
 /* minimized side nav */
@@ -127,6 +131,7 @@ ul li:hover > ul.dropdown {
 /* Dropdown item styling */
 ul li ul.dropdown li {
     padding: 10px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     cursor: pointer;
 }
 
