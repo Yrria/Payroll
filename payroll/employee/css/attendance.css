@@ -1,0 +1,111 @@
+/* FOR MAIN BODY START */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+* {
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    margin: 0;
+    height: 100%;
+}
+
+.main {
+    flex-grow: 1;
+    padding: 20px;
+    background-color: #f4f4f4;
+    margin-left: 200px;
+    transition: margin-left 0.3s;
+    margin-top: 30px;
+}
+
+.minimized+.main {
+    margin-left: 60px;
+}
+
+.container {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+    justify-content: flex-start;
+    overflow-y: auto;
+}
+
+.head-title {
+    margin: 10px;
+}
+
+.content {
+    margin: 100px 10px 10px 10px;
+    border: 1px solid gray;
+}
+
+h1 {
+    margin: 10px 0px 10px 0px;
+}
+
+/* h5{
+    margin: 20px 0px 10px 0px;
+    text-decoration: none;
+    color: black;
+} */
+
+.breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    /* Adds space between "Dashboard", ">", and "Attendance" */
+}
+
+.breadcrumb h5,
+.breadcrumb span {
+    margin: 0;
+    font-size: 15px;
+    /* Adjust font size if needed */
+    font-weight: 400;
+    /* Adjust weight if needed */
+}
+
+.breadcrumb span {
+    color: gray;
+    /* Color for the ">" */
+}
+
+.breadcrumb a {
+    text-decoration: none;
+    /* Removes underline */
+    color: gray;
+    /* Sets the text color to gray */
+}
+
+.breadcrumb a:hover {
+    color: black;
+    /* Changes the color to black when hovered */
+}
+
+hr {
+    border: 0.5px, solid gray;
+    margin: 10px 0px 10px 0px;
+    ;
+
+}
+
+p {
+    margin: 20px;
+}
+
+#mainContent,
+.toggle-btn {
+    transition: margin-left 0.3s ease;
+}
+
+/* Default styles */
+#mainContent {
+    margin-left: 200px;
+}
+
+#mainContent.shifted {
+    margin-left: 60px;
+}
+
+/* MAIN BODY END */

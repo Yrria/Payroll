@@ -10,6 +10,7 @@
 
 <body>
     <div class="header">
+    <span class="comp-name">BytePayroll</span>
         <div class="toggle-btn" onclick="toggleNav()">☰</div>
         <span class="current-date-time">
             <span id="current-date"></span> - <span id="current-time"></span>

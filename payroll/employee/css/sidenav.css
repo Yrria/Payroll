@@ -18,6 +18,8 @@ img {
     width: 200px;
     min-width: 60px;
     transition: width 0.3s;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+    background: linear-gradient(180deg, #20242C, #343A40);
     overflow: hidden;
     position: fixed;
     top: 40px;
@@ -43,8 +45,9 @@ img {
 }
 
 .sidenav ul li:hover {
-    transition: 0.3s ease;
     background-color: #0a0b0c;
+    transition: background 0.2s ease, transform 0.15s ease; /* Faster transitions */
+    transform: scale(1.01); /* Minimal scaling effect */
 }
 
 a {
@@ -55,6 +58,11 @@ a {
 li i {
     /* space between icon and text */
     margin-right: 8px;
+    margin-bottom: 3px;
+}
+
+.span-text{
+    margin-top: 3px;
 }
 
 /* sidenav w/ dropdown */
@@ -91,31 +99,51 @@ li i {
 }
 
 
-/* Ensure the dropdown appears on the next line (below the parent li item) */
-ul li ul.dropdown {
+ul li {
+    position: relative; /* Ensure dropdown is anchored to parent li */
+    
+}
+
+.three-option {
+    position: relative;
+}
+
+/* Dropdown container */
+ul.dropdown {
     display: none;
-    position: absolute;
+    position: absolute; /* Position dropdown absolutely below parent */
     left: 0;
-    top: 100%;
+    top: 100%; /* Ensure dropdown starts immediately below the parent */
     background-color: #20242C;
     color: white;
     list-style: none;
     padding: 0;
     margin: 0;
-    width: 100%;
-    z-index: 1000;
-
+    width: 100%; /* Dropdown width same as parent */
+    /* z-index: 1000; */
 }
 
-ul li:hover>ul.dropdown {
+/* Show dropdown on hover */
+ul li:hover > ul.dropdown {
     display: block;
 }
 
+/* Dropdown item styling */
+ul li ul.dropdown li {
+    padding: 10px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+}
+
+ul li ul.dropdown li:hover {
+    background-color: #0a0b0c;
+    transition: 0.3s ease;
+}
+
+/* Fix caret indicator flip */
 ul li:hover .indicators {
     transform: rotate(180deg);
-    /* Flips the caret upside down */
-    transition: transform 0.05s ease;
-    /* Smooth transition for the flip */
+    transition: transform 0.3s ease;
 }
 
 .minimized .indicators {
@@ -149,3 +177,6 @@ ul li ul.dropdown li:hover {
 .indicators {
     margin-left: auto;
 }
+
+
+

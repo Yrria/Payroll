@@ -16,7 +16,9 @@
         <div id="mainContent" class="main">
             <div class="head-title">
                 <h1>Welcome Admin!</h1>
-                <h5>Dashboard</h5>
+                <div class="breadcrumb">
+                    <h5><a href="#">Dashboard </a></h5>
+                </div>
                 <hr>
             </div>
             <div class="content">
@@ -33,7 +35,7 @@
         </div>
     </div>
     <!-- SCRIPT -->
-    <script src="./javascript/dashboard.js"></script>
+    <script src="./javascript/main.js"></script>
 </body>
 
 </html>
