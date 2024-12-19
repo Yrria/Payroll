@@ -55,6 +55,7 @@
  
  h1 {
      margin: 10px 0px 10px 0px;
+     font-weight: 520;
  }
  
  /* h5{
@@ -103,9 +104,6 @@
  
  }
  
- p {
-     margin: 20px;
- }
  
  #mainContent,
  .toggle-btn {
