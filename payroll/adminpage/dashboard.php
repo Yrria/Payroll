@@ -12,8 +12,8 @@
 
 <body>
     <?php include 'header.php'; ?>
+    <?php include 'sidenav.php'; ?>
     <div class="container">
-        <?php include 'sidenav.php'; ?>
         <div id="mainContent" class="main">
             <div class="head-title">
                 <h1>Welcome Admin!</h1>
@@ -21,183 +21,185 @@
                     <h5><a href="./dashboard.php">Dashboard </a></h5>
                 </div>
                 <hr>
-                <div class="content">
-                    <!-- Separate boxes for statistics -->
-                    <div class="card active-employees" style="margin-top: 130px;">
-                        <div class="info">
-                            <p>Active Employees</p>
-                            <hr>
-                            <h2>14</h2>
-                        </div>
-                    </div>
-
-                    <div class="card pending-leaves" style="margin-top: 130px;">
-                        <div class="info">
-                            <p>Pending Leaves</p>
-                            <hr>
-                            <h2>14</h2>
-                        </div>
-                    </div>
-
-                    <div class="payroll-report">
-                        <h3>Payroll Report</h3>
-                        <canvas id="payrollChart"></canvas>
-                    </div>
-
-                    <div class="salary-distribution">
-                        <h3>Salary Distribution</h3>
-                        <canvas id="salaryChart"></canvas>
-                    </div>
-
-                    <!-- Upcoming Holidays and Event Section -->
-                    <div class="Event">
-                        <div class="Event-header">
-                            <h3>Upcoming Holidays and Event</h3>
-                            <a href="#" class="view-all">View All</a>
-                        </div>
-
-                        <!-- Event 1 -->
-                        <div class="event-item">
-                            <div class="event-details">
-                                <span class="event-title">NINOY AQUINO DAY</span>
-                                <span class="event-type">National : Special Holiday</span>
-                                <span class="event-day">Wednesday</span>
+                <div class="main-content">
+                    <div class="sub-content">
+                        <div class="content">
+                            <!-- Separate boxes for statistics -->
+                            <div class="card active-employees" style="margin-top: 130px;">
+                                <div class="info">
+                                    <p>Active Employees</p>
+                                    <hr>
+                                    <h2>14</h2>
+                                </div>
                             </div>
-                            <div class="event-date">
-                                14<span>Nov</span>
-                            </div>
-                        </div>
 
-                        <!-- Event 2 -->
-                        <div class="event-item">
-                            <div class="event-details">
-                                <span class="event-title">NINOY AQUINO DAY</span>
-                                <span class="event-type">National : Regular Holiday</span>
-                                <span class="event-day">Thursday</span>
+                            <div class="card pending-leaves" style="margin-top: 130px;">
+                                <div class="info">
+                                    <p>Pending Leaves</p>
+                                    <hr>
+                                    <h2>14</h2>
+                                </div>
                             </div>
-                            <div class="event-date">
-                                08<span>Feb</span>
-                            </div>
-                        </div>
 
-                        <!-- Event 3 -->
-                        <div class="event-item">
-                            <div class="event-details">
-                                <span class="event-title" style="color: #007bff;">COMPANY HOLIDAY</span>
-                                <span class="event-type">National : Regular Holiday</span>
+                            <div class="payroll-report">
+                                <h3>Payroll Report</h3>
+                                <canvas id="payrollChart"></canvas>
                             </div>
-                            <div class="event-date">
-                                23<span>Jan</span>
-                            </div>
-                        </div>
-                    </div>
 
-                    <div class="calendar">
-                        <h3>Calendar</h3>
-                        <div class="calendar-content">
-                            <div class="calendar-header">
-                                <select id="monthSelect"></select>
-                                <select id="yearSelect"></select>
+                            <div class="salary-distribution">
+                                <h3>Salary Distribution</h3>
+                                <canvas id="salaryChart"></canvas>
                             </div>
+
+                            <!-- Upcoming Holidays and Event Section -->
+                            <div class="Event">
+                                <div class="Event-header">
+                                    <h3>Upcoming Holidays and Event</h3>
+                                    <a href="#" class="view-all">View All</a>
+                                </div>
+
+                                <!-- Event 1 -->
+                                <div class="event-item">
+                                    <div class="event-details">
+                                        <span class="event-title">NINOY AQUINO DAY</span>
+                                        <span class="event-type">National : Special Holiday</span>
+                                        <span class="event-day">Wednesday</span>
+                                    </div>
+                                    <div class="event-date">
+                                        14<span>Nov</span>
+                                    </div>
+                                </div>
+
+                                <!-- Event 2 -->
+                                <div class="event-item">
+                                    <div class="event-details">
+                                        <span class="event-title">NINOY AQUINO DAY</span>
+                                        <span class="event-type">National : Regular Holiday</span>
+                                        <span class="event-day">Thursday</span>
+                                    </div>
+                                    <div class="event-date">
+                                        08<span>Feb</span>
+                                    </div>
+                                </div>
+
+                                <!-- Event 3 -->
+                                <div class="event-item">
+                                    <div class="event-details">
+                                        <span class="event-title" style="color: #007bff;">COMPANY HOLIDAY</span>
+                                        <span class="event-type">National : Regular Holiday</span>
+                                    </div>
+                                    <div class="event-date">
+                                        23<span>Jan</span>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="calendar">
+                                <h3>Calendar</h3>
                                 <div class="calendar-content">
-                                    <div class="calendar-days">
-                                        <div>Sun</div>
-                                        <div>Mon</div>
-                                        <div>Tue</div>
-                                        <div>Wed</div>
-                                        <div>Thu</div>
-                                        <div>Fri</div>
-                                        <div>Sat</div>
+                                    <div class="calendar-header">
+                                        <select id="monthSelect"></select>
+                                        <select id="yearSelect"></select>
+                                    </div>
+                                    <div class="calendar">
+                                        <div class="calendar-content">
+                                            <div class="calendar-days">
+                                                <div>Sun</div>
+                                                <div>Mon</div>
+                                                <div>Tue</div>
+                                                <div>Wed</div>
+                                                <div>Thu</div>
+                                                <div>Fri</div>
+                                                <div>Sat</div>
+                                            </div>
+                                            <div class="calendar-dates" id="dates"></div>
+                                        </div>
                                     </div>
                                     <div class="calendar-dates" id="dates"></div>
                                 </div>
+
+                                <!-- Modal for Adding Reminders -->
+                                <div id="reminderModal" class="modal">
+                                    <div class="modal-content">
+                                        <span class="close" id="closeModal">&times;</span>
+                                        <span id="selectedDate"></span>
+                                        <textarea id="noteInput" placeholder="Add a reminder..."></textarea>
+                                        <button id="addNoteButton"><span>Post</span></button>
+                                        <ul id="notesList"></ul>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="calendar-dates" id="dates"></div>
-                        </div>
 
-                        <!-- Modal for Adding Reminders -->
-                        <div id="reminderModal" class="modal">
-                            <div class="modal-content">
-                                <span class="close" id="closeModal">&times;</span>
-                                <span id="selectedDate"></span>
-                                <textarea id="noteInput" placeholder="Add a reminder..."></textarea>
-                                <button id="addNoteButton"><span>Post</span></button>
-                                <ul id="notesList"></ul>
+                            <div class="card employee-distribution">
+                                <h3>Employee Distribution by Position</h3>
+                                <canvas id="positionChart"></canvas>
+                            </div>
+
+                            <div class="leave-requests">
+                                <h3>Leave Requests</h3>
+
+                                <!-- View All Button placed above the Action column -->
+                                <button id="view-all-btn" class="view-all-btn">View All</button>
+
+                                <table id="leave-table">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Employee</th>
+                                            <th>Leave Type</th>
+                                            <th>Leave From</th>
+                                            <th>Leave To</th>
+                                            <th>Days</th>
+                                            <th>Status</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="pending-leave">
+                                            <td>423491</td>
+                                            <td>Ravi</td>
+                                            <td>Sick Leave</td>
+                                            <td>12/03/2024</td>
+                                            <td>15/03/2024</td>
+                                            <td>3</td>
+                                            <td>Pending</td>
+                                            <td>
+                                                <button class="approve">Approve</button>
+                                                <button class="reject">Reject</button>
+                                            </td>
+                                        </tr>
+                                        <!-- Hidden rows that will appear when View All is clicked -->
+                                        <tr class="pending-leave" style="display:none;">
+                                            <td>423492</td>
+                                            <td>John</td>
+                                            <td>Vacation Leave</td>
+                                            <td>16/03/2024</td>
+                                            <td>20/03/2024</td>
+                                            <td>4</td>
+                                            <td>Pending</td>
+                                            <td>
+                                                <button class="approve">Approve</button>
+                                                <button class="reject">Reject</button>
+                                            </td>
+                                        </tr>
+                                        <tr class="pending-leave" style="display:none;">
+                                            <td>423493</td>
+                                            <td>Jane</td>
+                                            <td>Casual Leave</td>
+                                            <td>18/03/2024</td>
+                                            <td>20/03/2024</td>
+                                            <td>2</td>
+                                            <td>Pending</td>
+                                            <td>
+                                                <button class="approve">Approve</button>
+                                                <button class="reject">Reject</button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
-
-                    <div class="card employee-distribution">
-                        <h3>Employee Distribution by Position</h3>
-                        <canvas id="positionChart"></canvas>
-                    </div>
-
-                    <div class="leave-requests">
-                        <h3>Leave Requests</h3>
-
-                        <!-- View All Button placed above the Action column -->
-                        <button id="view-all-btn" class="view-all-btn">View All</button>
-
-                        <table id="leave-table">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Employee</th>
-                                    <th>Leave Type</th>
-                                    <th>Leave From</th>
-                                    <th>Leave To</th>
-                                    <th>Days</th>
-                                    <th>Status</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr class="pending-leave">
-                                    <td>423491</td>
-                                    <td>Ravi</td>
-                                    <td>Sick Leave</td>
-                                    <td>12/03/2024</td>
-                                    <td>15/03/2024</td>
-                                    <td>3</td>
-                                    <td>Pending</td>
-                                    <td>
-                                        <button class="approve">Approve</button>
-                                        <button class="reject">Reject</button>
-                                    </td>
-                                </tr>
-                                <!-- Hidden rows that will appear when View All is clicked -->
-                                <tr class="pending-leave" style="display:none;">
-                                    <td>423492</td>
-                                    <td>John</td>
-                                    <td>Vacation Leave</td>
-                                    <td>16/03/2024</td>
-                                    <td>20/03/2024</td>
-                                    <td>4</td>
-                                    <td>Pending</td>
-                                    <td>
-                                        <button class="approve">Approve</button>
-                                        <button class="reject">Reject</button>
-                                    </td>
-                                </tr>
-                                <tr class="pending-leave" style="display:none;">
-                                    <td>423493</td>
-                                    <td>Jane</td>
-                                    <td>Casual Leave</td>
-                                    <td>18/03/2024</td>
-                                    <td>20/03/2024</td>
-                                    <td>2</td>
-                                    <td>Pending</td>
-                                    <td>
-                                        <button class="approve">Approve</button>
-                                        <button class="reject">Reject</button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-
-
 
                     <!-- SCRIPT -->
                     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
