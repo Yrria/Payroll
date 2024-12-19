@@ -1,1 +1,538 @@
-/* DASHBOARD CONTENT */
+/* Add the CSS styles from your code */
+
+.toggle-arrow {
+    position: fixed;
+    top: 20px;
+    left: 15px;
+    cursor: pointer;
+    z-index: 1000;
+    font-size: 24px;
+}
+
+.content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+/* Use grid-area to control placement */
+.active-employees {
+    grid-column: 1; /* First column */
+    grid-row: 1; /* First row */
+    height: 150px;
+}
+
+.pending-leaves {
+    grid-column: 2; /* Second column */
+    grid-row: 1; /* First row */
+    height: 150px;
+}
+
+.payroll-report {
+    grid-column: 1; /* First column */
+    grid-column: span 2;
+    grid-row: 2; /* Second row */
+}
+
+.salary-distribution {
+    grid-column: 1; /* Second column */
+    grid-column: span 2;
+    grid-row: 3; /* Second row */
+}
+
+.holiday-events {
+    grid-column: 3; /* First column */
+    grid-row: 1; /* Third row */
+}
+
+.calendar {
+    grid-column: 3; /* Second column */
+    grid-row: 2; /* Third row */
+}
+
+.employee-distribution {
+    grid-column: 3; /* Second column */
+    grid-row: 3; /* Fourth row */
+}
+
+.leave-requests {
+    grid-column: 1 / 4; /* Span across both columns */
+    grid-row: 4; /* Fifth row */
+}
+
+/* Responsive stacking for smaller screens */
+@media (max-width: 768px) {
+    .content {
+        grid-template-columns: 1fr;
+    }
+}
+
+.card {
+    background-color: #aac8eb;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 10px;
+}
+
+/* Payroll Report Styles */
+.payroll-report {
+    background-color: #dadddf;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 10px;
+}
+
+/* Salary Distribution Styles */
+.salary-distribution {
+    background-color: #dadddf;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 10px;
+}
+
+/* Upcoming and Holiday Event Styles */
+.Event{
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 16px;
+    max-width: 400px;
+    margin: 20px auto;
+}
+
+.Event-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.Event-header h3 {
+    margin: 0;
+    color: #333333;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.view-all {
+    color: #007bff;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: bold;
+    margin-top: 70px;
+}
+
+.event-item {
+    border-top: 1px solid #e0e0e0;
+    padding: 12px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.event-item:first-child {
+    border-top: none;
+}
+
+.event-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.event-title {
+    color: #00a7e1;
+    font-weight: bold;
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+
+.event-type {
+    color: #666666;
+    font-size: 12px;
+}
+
+.event-day {
+    color: #333333;
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+.event-date {
+    background: #e0e0e0;
+    color: #333333;
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.event-date span {
+    display: block;
+    font-size: 10px;
+    color: #888888;
+}
+
+
+/* Calendar Styles */
+.calendar {
+    grid-column: 3;
+    grid-row: 2;
+    background-color: #fcfcfc;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    max-width: 100%;
+    margin: 0;
+    overflow: hidden;
+    height: 430px; 
+    margin-right: 10px;
+    text-align: center;
+}
+
+.calendar-content {
+    width: 100%;
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px 0;
+}
+
+.calendar-header select {
+    margin: 0 5px;
+}
+
+.calendar-days {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    color: #333;
+    font-weight: bold;
+}
+
+.calendar-days div {
+    flex: 1;
+    text-align: center;
+    margin: 0 5px; 
+}
+
+/* Optional: For additional styling */
+.calendar-days div:first-child {
+    margin-left: 0;
+}
+
+.calendar-days div:last-child {
+    margin-right: 0;
+}
+
+/* Grid for displaying calendar dates with gaps */
+.calendar-dates {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 10px;
+}
+
+.calendar-dates div {
+    padding: 10px;
+    text-align: center;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+    cursor: pointer;
+    background-color: transparent;
+}
+
+/* Functionality for selected/reminder dates */
+.calendar-dates .reminder {
+    background-color: #ffffff;
+    color: white;
+}
+
+.calendar-dates .today {
+    color: rgb(147, 223, 247);
+}
+
+.calendar-dates .weekend {
+    color: #f17373;
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.6); 
+}
+
+.modal-content {
+    background-color: #ffffff;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 90%;
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-radius: 10px;
+    margin-top: 150px;
+    margin-left: 450px;
+}
+
+#addNoteButton {
+    align-self: center;
+    border: none; 
+    border-radius: 5px; 
+    background-color: #4CAF50;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-right: 900px;
+}
+
+#addNoteButton:hover {
+    background-color: #45a049;
+}
+
+#selectedDate {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+}
+
+#noteInput {
+    margin-bottom: 10px;
+    resize: none;
+}
+
+#notesList {
+    overflow-y: auto;
+    max-height: 200px;
+    margin: 10px 0;
+    padding: 0;
+}
+
+.close {
+    color: #aaa;
+    font-size: 28px;
+    cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+}
+
+/* Notes Styles */
+.notes {
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.notes textarea {
+    width: 100%;
+    height: 60px;
+    margin-bottom: 10px;
+}
+
+.notes ul {
+    list-style: none;
+    padding: 0;
+}
+
+.notes li {
+    margin-top: 10px;
+    padding: 5px;
+    background-color: #e7f3fe;
+    border-left: 4px solid #2196F3;
+}
+
+/* Employee Distribution */
+.employee-distribution {
+    background-color: #dadddf;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 10px;
+}
+
+/* Leave Requests Table */
+button {
+    padding: 8px 16px;
+    margin: 0 5px;
+    cursor: pointer;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    margin-left: 916px;
+}
+
+#view-all-btn {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    padding: 8px 16px;
+    cursor: pointer;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    background-color: #4b6bfa;
+    color: white;
+    transition: all 0.5s ease;
+}
+
+#view-all-btn:hover {
+    background-color: #1f8af5;
+    box-shadow: 0 0 8px rgb(98, 184, 235);
+}
+
+.leave-requests {
+    background-color: #c4c7c9;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    margin: 10px;
+    position: relative;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table th, table td {
+    padding: 10px;
+    border: 2px solid #ddd;
+    text-align: left;
+}
+
+.approve {
+    background-color: #4CAF50;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 3px;
+    margin-right: 10px;
+}
+
+.reject {
+    background-color: #e96359;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 3px;
+}
+
+/* Add transition effect for buttons */
+.approve{
+    width: 100px;
+    height: 40px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    transition: all 0.5s ease;
+    font-size: 14px;
+    margin-right: 10px;
+}
+
+.reject {
+    width: 100px;
+    height: 40px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    transition: all 0.5s ease;
+    font-size: 14px;
+}
+
+/* Center the action column buttons */
+td:last-child {
+    text-align: center;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 40px;
+}
+
+/* Dissolve effect for hidden buttons */
+.hidden {
+    opacity: 0;
+    transform: scale(0.5);
+    pointer-events: none;
+    position: absolute;
+}
+
+/* Center the remaining button */
+.single-button {
+    width: 100px;
+    height: 40px;
+    margin: 0;
+    position: static;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+/* Hover effects */
+.approve:hover {
+    background-color: #4ef549;
+    box-shadow: 0 0 8px rgb(65, 238, 30);
+}
+
+.reject:hover {
+    background-color: #ff0000;
+    box-shadow: 0 0 8px rgb(238, 53, 53);
+}
+
+/* Center the Action column heading */
+th:nth-child(8) {
+    text-align: center;
+}
