@@ -111,7 +111,7 @@ ul li {
 /* Dropdown container */
 ul.dropdown {
     display: none;
-    position: absolute; /* Position dropdown absolutely below parent */
+    position: relative; /* Position dropdown absolutely below parent */
     left: 0;
     top: 100%; /* Ensure dropdown starts immediately below the parent */
     background-color: #20242C;
