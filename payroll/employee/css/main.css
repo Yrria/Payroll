@@ -36,8 +36,21 @@ body {
 }
 
 .content {
-    margin: 100px 10px 10px 10px;
-    border: 1px solid gray;
+    display: flex;
+    margin: 30px 10px 10px 10px;
+    padding: 20px 20px;
+    border-radius: 5px;
+    box-shadow: 5px 5px 10px #888888;
+}
+
+#maindiv, #alter {
+    display: grid;
+    grid-template-rows: auto;
+    grid-template-columns: 1fr 1fr;
+    margin: 50px 10px 10px 10px;
+    padding: 40px 20px;
+    border-radius: 5px;
+    box-shadow: 5px 5px 10px #888888;
 }
 
 h1 {
