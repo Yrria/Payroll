@@ -11,17 +11,21 @@
 
 <body>
     <div class="header">
-        <a href="dashboard.php" class="comp-name">BytePayroll</a>
-        <div class="toggle-btn" onclick="toggleNav()">☰</div>
+        <a href="dashboard.php" class="title-tags"><span class="comp-name">ExPense</span></a>
+        <div class="toggle-btn" onclick="toggleNav()"><span class="menu-icon">☰</span></div>
         <span class="current-date-time">
             <span id="current-date"></span> - <span id="current-time"></span>
         </span>
         <div class="profile" onclick="toggleDropdown()">
-            <i class="bi bi-person-circle profile-icon"></i> <span>Admin</span>
+            <i class="bi bi-person-circle profile-icon"></i> <span class="user-name">Admin</span>
             <!-- Dropdown Menu -->
             <ul class="dropdown-menu">
-               <a href="./profile.php"><li><span>Profile</span></li></a> 
-               <a href="../index.php"><li><span>Logout</span></li></a> 
+                <a href="./profile.php">
+                    <li><span>Profile</span></li>
+                </a>
+                <a href="../index.php">
+                    <li><span>Logout</span></li>
+                </a>
             </ul>
         </div>
     </div>

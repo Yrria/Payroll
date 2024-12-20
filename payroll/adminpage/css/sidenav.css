@@ -55,6 +55,7 @@ img {
 .sidenav .nav-links {
     height: 100%;
     overflow: auto;
+    margin-top: -8px;
 }
 
 .sidenav .nav-links {

@@ -1,7 +1,12 @@
+/* General styles */
+* {
+    font-family: 'Poppins', sans-serif;
+}
+
 .header {
     background-color: #AAC7D8;
     color: black;
-    padding: 10px 20px;
+    padding: 10px 5px;
     text-align: center;
     font-size: 24px;
     position: fixed;
@@ -16,14 +21,14 @@
 
 .current-date-time {
     font-size: 16px;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
     text-align: center;
-    flex-grow: 1; /* This ensures it takes the available space */
-    margin-right: 160px;
 }
 
 .header .toggle-btn {
     color: black;
-    padding: 5px;
     cursor: pointer;
     font-size: 18px;
     position: absolute;
@@ -31,21 +36,31 @@
 }
 
 .toggle-btn {
-    margin-left: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
 }
 
-.toggle-btn.shifted {
-    margin-left: -180px;
+.menu-icon {
+    font-size: 23px;
 }
 
 .comp-name {
-    margin-left: 10px;
+    margin-left: 40px;
     color: black;
     text-decoration: none;
+    font-weight: 500;
+    transition: font-size 0.3s ease, margin-left 0.3s ease;
+    text-align: center;
+    display: inline-block;
 }
 
-a{
+.title-tags {
     text-decoration: none;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
 }
 
 /* Profile styles */
@@ -55,10 +70,19 @@ a{
     gap: 5px;
     font-size: 20px;
     position: absolute;
-    right: 55px;
+    right: 0;
     padding: 5px 10px;
     cursor: pointer;
+    text-align: center;
     transition: background-color 0.3s, color 0.3s;
+    position: relative; /* Anchor the dropdown menu to this element */
+    transform: translateX(-20%);
+    /* This will center it horizontally */
+
+}
+
+a {
+    text-decoration: none;
 }
 
 /* Profile icon hover effect */
@@ -68,7 +92,6 @@ a{
     transition: transform 0.3s;
 }
 
-/* Profile hover effect */
 .profile:hover {
     background-color: #E0F7FA;
     color: black;
@@ -78,7 +101,6 @@ a{
     transform: scale(1.1);
 }
 
-/* Active profile style (when dropdown is active) */
 .profile.active {
     background-color: #E0F7FA;
     color: black;
@@ -97,6 +119,7 @@ a{
     margin: 0;
     border-radius: 5px;
     box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1);
+    min-width: 100%; /* Matches the width of .profile */
 }
 
 .dropdown-menu.show {
@@ -105,11 +128,13 @@ a{
 
 .dropdown-menu li {
     display: block;
-    padding: 8px 29px;
+    padding: 8px 0;
     cursor: pointer;
     color: #333;
     font-size: medium;
     transition: background-color 0.3s, color 0.3s;
+    width: 100%; /* Ensures items span the dropdown width */
+    text-align: center;
 }
 
 .dropdown-menu li a {
@@ -117,9 +142,10 @@ a{
     color: #333;
     display: block;
     width: 100%;
+    text-align: center;
 }
 
-/* Hover effect for list items */
+/* Hover effect for dropdown items */
 .dropdown-menu li:hover {
     background-color: #f1f1f1;
     color: #007B83;
@@ -128,4 +154,3 @@ a{
 .dropdown-menu li a:hover {
     color: #007B83;
 }
-
