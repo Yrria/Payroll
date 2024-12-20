@@ -44,6 +44,10 @@
     text-decoration: none;
 }
 
+a{
+    text-decoration: none;
+}
+
 /* Profile styles */
 .profile {
     display: flex;
