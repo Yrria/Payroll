@@ -4,10 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" href="../assets/logo.png" type="image/svg+xml">
+    <link rel="shortcut icon" href="../assets/logo.png" type="image/svg+xml">.
     <link rel="stylesheet" href="./css/main.css">
     <link rel="stylesheet" href="./css/profile.css">
     <title>Profile</title>
+    <style>
+       
+    </style>
 </head>
 
 <body>
@@ -24,16 +27,20 @@
                 </div>
                 <hr>
             </div>
-            <div class="content">
-                <p>This is a simple responsive page with a header and a side navigation bar that can be minimized.</p>
+            <div class="change_pass_div">
+                <p style="margin-bottom: 10px;">Admin Account</p>
+                <hr style="opacity:0.5;">
+                <div class="input_div">
+                    <span style="font-size: 15px;">Email Address</span><br>
+                    <input type="text" class="input_box" value="admin@email.com" readonly style="margin-top:10px;">
+                    <button class="update_btn">Update</button>
+                </div>
                 <br>
-                <p>This is a simple responsive page with a header and a side navigation bar that can be minimized.</p>
-                <br>
-                <p>This is a simple responsive page with a header and a side navigation bar that can be minimized.</p>
-                <br>
-                <p>This is a simple responsive page with a header and a side navigation bar that can be minimized.</p>
-                <br>
-                <p>This is a simple responsive page with a header and a side navigation bar that can be minimized.</p>
+                <div class="input_div">
+                    <span style="font-size: 15px;">Password</span><br>
+                    <input type="text" class="input_box" value="***********" readonly style="margin-top:10px;">
+                    <button class="update_btn">Update</button>
+                </div>
             </div>
         </div>
     </div>

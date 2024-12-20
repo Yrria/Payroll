@@ -8,12 +8,13 @@
 body {
     margin: 0;
     height: 100%;
+    background-color: #F6F7FA;
 }
 
 .main {
     flex-grow: 1;
     padding: 20px;
-    background-color: #f4f4f4;
+    background-color: #F6F7FA;
     margin-left: 200px;
     transition: margin-left 0.3s;
     margin-top: 30px;
@@ -35,13 +36,26 @@ body {
     margin: 10px;
 }
 
-.content {
-    margin: 100px 10px 10px 10px;
-    border: 1px solid gray;
+.main-content {
+    display: flex; /* Enables flexbox */
+    justify-content: center; /* Horizontally centers the content */
+    align-items: center; /* Vertically centers the content */
+    flex-direction: column; /* Keeps content stacked vertically if needed */
+    min-height: 76vh; /* Maintains the height */
 }
+
+.sub-content {
+    width: 100%; /* Optional: Set a width or max-width to control its size */
+    max-width: 1200px; /* Adjust this as needed */
+}
+/* .content {
+    margin: 10px;
+    border: 1px solid gray;
+} */
 
 h1 {
     margin: 10px 0px 10px 0px;
+    font-weight: 520;
 }
 
 /* h5{
@@ -90,9 +104,6 @@ hr {
 
 }
 
-p {
-    margin: 20px;
-}
 
 #mainContent,
 .toggle-btn {

@@ -12,8 +12,8 @@
 
 <body>
     <?php include 'header.php'; ?>
+    <?php include 'sidenav.php'; ?>
     <div class="container">
-        <?php include 'sidenav.php'; ?>
         <div id="mainContent" class="main">
             <div class="head-title">
                 <h1>Leave</h1>
@@ -24,6 +24,7 @@
                 </div>
                 <hr>
             </div>
+<<<<<<< HEAD
             <!-- Leave Table -->
             <div id="maindiv">
                 <div class="grid-item">
@@ -124,6 +125,21 @@
                 </div>
                 <div class="grid-item">
                     <button class="button">Apply for Leave</button>
+=======
+            <div class="main-content">
+                <div class="sub-content">
+                    <div class="content">
+                        <p>This is a simple responsive page with a header and a side navigation bar that can be minimized.</p>
+                        <br>
+                        <p>This is a simple responsive page with a header and a side navigation bar that can be minimized.</p>
+                        <br>
+                        <p>This is a simple responsive page with a header and a side navigation bar that can be minimized.</p>
+                        <br>
+                        <p>This is a simple responsive page with a header and a side navigation bar that can be minimized.</p>
+                        <br>
+                        <p>This is a simple responsive page with a header and a side navigation bar that can be minimized.</p>
+                    </div>
+>>>>>>> 31fbcbce29d09fcea82e190c6f6d719656b0a232
                 </div>
             </div>
         </div>

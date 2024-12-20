@@ -12,8 +12,8 @@
 
 <body>
     <?php include 'header.php'; ?>
+    <?php include 'sidenav.php'; ?>
     <div class="container">
-        <?php include 'sidenav.php'; ?>
         <div id="mainContent" class="main">
             <div class="head-title">
                 <h1>Salary</h1>
@@ -24,6 +24,7 @@
                 </div>
                 <hr>
             </div>
+<<<<<<< HEAD
             <div class="content">
                 <table>
                     <tr>
@@ -161,6 +162,22 @@
                         <td></td>
                     </tr>
                 </table>
+=======
+            <div class="main-content">
+                <div class="sub-content">
+                    <div class="content">
+                        <p>This is a simple responsive page with a header and a side navigation bar that can be minimized.</p>
+                        <br>
+                        <p>This is a simple responsive page with a header and a side navigation bar that can be minimized.</p>
+                        <br>
+                        <p>This is a simple responsive page with a header and a side navigation bar that can be minimized.</p>
+                        <br>
+                        <p>This is a simple responsive page with a header and a side navigation bar that can be minimized.</p>
+                        <br>
+                        <p>This is a simple responsive page with a header and a side navigation bar that can be minimized.</p>
+                    </div>
+                </div>
+>>>>>>> 31fbcbce29d09fcea82e190c6f6d719656b0a232
             </div>
         </div>
     </div>

@@ -1,4 +1,10 @@
 /* Logo image */
+*{
+    font-family: 'Poppins', sans-serif;
+    padding: 0;
+}
+
+
 .logo {
     display: flex;
     justify-content: center;
@@ -20,163 +26,184 @@ img {
     transition: width 0.3s;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
     background: linear-gradient(180deg, #20242C, #343A40);
-    overflow: hidden;
+    /* overflow: hidden; */
     position: fixed;
     top: 40px;
     bottom: 0;
     left: 0;
+    font-size: 16px;
 }
 
-.sidenav ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.sidenav ul li {
-    padding: 10px 20px;
-    cursor: pointer;
-    position: relative;
-    display: flex;
-}
-
-.sidenav li {
-    margin: 5;
-}
-
-.sidenav ul li:hover {
-    background-color: #0a0b0c;
-    transition: background 0.2s ease, transform 0.15s ease; /* Faster transitions */
-    transform: scale(1.01); /* Minimal scaling effect */
-}
-
-a {
-    color: white;
-    text-decoration: none;
-}
-
-li i {
-    /* space between icon and text */
-    margin-right: 8px;
-    margin-bottom: 3px;
-}
-
-.span-text{
-    margin-top: 3px;
-}
-
-/* sidenav w/ dropdown */
-.second-option {
-    font-size: 12px;
-}
-
-/* minimized side nav */
-.minimized {
+.sidenav.close {
     width: 60px;
+    transition:  all 0.2s ease;
+}
+.sidenav.close .link-name {
+    display: none;
+    
 }
 
-.minimized .span-text {
-    /* disable text */
+.sidenav.close .arrow {
     display: none;
 }
 
-.minimized+.main {
-    margin-left: 60px;
-}
-
-.minimized img {
+.sidenav.close img {
     /* for minimized image */
     height: 35px;
 }
 
-.minimized .sidenav ul li {
-    text-align: center;
-    padding: 10px 0;
+.sidenav .nav-links {
+    height: 100%;
+    overflow: auto;
 }
 
-.minimized .sidenav ul li span {
+.sidenav .nav-links {
+    overflow: visible;
+}
+
+.sidenav .nav-links::-webkit-scrollbar{
     display: none;
 }
 
-
-ul li {
-    position: relative; /* Ensure dropdown is anchored to parent li */
-    
-}
-
-.three-option {
+.sidenav .nav-links li {
     position: relative;
-}
-
-/* Dropdown container */
-ul.dropdown {
-    display: none;
-    position: absolute; /* Position dropdown absolutely below parent */
-    left: 0;
-    top: 100%; /* Ensure dropdown starts immediately below the parent */
-    background-color: #20242C;
-    color: white;
     list-style: none;
-    padding: 0;
-    margin: 0;
-    width: 100%; /* Dropdown width same as parent */
-    /* z-index: 1000; */
+    transition:  all 0.2s ease;
 }
 
-/* Show dropdown on hover */
-ul li:hover > ul.dropdown {
-    display: block;
+.sidenav .nav-links li:hover {
+    background: #0a0b0c;
 }
 
-/* Dropdown item styling */
-ul li ul.dropdown li {
-    padding: 10px 20px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    cursor: pointer;
+.sidenav .nav-links li i {
+    height: 40px;
+    min-width: 50px;
+    text-align: center;
+    line-height: 35px;
+    color: #fff;
+    transition:  all 0.2s ease;
 }
 
-ul li ul.dropdown li:hover {
-    background-color: #0a0b0c;
-    transition: 0.3s ease;
+.sidenav .nav-links li.showmenu i.arrow{
+    transform: rotate(-180deg);
+} 
+
+.sidenav .nav-links li a {
+    text-decoration: none;
+    margin: 5px;
 }
 
-/* Fix caret indicator flip */
-ul li:hover .indicators {
-    transform: rotate(180deg);
-    transition: transform 0.3s ease;
+.link-name {
+    font-size: 15px;
+    font-weight: 400;
+    color: #fff;
 }
 
-.minimized .indicators {
-    display: none;
+li a {
+    display: flex;
+    align-items: center;
 }
 
-ul li ul.dropdown li {
-    /* Styling for dropdown items */
-    padding: 10px 20px;
+li a i {
+    font-size: 1em;
 }
 
-ul li ul.dropdown li:hover {
-    /* Hover effect for dropdown items */
-    transition: 0.3s ease;
-    background-color: #0a0b0c;
+li a span.link-name {
+    font-size: 1em; 
 }
 
-/* For the minimized state, display only the first letter */
-.minimized ul li ul.dropdown li span {
-    display: inline-block;
-    width: 3ch;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
+li a i.indicators {
+    margin-left: auto; 
+    font-size: 1em;
 }
 
-.drop-option {
-    font-size: 11px;
+.sidenav .nav-links li .icon-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 40px;
+    margin-top: 5px;
+    margin-bottom: 5px;
 }
 
-.indicators {
+.sidenav .nav-links li .icon-link .indicator {
+    color: #fff;
     margin-left: auto;
 }
 
+/* .sidenav .nav-links li .icon-link a {
+    display: flex;
+    align-items: center;
+} */
 
+.sidenav .nav-links li .sub-menu {
+    padding:  5px 5px 6px 60px;
+    margin-top: -4px;
+    background: #20242C;
+    display: none;
+}
 
+.sidenav .nav-links li.showmenu .sub-menu {
+    display: block;
+}
+
+.sidenav .nav-links li .sub-menu a {
+    color: #fff;
+    font-size: 15px;
+    padding: 5px 0;
+    white-space: nowrap;
+    opacity: 0.6;
+    transition:  all 0.2s ease;
+}
+
+.sidenav .nav-links li .sub-menu a:hover {
+    opacity: 1;
+}
+
+.sidenav.close .nav-links li .sub-menu {
+    position: absolute;
+    left: 100%;
+    top: -10px;
+    margin-top: 0;
+    padding:  5px 30px;
+    margin-top: 0;
+    border-radius: 0 6px 6px 0;
+    transition:  all 0.2s ease;
+    opacity: 0;
+    display: block;
+    pointer-events: none;
+}
+
+.sidenav.close .nav-links li:hover .sub-menu {
+    top: 0;
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.sidenav .nav-links li .sub-menu .link-name {
+    font-size: 16px;
+    display: none;
+}
+
+.sidenav.close .nav-links li .sub-menu .link-name {
+    font-size: 16px;
+    display: block;
+}
+
+.sidenav .nav-links li .sub-menu.blank {
+    opacity: 1;
+    pointer-events: auto;
+    padding: 9px 20px 6px 16px;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.sidenav .nav-links li:hover .sub-menu.blank {
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+/* Disable hover effect for sub-menu li */
+.sidenav .nav-links li .sub-menu li:hover {
+    background: none;
+}

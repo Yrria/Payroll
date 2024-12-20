@@ -10,29 +10,44 @@
 </head>
 
 <body>
+    <!-- <div class="header">
+        <div class="toggle-btn" onclick="toggleNav()">☰</div>
+    </div> -->
+
     <div class="sidenav" id="sidenav">
-        <span class="logo">
-            <img src="../assets/logo.png" alt="logo">
-        </span>
-        <ul>
-            <a href="./dashboard.php">
-                <li>
+        <div class="logodetails">
+            <a href="dashboard.php" class="logo">
+                <img src="../assets/logo.png" alt="logo">
+            </a>
+        </div>
+        <ul class="nav-links">
+            <li>
+                <a href="./dashboard.php">
                     <i class="bi bi-house-door-fill"></i>
-                    <span class="span-text">Dashboard</span>
-                </li>
-            </a>
-            <a href="./leave.php">
-                <li>
+                    <span class="link-name">Dashboard</span>
+                </a>
+                <ul class="sub-menu blank">
+                    <span class="link-name">Dashboard</span>
+                </ul>
+            </li>
+            <li>
+                <a href="./leave.php">
                     <i class="bi bi-calendar-check-fill"></i>
-                    <span class="span-text">Leave</span>
-                </li>
-            </a>
-            <a href="./salary.php">
-                <li>
+                    <span class="link-name">Leave</span>
+                </a>
+                <ul class="sub-menu blank">
+                    <span class="link-name">Leave</span>
+                </ul>
+            </li>
+            <li>
+                <a href="./salary.php">
                     <i class="bi bi-people-fill"></i>
-                    <span class="span-text">Salary</span>
-                </li>
-            </a>
+                    <span class="link-name">Salary</span>
+                </a>
+                <ul class="sub-menu blank">
+                    <span class="link-name">Salary</span>
+                </ul>
+            </li>
         </ul>
     </div>
     <!-- SCRIPT -->
