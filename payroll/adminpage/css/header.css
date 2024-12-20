@@ -47,13 +47,24 @@
 }
 
 .comp-name {
-    margin-left: 40px;
+    /* margin-left: 40px; */
+    /* for image */
+    /* margin-left: 22px; */
     color: black;
     text-decoration: none;
     font-weight: 500;
     transition: font-size 0.3s ease, margin-left 0.3s ease;
     text-align: center;
     display: inline-block;
+    /* for image only */
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* for image */
+.comp-name img {
+    transition: height 0.3s ease, margin-left 0.3s ease;
 }
 
 .title-tags {
@@ -61,6 +72,10 @@
     display: inline-flex;
     justify-content: center;
     align-items: center;
+}
+
+.title-name {
+    height: 20px;
 }
 
 /* Profile styles */

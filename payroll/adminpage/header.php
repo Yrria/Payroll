@@ -11,7 +11,7 @@
 
 <body>
     <div class="header">
-        <a href="dashboard.php" class="title-tags"><span class="comp-name">ExPense</span></a>
+        <a href="dashboard.php" class="title-tags"><span class="comp-name"><img src="../assets/title.png" class="title-name" alt="ExPense"></span></a>
         <div class="toggle-btn" onclick="toggleNav()"><span class="menu-icon">☰</span></div>
         <span class="current-date-time">
             <span id="current-date"></span> - <span id="current-time"></span>
