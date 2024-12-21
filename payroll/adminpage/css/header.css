@@ -1,0 +1,171 @@
+/* General styles */
+* {
+    font-family: 'Poppins', sans-serif;
+}
+
+.header {
+    background-color: #AAC7D8;
+    color: black;
+    padding: 10px 5px;
+    text-align: center;
+    font-size: 24px;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 20px;
+}
+
+.current-date-time {
+    font-size: 16px;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+}
+
+.header .toggle-btn {
+    color: black;
+    cursor: pointer;
+    font-size: 18px;
+    position: absolute;
+    left: 200px;
+}
+
+.toggle-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.menu-icon {
+    font-size: 23px;
+}
+
+.comp-name {
+    /* margin-left: 40px; */
+    /* for image */
+    /* margin-left: 22px; */
+    color: black;
+    text-decoration: none;
+    font-weight: 500;
+    transition: font-size 0.3s ease, margin-left 0.3s ease;
+    text-align: center;
+    display: inline-block;
+    /* for image only */
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* for image */
+.comp-name img {
+    transition: height 0.3s ease, margin-left 0.3s ease;
+}
+
+.title-tags {
+    text-decoration: none;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.title-name {
+    height: 20px;
+}
+
+/* Profile styles */
+.profile {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 20px;
+    position: absolute;
+    right: 0;
+    padding: 5px 10px;
+    cursor: pointer;
+    text-align: center;
+    transition: background-color 0.3s, color 0.3s;
+    position: relative; /* Anchor the dropdown menu to this element */
+    transform: translateX(-20%);
+    /* This will center it horizontally */
+
+}
+
+a {
+    text-decoration: none;
+}
+
+/* Profile icon hover effect */
+.profile i {
+    font-size: 23px;
+    line-height: 0.5;
+    transition: transform 0.3s;
+}
+
+.profile:hover {
+    background-color: #E0F7FA;
+    color: black;
+}
+
+.profile:hover i {
+    transform: scale(1.1);
+}
+
+.profile.active {
+    background-color: #E0F7FA;
+    color: black;
+}
+
+/* Dropdown styles */
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 40px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    list-style: none;
+    padding: 5px 0;
+    margin: 0;
+    border-radius: 5px;
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1);
+    min-width: 100%; /* Matches the width of .profile */
+}
+
+.dropdown-menu.show {
+    display: block;
+}
+
+.dropdown-menu li {
+    display: block;
+    padding: 8px 0;
+    cursor: pointer;
+    color: #333;
+    font-size: medium;
+    transition: background-color 0.3s, color 0.3s;
+    width: 100%; /* Ensures items span the dropdown width */
+    text-align: center;
+}
+
+.dropdown-menu li a {
+    text-decoration: none;
+    color: #333;
+    display: block;
+    width: 100%;
+    text-align: center;
+}
+
+/* Hover effect for dropdown items */
+.dropdown-menu li:hover {
+    background-color: #f1f1f1;
+    color: #007B83;
+}
+
+.dropdown-menu li a:hover {
+    color: #007B83;
+}

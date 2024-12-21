@@ -1,0 +1,117 @@
+/* salary CONTENT */
+
+.selection_div {
+    margin: 50px 10px 10px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: auto;
+    padding: 20px;
+    border-radius: 3px;
+    box-shadow: 1px 0px 5px rgba(0, 0, 0, 0.3);
+    background-color: #fff;
+}
+
+/* Dropdown Container */
+.dropdown {
+    width: 200px;
+    position: relative; /* Needed for absolute positioning of content */
+}
+
+/* Dropdown Input */
+.dropdown-input {
+    width: 75%;
+    padding: 6px 10px;
+    border: 1px solid #aaaaaa6c;
+    border-radius: 5px;
+    outline: none;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+
+.dropdown-input:hover{
+    color: #7DA0CA;
+    transition: all 0.3s ease-in-out; /* Smooth animation */
+}
+
+.dropdown-input:focus{
+    color: #fff;
+    background-color: #AAC7D8;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.13);
+
+}
+
+/* Dropdown Indicator */
+.dropdown-indicator {
+    font-size: 27px; 
+    position: absolute;
+    right: 55px;
+    transition: transform 0.3s ease; /* Smooth rotation animation */
+    cursor: pointer;
+}
+.dropdown-indicator.rotated {
+    transform: rotate(180deg); /* Flip the arrow */
+}
+
+/* Dropdown Content */
+.dropdown-content {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 75%; /* Match input width */
+    background-color: #fff;
+    border: 1px solid #ddd;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    z-index: 1000; /* Ensure it stays on top */
+    border-radius: 5px;
+    overflow-y: auto;
+    max-height: 150px;
+    opacity: 0;
+    transform: scaleY(0);
+    transform-origin: top;
+    transition: opacity 0.3s ease, transform 0.3s ease; /* Smooth transition */
+    pointer-events: none; /* Prevent clicks when hidden */
+}
+
+.dropdown-content.show {
+    opacity: 1;
+    transform: scaleY(1); /* Expand dropdown */
+    pointer-events: auto; /* Enable clicks */
+}
+
+
+.dropdown-content .dropdown-item {
+    padding: 5px 5px;
+    cursor: pointer;
+}
+
+.dropdown-content .dropdown-item:hover {
+    background-color: #AAC7D8;
+    transition: all 0.2s ease-in-out; /* Smooth animation */
+}
+
+/* Dropdown Wrapper */
+.dropdown-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    
+}
+.dropdown-div {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.table_div {
+    margin: 30px 10px 10px 10px;
+    height: auto;
+    padding: 20px;
+    border-radius: 3px;
+    box-shadow: 1px 0px 5px rgba(0, 0, 0, 0.3);
+    background-color: #fff;
+    overflow-y: hidden;
+    overflow-x: auto;
+}
+

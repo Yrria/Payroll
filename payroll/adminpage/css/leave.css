@@ -1,0 +1,187 @@
+/* LEAVES CONTENT */
+/* body {
+  display: flex;
+  flex-direction: column;
+  background-color: #F6F7FA;
+} */
+
+.content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 10px;
+  margin: 10px;
+  box-shadow: 0px 0px 5px #ccc;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+table th,
+table td {
+  border: 1px solid #ddd;
+  padding: 5px;
+  /* text-align: left; */
+  white-space: nowrap;
+  /* Prevents text wrapping */
+  overflow: hidden;
+  /* Ensures overflow is hidden */
+  text-overflow: ellipsis;
+  /* Shows ellipsis when text overflows */
+  max-width: 25px;
+  /* Set max width for the cell */
+  width: 5ch;
+  /* Sets a fixed width for the cell */
+  font-size: 14px;
+}
+
+/* SEARCH BAR */
+.search {
+  display: flex;
+  justify-content: space-between;
+  /* Align h3 to the left and search-bar to the right */
+  align-items: center;
+  /* Vertically align items in the container */
+
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+input[type="text"] {
+  padding: 2px;
+  font-size: 16px;
+}
+
+.td-text {
+  white-space: nowrap;
+  /* Prevents text wrapping */
+  overflow: hidden;
+  /* Ensures overflow is hidden */
+  text-overflow: ellipsis;
+  /* Shows ellipsis when text overflows */
+  max-width: 50px;
+  /* Set max width for the cell */
+}
+
+.action-buttons,
+.action-tb {
+  max-width: 100px;
+  /* Set max width for the cell */
+}
+
+table th {
+  background-color: white;
+  color: black;
+}
+
+table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+table tr:hover {
+  background-color: #f1f1f1;
+}
+
+.status-approved {
+  color: green;
+  font-weight: bold;
+}
+
+.status-declined {
+  color: red;
+  font-weight: bold;
+}
+
+.status-pending {
+  color: #f39c12;
+  font-weight: bold;
+}
+
+h3 {
+  color: #5f5f5f;
+  font-weight: 520;
+}
+
+.view-btn {
+  background-color: black;
+  color: #fff;
+  padding: 2px 6px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 1px;
+  font-size: smaller;
+}
+
+.view-btn:hover {
+  background-color: #0056b3;
+}
+
+.search-btn {
+  background-color: black;
+  color: #fff;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 2px;
+}
+
+.search-btn:hover {
+  background-color: #0056b3;
+}
+
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.pagination button {
+  margin-left: 10px;
+  margin-right: 10px;
+  padding: 2px 10px;
+  border: none;
+  background-color: black;
+  color: #fff;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.pagination button:hover {
+  background-color: #0056b3;
+}
+
+.pagination input {
+  width: 40px;
+  text-align: center;
+}
+
+.admin-icon {
+  font-size: 14px;
+  color: black;
+  font-weight: bold;
+}
+
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  align-items: center;
+  font-size: 14px;
+  color: #666;
+}
+
+.perpage {
+  outline: none;
+  border: none;
+}
