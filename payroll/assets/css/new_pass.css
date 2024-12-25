@@ -1,4 +1,4 @@
-
+/* Resetting some default styles */
 * {
     margin: 0;
     padding: 0;
@@ -42,14 +42,14 @@ body::after {
     width: 600px;
     z-index: 1;
     margin-top: 100px;
-    margin-left: 100px;
+    margin-left: 90px;
 }
 
 
 .login-box h1 {
     font-size: 2em;
     color: #FFFFFF;
-    margin-bottom: 50px;
+    margin-bottom: 60px;
 }
 
 .login-box p {
@@ -125,29 +125,23 @@ body::after {
     align-items: center;
 }
 
-.forgot-password,
-.login {
+a {
+    text-decoration: none;
+}
+
+.change {
     border: none;
     padding: 10px 20px;
     cursor: pointer;
     font-size: 0.9em;
     border-radius: 5px;
     transition: all 0.5s ease;
-}
-
-.forgot-password {
-    background: transparent;
-    color: #A5A5A5;
-}
-
-.login {
+    margin-left: 430px;
     background-color: #3498db;
     color: #FFFFFF;
-    text-decoration: none;
 }
 
-.login:hover {
+
+.change:hover {
     background-color: #47cbff;
 }
-
-/* ------------------------------ END OF LOGIN ------------------------------ */
