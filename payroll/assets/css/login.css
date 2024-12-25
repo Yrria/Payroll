@@ -1,0 +1,313 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    display: flex;
+    min-height: 100vh;
+    background-color: #f1f1f1;
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
+
+
+header {
+    background-color: #AAC7D8; /* Sky blue background */
+    padding: 10px 20px; /* Space inside the header */
+    display: flex; /* Use flexbox for layout */
+    justify-content: space-between; /* Space between items */
+    align-items: center; /* Center items vertically */
+    position: fixed;
+    width: max-content;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.app-title {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.current-date-time {
+    font-size: 16px;
+}
+
+.profile-btn {
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+
+
+
+
+.sidebar {
+    width: 190px;
+    height: 100vh;
+    background-color: #20232a;
+    color: #ffffff;
+    padding: 15px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: width 0.3s;
+    margin-top: 57px;
+}
+
+.sidebar.minimized {
+    width: 50px; /* Minimized width */
+
+.sidenav-content {
+    top:0;
+}
+
+}
+
+.sidebar h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.sidebar .toggle-arrow {
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.sidebar ul {
+    list-style: none;
+    /* margin-top: 40px; */
+}
+
+.sidebar ul li {
+    padding: 10px 0;
+    display: flex;
+    align-items: center;
+}
+
+.sidebar ul li a {
+    color: #b8b8b8;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    transition: padding-left 0.3s;
+}
+
+.sidebar ul li a:hover {
+    color: #ffffff;
+}
+
+.sidebar ul li i {
+    /* margin-right: 10px; */
+    font-size: 18px;
+    transition: opacity 0.3s;
+}
+
+.sidenav-text {
+    margin-left: 10px;
+}
+
+.sidebar.minimized ul li span {
+    display: none; /* Hide text when sidebar is minimized */
+}
+
+.sidebar.minimized ul li a {
+    justify-content: center; /* Center items when minimized */
+}
+
+.admin-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: auto;
+    margin-bottom: 50px;
+}
+
+.logout-btn {
+    background-color: #20232a;
+    color: #ffffff;
+    border: 2px solid #ffffff;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.5s ease, box-shadow 0.5s ease;
+    width: auto;
+}
+
+.logout-btn:hover {
+    background-color: #0c0d0f;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.logout-btn i {
+    margin-right: 10px; /* Space between icon and text */
+}
+
+.main-content {
+    margin-left: 250px;
+    padding: 20px;
+    flex: 1;
+    overflow-y: auto;
+    height: 100vh;
+    transition: margin-left 0.3s;
+}
+
+.main-content.minimized {
+    margin-left: 150px; /* Adjusted margin to match minimized sidebar */
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+header h1 {
+    font-size: 28px;
+    color: #333;
+}
+
+.info{
+    text-align: center;
+    align-items: center;
+    margin-top:5px;
+}
+
+
+.content {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Two columns */
+    grid-template-rows: auto; /* Rows adjust based on content */
+    gap: 20px; /* Space between cards */
+    margin-top: 20px; /* Space from the header */
+}
+
+
+/* Use grid-area to control placement */
+.active-employees {
+    grid-column: 1; /* First column */
+    grid-row: 2; /* First row */
+    height: 120px;
+}
+
+.pending-leaves {
+    grid-column: 2; /* Second column */
+    grid-row: 2; /* First row */
+    margin-left: -320px;
+    height: 120px;
+}
+
+.payroll-report {
+    grid-column: 1 / 2; /* Span across 1st and 2nd column */
+    grid-row: 3; /* Second row */
+}
+
+.salary-distribution {
+    grid-column: 1; /* Start at first column */
+    grid-row: 4; /* Third row */
+}
+
+.holiday-events {
+    grid-column: 2; /* Second column */
+    grid-row: 2; /* Second row */
+}
+
+.calendar {
+    grid-column: 2; /* Second column */
+    grid-row: 3; /* Third row */
+}
+
+.employee-distribution {
+    grid-column: 2; /* First column */
+    grid-row: 4; /* Fourth row */
+}
+
+.leave-requests {
+    grid-column: 1 / 3; /* Span across both columns */
+    grid-row: 5; /* Fifth row */
+}
+
+/* Responsive stacking for smaller screens */
+@media (max-width: 768px) {
+    .content {
+        grid-template-columns: 1fr; /* Single column on smaller devices */
+    }
+}
+
+.card {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Leave Requests Table */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table th, table td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+.approve {
+    background-color: #4CAF50;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 3px;
+    margin-left: 20px;
+}
+
+.reject {
+    background-color: #f44336;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 3px;
+}
+
+/* Calendar Styles */
+.calendar-content {
+    text-align: center;
+}
+
+.calendar-days {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    color: #333;
+    font-weight: bold;
+}
+
+.calendar-dates {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+}
+
+.calendar-dates div {
+    padding: 5px;
+    text-align: center;
+}
