@@ -7,7 +7,7 @@
     <link rel="shortcut icon" href="../assets/logo.png" type="image/svg+xml">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="./css/main.css">
-    <link rel="stylesheet" href="./css/payroll.css">
+    <link rel="stylesheet" href="./css/payslips.css">
     <title>Payroll</title>
 </head>
 
@@ -20,7 +20,7 @@
                 <div class="breadcrumb">
                     <h5><a href="./dashboard.php">Dashboard </a></h5>
                     <span> > </span>
-                    <h5><a href="./payroll.php">Create Payslip </a></h5>
+                    <h5><a href="./payroll.php">Payslip List </a></h5>
                 </div>
                 <hr>
             </div>
@@ -79,7 +79,6 @@
                     <div class="payroll_contents">
                         <!-- Title and search-bar -->
                         <div class="search">
-                            <button class="payall_btn">Pay All</button>
                             <div class="search-bar">
                                 <input type="text" class="search_emp_input" placeholder="Search employee..." />
                                 <button class="search-btn">Search</button>
@@ -106,10 +105,9 @@
                                     <td>Service Crew</td>
                                     <td>Night</td>
                                     <td>₱10,000</td>
-                                    <td class="td-text">Unpaid</td>
+                                    <td class="td-text">Paid</td>
                                     <td class="td-text">
                                         <div class="action-buttons">
-                                            <a href="./create_payslip.php"><button class="slip-btn">Generate Slip</button></a>
                                             <button class="view-btn">Summary</button>
                                         </div>
                                     </td>
@@ -120,10 +118,9 @@
                                     <td>Service Crew</td>
                                     <td>Night</td>
                                     <td>₱10,000</td>
-                                    <td class="td-text">Unpaid</td>
+                                    <td class="td-text">Paid</td>
                                     <td class="td-text">
                                         <div class="action-buttons">
-                                            <a href="./create_payslip.php"><button class="slip-btn">Generate Slip</button></a>
                                             <button class="view-btn">Summary</button>
                                         </div>
                                     </td>
@@ -134,10 +131,9 @@
                                     <td>Service Crew</td>
                                     <td>Night</td>
                                     <td>₱10,000</td>
-                                    <td class="td-text">Unpaid</td>
+                                    <td class="td-text">Paid</td>
                                     <td class="td-text">
                                         <div class="action-buttons">
-                                            <a href="./create_payslip.php"><button class="slip-btn">Generate Slip</button></a>
                                             <button class="view-btn">Summary</button>
                                         </div>
                                     </td>
@@ -148,10 +144,9 @@
                                     <td>Service Crew</td>
                                     <td>Night</td>
                                     <td>₱10,000</td>
-                                    <td class="td-text">Unpaid</td>
+                                    <td class="td-text">Paid</td>
                                     <td class="td-text">
                                         <div class="action-buttons">
-                                            <a href="./create_payslip.php"><button class="slip-btn">Generate Slip</button></a>
                                             <button class="view-btn">Summary</button>
                                         </div>
                                     </td>
@@ -162,10 +157,9 @@
                                     <td>Service Crew</td>
                                     <td>Night</td>
                                     <td>₱10,000</td>
-                                    <td class="td-text">Unpaid</td>
+                                    <td class="td-text">Paid</td>
                                     <td class="td-text">
                                         <div class="action-buttons">
-                                            <a href="./create_payslip.php"><button class="slip-btn">Generate Slip</button></a>
                                             <button class="view-btn">Summary</button>
                                         </div>
                                     </td>

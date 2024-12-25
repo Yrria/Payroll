@@ -68,12 +68,17 @@
                 </ul>
             </li>
             <li>
-                <a href="./payroll.php">
-                    <i class="bi bi-credit-card-fill"></i>
-                    <span class="link-name">Payroll</span>
-                </a>
-                <ul class="sub-menu blank">
-                    <span class="link-name">Payroll</span>
+                <div class="icon-link">
+                        <a href="" class="disabled-link">
+                        <i class="bi bi-credit-card-fill"></i>
+                        <span class="link-name">Payroll</span>
+                    </a>
+                    <i class="bi bi-caret-down-fill arrow"></i>
+                </div>
+                <ul class="sub-menu">
+                    <span class="link-name">Leave</span>
+                    <li><a href="./payroll.php"><span>Create Payslip</span></a></li>
+                    <li><a href="./payslips.php"><span>Payslip list</span></a></li>
                 </ul>
             </li>
             <li>
