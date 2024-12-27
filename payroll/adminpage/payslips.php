@@ -20,7 +20,7 @@
                 <div class="breadcrumb">
                     <h5><a href="./dashboard.php">Dashboard </a></h5>
                     <span> > </span>
-                    <h5><a href="./payroll.php">Payslip List </a></h5>
+                    <h5>Payslip List</h5>
                 </div>
                 <hr>
             </div>
@@ -108,7 +108,7 @@
                                     <td class="td-text">Paid</td>
                                     <td class="td-text">
                                         <div class="action-buttons">
-                                            <button class="view-btn">Summary</button>
+                                           <a href="./view_slip.php"><button class="view-btn">View Slip</button></a>
                                         </div>
                                     </td>
                                 </tr>
@@ -121,7 +121,7 @@
                                     <td class="td-text">Paid</td>
                                     <td class="td-text">
                                         <div class="action-buttons">
-                                            <button class="view-btn">Summary</button>
+                                            <button class="view-btn">View Slip</button>
                                         </div>
                                     </td>
                                 </tr>
@@ -134,7 +134,7 @@
                                     <td class="td-text">Paid</td>
                                     <td class="td-text">
                                         <div class="action-buttons">
-                                            <button class="view-btn">Summary</button>
+                                            <button class="view-btn">View Slip</button>
                                         </div>
                                     </td>
                                 </tr>
@@ -147,7 +147,7 @@
                                     <td class="td-text">Paid</td>
                                     <td class="td-text">
                                         <div class="action-buttons">
-                                            <button class="view-btn">Summary</button>
+                                            <button class="view-btn">View Slip</button>
                                         </div>
                                     </td>
                                 </tr>
@@ -160,7 +160,7 @@
                                     <td class="td-text">Paid</td>
                                     <td class="td-text">
                                         <div class="action-buttons">
-                                            <button class="view-btn">Summary</button>
+                                            <button class="view-btn">View Slip</button>
                                         </div>
                                     </td>
                                 </tr>
