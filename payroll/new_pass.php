@@ -13,7 +13,7 @@
 <body>
     <div class="login-container">
         <div class="login-box">
-        <a href="./index.php" class="title-tags"><span class="comp-name"><img src="./assets/title.png" class="title-name" alt="ExPense"></span></a>
+        <a href="./index.php" class="title-tags"><span class="comp-name"><img src="./assets/expense.png" class="title-name" alt="ExPense"></span></a>
             <p>To change your password, ensure it’s complex, containing a mix of uppercase letters, lowercase letters, numbers, and special characters.</p>
             <form action="#">
                 <label for="employee-id">Password:</label>

@@ -11,7 +11,7 @@
 <body>
     <div class="email-container">
         <div class="email-box">
-        <a href="./index.php" class="title-tags"><span class="comp-name"><img src="./assets/title.png" class="title-name" alt="ExPense"></span></a>
+        <a href="./index.php" class="title-tags"><span class="comp-name"><img src="./assets/expense.png" class="title-name" alt="ExPense"></span></a>
             <p>To change your password, enter your registered email, open your inbox to see the reset code sent to you, and follow the instructions to reset your password.</p>
         </div>
         <div class="form-box">

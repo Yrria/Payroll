@@ -13,7 +13,7 @@
 <body>
     <div class="login-container">
         <div class="login-box">
-        <a href="./index.php" class="title-tags"><span class="comp-name"><img src="./assets/title.png" class="title-name" alt="ExPense"></span></a>
+        <a href="./index.php" class="title-tags"><span class="comp-name"><img src="./assets/expense.png" class="title-name" alt="ExPense"></span></a>
             <p>Welcome to [Company Name]'s Payroll System! Easily manage your payroll, access pay slips, and keep track of your payment details all in one secure place. Log in with your employee ID and password to get started.</p>
             <form action="#">
                 <label for="employee-id">Employee ID:</label>

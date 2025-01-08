@@ -13,7 +13,7 @@
 <body>
     <div class="email-container">
         <div class="email-box">
-        <a href="./index.php" class="title-tags"><span class="comp-name"><img src="./assets/title.png" class="title-name" alt="ExPense"></span></a>
+        <a href="./index.php" class="title-tags"><span class="comp-name"><img src="./assets/expense.png" class="title-name" alt="ExPense"></span></a>
             <p>Enter the reset code sent to your email; it’s valid for 5 minutes, and you can reset your password only once within 24 hours.</p>
         </div>
         <div class="form-box">

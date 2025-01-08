@@ -36,7 +36,7 @@
         <!-- SIDENAV START -->
         <div class="logodetails">
             <a href="dashboard.php" class="logo">
-                <img src="../assets/logo.png" alt="logo">
+                <img src="../assets/logowhite-.png" alt="logo">
             </a>
         </div>
         <ul class="nav-links">
