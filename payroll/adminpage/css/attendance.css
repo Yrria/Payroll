@@ -80,7 +80,10 @@
     justify-content: flex-start;
     align-items: stretch;
     margin: 10px;
-    position: relative;
+    /* position: relative; */
+}
+.option-button {
+    margin-top: 100;
 }
 
 
@@ -121,8 +124,8 @@
 /* Style for dropdowns */
 .add-new-btn1 {
     position: absolute;
-    top: 20px;
-    right: 300px;
+    top: 360px;
+    right: 325px;
     padding: 8px 16px;
     cursor: pointer;
     border: none;
@@ -142,8 +145,8 @@
 
 .add-new-btn2 {
     position: absolute;
-    top: 20px;
-    right: 140px;
+    top: 360px;
+    right: 165px;
     padding: 8px 16px;
     cursor: pointer;
     border: none;
@@ -162,8 +165,8 @@
 
 .add-new-btn3 {
     position: absolute;
-    top: 20px;
-    right: 20px;
+    top: 360px;
+    right: 50px;
     padding: 8px 16px;
     cursor: pointer;
     border: none;

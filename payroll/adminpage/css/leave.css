@@ -283,7 +283,7 @@ textarea {
 .close {
   float: left;
   cursor: pointer;
-  padding-right: 100px;
+  /* padding-right: 100px; */
 }
 
 h2 {
