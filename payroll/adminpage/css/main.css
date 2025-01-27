@@ -1,0 +1,532 @@
+/* MAIN CONTENT */
+/* FOR PAGE LAYOUT ONLY */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+* {
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    margin: 0;
+    height: 100%;
+    background-color: #F6F7FA;
+}
+
+.main {
+    flex-grow: 1;
+    padding: 20px;
+    background-color: #F6F7FA;
+    margin-left: 200px;
+    /* transition: margin-left 0.2s; */
+    margin-top: 30px;
+}
+
+.minimized+.main {
+    margin-left: 60px;
+}
+
+.container {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+    justify-content: flex-start;
+    overflow-y: auto;
+}
+
+.head-title {
+    margin: 10px;
+}
+
+.main-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    min-height: 76vh;
+    margin-top: -20px;
+}
+
+.sub-content {
+    width: 100%;
+}
+
+h1 {
+    margin: 10px 0px 10px 0px;
+    font-weight: 520;
+}
+
+.breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.breadcrumb h5,
+.breadcrumb span {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 400;
+
+}
+
+.breadcrumb span {
+    color: gray;
+}
+
+.breadcrumb a {
+    text-decoration: none;
+    color: gray;
+}
+
+.breadcrumb a:hover {
+    color: black;
+}
+
+hr {
+    border: 0.5px, solid gray;
+    margin: 10px 0px 10px 0px;
+    ;
+
+}
+
+/* minimized or expand */
+#mainContent,
+.toggle-btn {
+    transition: margin-left 0.2s ease;
+}
+
+#mainContent {
+    margin-left: 200px;
+}
+
+#mainContent.shifted {
+    margin-left: 60px;
+}
+
+/* ------------------------------ END OF MAIN BODY ------------------------------ */
+
+
+
+/* SIDENAV */
+* {
+    font-family: 'Poppins', sans-serif;
+    padding: 0;
+}
+
+/* logo-image */
+.logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 90px;
+    font-size: 20px;
+}
+
+img {
+    height: 60px;
+}
+
+/* sidenav */
+.sidenav {
+    background-color: #20242C;
+    color: white;
+    width: 200px;
+    min-width: 60px;
+    transition: width 0.3s;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+    background: linear-gradient(180deg, #20242C, #343A40);
+    position: fixed;
+    top: 40px;
+    bottom: 0;
+    left: 0;
+    font-size: 16px;
+}
+
+/* minimized sidenav (.close) */
+.sidenav.close {
+    width: 60px;
+    transition: all 0.2s ease;
+}
+
+.sidenav.close .link-name {
+    display: none;
+
+}
+
+.sidenav.close .arrow {
+    display: none;
+}
+
+.sidenav img {
+    transition: all 0.2s ease;
+}
+
+.sidenav.close img {
+    /* for minimized image */
+    height: 35px;
+    transition: all 0.2s ease;
+}
+
+.sidenav .nav-links {
+    height: 100%;
+    overflow: auto;
+    margin-top: -8px;
+}
+
+.sidenav .nav-links {
+    overflow: visible;
+}
+
+.sidenav .nav-links::-webkit-scrollbar {
+    display: none;
+}
+
+.sidenav .nav-links li {
+    position: relative;
+    list-style: none;
+    transition: all 0.2s ease;
+}
+
+.sidenav .nav-links li:hover {
+    background: #0a0b0c;
+}
+
+.sidenav .nav-links li i {
+    height: 40px;
+    min-width: 50px;
+    text-align: center;
+    line-height: 35px;
+    color: #fff;
+    transition: all 0.2s ease;
+}
+
+.sidenav .nav-links li.showmenu i.arrow {
+    transform: rotate(-180deg);
+}
+
+.sidenav .nav-links li a {
+    text-decoration: none;
+    margin: 5px;
+}
+
+.link-name {
+    font-size: 15px;
+    font-weight: 400;
+    color: #fff;
+}
+
+li a {
+    display: flex;
+    align-items: center;
+}
+
+li a i {
+    font-size: 1em;
+}
+
+li a span.link-name {
+    font-size: 1em;
+    transition: all 0.2s ease;
+}
+
+li a i.indicators {
+    margin-left: auto;
+    font-size: 1em;
+}
+
+.sidenav .nav-links li .icon-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 40px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.sidenav .nav-links li .icon-link .indicator {
+    color: #fff;
+    margin-left: auto;
+}
+
+.sidenav .nav-links li .sub-menu {
+    padding: 5px 5px 6px 60px;
+    margin-top: -4px;
+    background: #20242C;
+    display: none;
+}
+
+.sidenav .nav-links li.showmenu .sub-menu {
+    display: block;
+}
+
+.sidenav .nav-links li .sub-menu a {
+    color: #fff;
+    font-size: 15px;
+    padding: 5px 0;
+    white-space: nowrap;
+    opacity: 0.6;
+    transition: all 0.2s ease;
+}
+
+.sidenav .nav-links li .sub-menu a:hover {
+    opacity: 1;
+}
+
+.sidenav.close .nav-links li .sub-menu {
+    position: absolute;
+    left: 100%;
+    top: -10px;
+    margin-top: 0;
+    padding: 5px 30px;
+    margin-top: 0;
+    border-radius: 0 6px 6px 0;
+    transition: all 0.2s ease;
+    opacity: 0;
+    display: block;
+    pointer-events: none;
+}
+
+.sidenav.close .nav-links li:hover .sub-menu {
+    top: 0;
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.sidenav .nav-links li .sub-menu .link-name {
+    font-size: 16px;
+    display: none;
+}
+
+.sidenav.close .nav-links li .sub-menu .link-name {
+    font-size: 16px;
+    display: block;
+}
+
+.sidenav .nav-links li .sub-menu.blank {
+    opacity: 1;
+    pointer-events: auto;
+    padding: 9px 20px 6px 16px;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.sidenav .nav-links li:hover .sub-menu.blank {
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+/* Disable hover effect for sub-menu li */
+.sidenav .nav-links li .sub-menu li:hover {
+    background: none;
+}
+
+/* ------------------------------ END OF SIDENAV ------------------------------ */
+
+
+
+/* header side */
+.header {
+    background-color: #AAC7D8;
+    color: black;
+    padding: 10px 5px;
+    text-align: center;
+    font-size: 24px;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 20px;
+    /* margin-left: -8px; */
+}
+
+.current-date-time {
+    font-size: 16px;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+}
+
+.header .toggle-btn {
+    color: black;
+    cursor: pointer;
+    font-size: 18px;
+    position: absolute;
+    left: 200px;
+}
+
+.toggle-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.profile-arrow {
+    font-size: 14px !important; /* Use !important to override inherited font-size */
+    transition: transform 0.2s ease; /* Smooth rotation */
+}
+
+/* Rotate arrow when 'active' class is added */
+.profile.active .profile-arrow {
+    transform: rotate(-180deg); /* Only rotate, no font-size change */
+}
+
+.menu-icon {
+    font-size: 23px;
+    transition: all 0.2s ease;
+}
+
+/* MENU-ICON MINIMIZED */
+.sidenav.close .header .toggle-btn .menu-icon {
+    transition: all 0.2s ease;
+    margin-left: -260px;
+}
+
+.comp-name {
+    /* margin-left: 40px; */
+    /* for image */
+    margin-left: 22px;
+    color: black;
+    text-decoration: none;
+    font-weight: 500;
+    transition: font-size 0.3s ease, margin-left 0.3s ease;
+    text-align: center;
+    display: inline-block;
+    /* for image only */
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* for image */
+.comp-name img {
+    transition: height 0.3s ease, margin-left 0.3s ease;
+}
+
+.title-tags {
+    text-decoration: none;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.title-name {
+    height: 20px;
+    transition: all 0.2s ease;
+    /* Transition for height and margin-left */
+}
+
+/* Profile styles */
+.profile {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* This centers the content horizontally */
+    gap: 5px;
+    font-size: 15px;
+    position: absolute;
+    right: 0;
+    padding: 5px 10px;
+    cursor: pointer;
+    text-align: center;
+    transition: background-color 0.3s, color 0.3s;
+    position: relative;
+    transform: translateX(-50%); /* This will center it horizontally */
+    max-width: 100px; 
+    height: 30px;
+    margin-right: -30px;
+}
+
+a {
+    text-decoration: none;
+}
+
+/* Profile icon hover effect */
+.profile i {
+    font-size: 23px;
+    line-height: 0.5;
+    transition: transform 0.3s;
+}
+
+.profile:hover {
+    background-color: #E0F7FA;
+    color: black;
+}
+
+.profile:hover i {
+    transform: scale(1.1);
+}
+
+.profile.active {
+    background-color: #E0F7FA;
+    color: black;
+}
+
+/* Dropdown styles */
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 40px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    list-style: none;
+    padding: 5px 0;
+    margin: 0;
+    border-radius: 5px;
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1);
+    min-width: 100%;
+    /* Matches the width of .profile */
+}
+
+.dropdown-menu.show {
+    display: block;
+}
+
+.dropdown-menu li {
+    display: block;
+    padding: 8px 0;
+    cursor: pointer;
+    color: #333;
+    font-size: medium;
+    transition: background-color 0.3s, color 0.3s;
+    width: 100%;
+    /* Ensures items span the dropdown width */
+    text-align: center;
+}
+
+.dropdown-menu li a {
+    text-decoration: none;
+    color: #333;
+    display: block;
+    width: 100%;
+    text-align: center;
+}
+
+/* Hover effect for dropdown items */
+.dropdown-menu li:hover {
+    background-color: #f1f1f1;
+    color: #007B83;
+}
+
+.dropdown-menu li a:hover {
+    color: #007B83;
+}
+
+/* When the sidenav is closed, only change the size of the title-name image in the header */
+.sidenav.close .header .title-tags .comp-name .title-name {
+    height: 7px;
+    transition: all 0.2s ease;
+    margin-left: -22px;
+}
+
+/* MENU-ICON MINIMIZED */
+.sidenav.close .header .toggle-btn .menu-icon {
+    transition: all 0.2s ease;
+    margin-left: -260px;
+}
+
+/* ------------------------------ END OF SIDENAV ------------------------------ */
