@@ -9,7 +9,7 @@
     font-size: 24px;
 }
 
-.content {
+.content-dashboard {
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: auto;

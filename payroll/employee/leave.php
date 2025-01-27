@@ -130,92 +130,98 @@
                         </div>
 
                         <!-- view leave approved-->
-                        <div class="info-container" id="approved">
-                            <h1>Leave Info</h1>
-                            <hr>
-                            <div class="info-box">
-                                <div class="info-grid">
-                                    <label for="">Leave Subject</label>
-                                    <input type="text" class="textbox" placeholder="Leave for Medical Concern" disabled>
-                                </div>
-                                <div class="info-grid">
-                                    <label for="">Status</label>
-                                    <input type="text" class="textbox" placeholder="Approved" disabled>
-                                </div>
-                                <div class="info-grid">
-                                    <label for="">Leave Date (MM/DD/YYYY)</label>
-                                    <input type="text" class="textbox" placeholder="12/25/2024" disabled>
-                                </div>
-                                <div class="info-grid">
-                                    <label for="">Leave Type</label>
-                                    <input type="text" class="textbox" placeholder="Sick Leave" disabled>
-                                </div>
-                                <div class="info-grid">
-                                    <label for="">Leave Message</label>
-                                    <textarea type="text" class="textbox" style="height: 200px;" placeholder="I regret to inform you that I am unable to come to work due to health issues. I am currently unwell and require time to recover. I kindly request sick leave from the given date." disabled></textarea>
-                                </div>
-                                <div class="info-grid">
-                                    <button class="button" onclick="approved()">Back</button>
+                        <div class="overlay" id="overlay1">
+                            <div class="info-container" id="approved">
+                                <h1>Leave Info</h1>
+                                <hr>
+                                <div class="info-box">
+                                    <div class="info-grid">
+                                        <label for="">Leave Subject</label>
+                                        <input type="text" class="textbox" placeholder="Leave for Medical Concern" disabled>
+                                    </div>
+                                    <div class="info-grid">
+                                        <label for="">Status</label>
+                                        <input type="text" class="textbox" placeholder="Approved" disabled>
+                                    </div>
+                                    <div class="info-grid">
+                                        <label for="">Leave Date (MM/DD/YYYY)</label>
+                                        <input type="text" class="textbox" placeholder="12/25/2024" disabled>
+                                    </div>
+                                    <div class="info-grid">
+                                        <label for="">Leave Type</label>
+                                        <input type="text" class="textbox" placeholder="Sick Leave" disabled>
+                                    </div>
+                                    <div class="info-grid">
+                                        <label for="">Leave Message</label>
+                                        <textarea type="text" class="textbox" style="height: 200px;" placeholder="I regret to inform you that I am unable to come to work due to health issues. I am currently unwell and require time to recover. I kindly request sick leave from the given date." disabled></textarea>
+                                    </div>
+                                    <div class="info-grid">
+                                        <button class="button" onclick="approved()">Back</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <!-- view leave declined -->
-                        <div class="info-container" id="declined">
-                            <h1>Leave Info</h1>
-                            <hr>
-                            <div class="info-box">
-                                <div class="info-grid">
-                                    <label for="">Leave Subject</label>
-                                    <input type="text" class="textbox" placeholder="Leave for Personal Needs" disabled>
-                                </div>
-                                <div class="info-grid">
-                                    <label for="">Status</label>
-                                    <input type="text" class="textbox" placeholder="Declined" disabled>
-                                </div>
-                                <div class="info-grid">
-                                    <label for="">Leave Date (MM/DD/YYYY)</label>
-                                    <input type="text" class="textbox" placeholder="01/19/2025" disabled>
-                                </div>
-                                <div class="info-grid">
-                                    <label for="">Leave Type</label>
-                                    <input type="text" class="textbox" placeholder="Annual Leave" disabled>
-                                </div>
-                                <div class="info-grid">
-                                    <label for="">Leave Message</label>
-                                    <textarea type="text" class="textbox" style="height: 200px;" placeholder="I am writing this request for an annual leave from the given date. During this time, I plan to travel, and I hope this period will be convenient for the team." disabled></textarea>
-                                </div>
-                                <div class="info-grid">
-                                    <button class="button" onclick="declined()">Back</button>
+                        <div class="overlay" id="overlay2">
+                            <div class="info-container" id="declined">
+                                <h1>Leave Info</h1>
+                                <hr>
+                                <div class="info-box">
+                                    <div class="info-grid">
+                                        <label for="">Leave Subject</label>
+                                        <input type="text" class="textbox" placeholder="Leave for Personal Needs" disabled>
+                                    </div>
+                                    <div class="info-grid">
+                                        <label for="">Status</label>
+                                        <input type="text" class="textbox" placeholder="Declined" disabled>
+                                    </div>
+                                    <div class="info-grid">
+                                        <label for="">Leave Date (MM/DD/YYYY)</label>
+                                        <input type="text" class="textbox" placeholder="01/19/2025" disabled>
+                                    </div>
+                                    <div class="info-grid">
+                                        <label for="">Leave Type</label>
+                                        <input type="text" class="textbox" placeholder="Annual Leave" disabled>
+                                    </div>
+                                    <div class="info-grid">
+                                        <label for="">Leave Message</label>
+                                        <textarea type="text" class="textbox" style="height: 200px;" placeholder="I am writing this request for an annual leave from the given date. During this time, I plan to travel, and I hope this period will be convenient for the team." disabled></textarea>
+                                    </div>
+                                    <div class="info-grid">
+                                        <button class="button" onclick="declined()">Back</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <!-- view leave pending -->
-                        <div class="info-container" id="pending">
-                            <h1>Leave Info</h1>
-                            <hr>
-                            <div class="info-box">
-                                <div class="info-grid">
-                                    <label for="">Leave Subject</label>
-                                    <input type="text" class="textbox" placeholder="Leave for Loved Ones Funeral" disabled>
-                                </div>
-                                <div class="info-grid">
-                                    <label for="">Status</label>
-                                    <input type="text" class="textbox" placeholder="Pending" disabled>
-                                </div>
-                                <div class="info-grid">
-                                    <label for="">Leave Date (MM/DD/YYYY)</label>
-                                    <input type="text" class="textbox" placeholder="02/14/2025" disabled>
-                                </div>
-                                <div class="info-grid">
-                                    <label for="">Leave Type</label>
-                                    <input type="text" class="textbox" placeholder="Bereavement Leave" disabled>
-                                </div>
-                                <div class="info-grid">
-                                    <label for="">Leave Message</label>
-                                    <textarea type="text" class="textbox" style="height: 200px;" placeholder="I regret to inform you that I am suffering from the loss of my cousin, who passed away on 02/07/2025. This is a deeply challenging time for me and my family, and I kindly request bereavement leave from the requested date to grieve and make necessary arrangements." disabled></textarea>
-                                </div>
-                                <div class="info-grid">
-                                    <button class="button" onclick="pending()">Back</button>
+                        <div class="overlay" id="overlay3">
+                            <div class="info-container" id="pending">
+                                <h1>Leave Info</h1>
+                                <hr>
+                                <div class="info-box">
+                                    <div class="info-grid">
+                                        <label for="">Leave Subject</label>
+                                        <input type="text" class="textbox" placeholder="Leave for Loved Ones Funeral" disabled>
+                                    </div>
+                                    <div class="info-grid">
+                                        <label for="">Status</label>
+                                        <input type="text" class="textbox" placeholder="Pending" disabled>
+                                    </div>
+                                    <div class="info-grid">
+                                        <label for="">Leave Date (MM/DD/YYYY)</label>
+                                        <input type="text" class="textbox" placeholder="02/14/2025" disabled>
+                                    </div>
+                                    <div class="info-grid">
+                                        <label for="">Leave Type</label>
+                                        <input type="text" class="textbox" placeholder="Bereavement Leave" disabled>
+                                    </div>
+                                    <div class="info-grid">
+                                        <label for="">Leave Message</label>
+                                        <textarea type="text" class="textbox" style="height: 200px;" placeholder="I regret to inform you that I am suffering from the loss of my cousin, who passed away on 02/07/2025. This is a deeply challenging time for me and my family, and I kindly request bereavement leave from the requested date to grieve and make necessary arrangements." disabled></textarea>
+                                    </div>
+                                    <div class="info-grid">
+                                        <button class="button" onclick="pending()">Back</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>

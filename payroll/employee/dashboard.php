@@ -23,7 +23,7 @@
 
                 <div class="main-content">
                     <div class="sub-content">
-                        <div class="content">
+                        <div class="content-dashboard">
                             <!-- Separate boxes for statistics -->
                             <div class="card active-employees" style="margin-top: 130px;">
                                 <div class="info">
