@@ -1,0 +1,342 @@
+/* REPORT_LEAVE CONTEN T */
+
+
+.selection_div {
+    margin: 50px 10px 10px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: auto;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 1px 0px 5px rgba(0, 0, 0, 0.3);
+    background-color: #fff;
+}
+
+/* SEARCH BAR */
+.search {
+    display: flex;
+    justify-content: space-between;
+    /* Align h3 to the left and search-bar to the right */
+    align-items: center;
+    /* Vertically align items in the container */
+    border-radius: 3px;
+
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+input[type="text"] {
+    padding: 2px;
+    font-size: 16px;
+    margin-right: 80px;
+    border-radius: 5px;
+}
+
+.search-btn {
+    background-color: blue;
+    color: #fff;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+.search-btn:hover {
+    background-color: darkblue;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    margin: 10px;
+    box-shadow: 0px 0px 5px #ccc;
+}
+
+/* Dropdown Container */
+.dropdown {
+    width: 200px;
+    position: relative;
+    /* Needed for absolute positioning of content */
+}
+
+/* Dropdown Input */
+.dropdown-input {
+    width: 75%;
+    padding: 6px 10px;
+    border: 1px solid #aaaaaa6c;
+    border-radius: 5px;
+    outline: none;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+
+.dropdown-input:hover {
+    color: #7DA0CA;
+    transition: all 0.3s ease-in-out;
+    /* Smooth animation */
+}
+
+.dropdown-input:focus {
+    color: #fff;
+    background-color: #AAC7D8;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.13);
+
+}
+
+/* Dropdown Indicator */
+.dropdown-indicator {
+    font-size: 27px;
+    position: absolute;
+    right: 55px;
+    transition: transform 0.3s ease;
+    /* Smooth rotation animation */
+    cursor: pointer;
+}
+
+.dropdown-indicator.rotated {
+    transform: rotate(180deg);
+    /* Flip the arrow */
+}
+
+/* Dropdown Content */
+.dropdown-content {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 75%;
+    /* Match input width */
+    background-color: #fff;
+    border: 1px solid #ddd;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    /* Ensure it stays on top */
+    border-radius: 5px;
+    overflow-y: auto;
+    max-height: 150px;
+    opacity: 0;
+    transform: scaleY(0);
+    transform-origin: top;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    /* Smooth transition */
+    pointer-events: none;
+    /* Prevent clicks when hidden */
+}
+
+.dropdown-content.show {
+    opacity: 1;
+    transform: scaleY(1);
+    /* Expand dropdown */
+    pointer-events: auto;
+    /* Enable clicks */
+}
+
+
+.dropdown-content .dropdown-item {
+    padding: 5px 5px;
+    cursor: pointer;
+}
+
+.dropdown-content .dropdown-item:hover {
+    background-color: #AAC7D8;
+    transition: all 0.2s ease-in-out;
+    /* Smooth animation */
+}
+
+.controls {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+
+.date-range label {
+    margin-right: 10px;
+}
+
+.pagination {
+    display: flex;
+    align-items: center;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+table th,
+table td {
+    vertical-align: middle;
+    text-align: center;
+    border: 1px solid #ddd;
+    padding: 5px;
+    /* text-align: left; */
+    white-space: nowrap;
+    /* Prevents text wrapping */
+    overflow: hidden;
+    /* Ensures overflow is hidden */
+    text-overflow: ellipsis;
+    /* Shows ellipsis when text overflows */
+    max-width: 25px;
+    /* Set max width for the cell */
+    width: 5ch;
+    /* Sets a fixed width for the cell */
+    font-size: 14px;
+}
+
+.td-text {
+    white-space: nowrap;
+    /* Prevents text wrapping */
+    overflow: hidden;
+    /* Ensures overflow is hidden */
+    text-overflow: ellipsis;
+    /* Shows ellipsis when text overflows */
+    max-width: 50px;
+    /* Set max width for the cell */
+}
+
+.action-buttons {
+    display: flex;
+    /* Enables flexbox */
+    justify-content: center;
+    /* Centers the button horizontally */
+    align-items: center;
+    /* Centers the button vertically */
+    height: 70%;
+    /* Matches the height of the table cell */
+    width: 100%;
+    /* Matches the width of the table cell */
+    gap: 5px;
+}
+
+table th {
+    background-color: white;
+    color: black;
+}
+
+table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+table tr:hover {
+    background-color: #f1f1f1;
+}
+
+.status-approved {
+    color: green;
+    font-weight: bold;
+}
+
+.status-declined {
+    color: red;
+    font-weight: bold;
+}
+
+.status-pending {
+    color: #f39c12;
+    font-weight: bold;
+}
+
+h3 {
+    color: #5f5f5f;
+    font-weight: 520;
+}
+
+.view-btn {
+    background-color: blue;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: smaller;
+}
+
+.view-btn1 {
+    background-color: green;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: smaller;
+}
+
+.view-btn2 {
+    background-color: red;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: smaller;
+}
+
+.view-btn:hover {
+    background-color: darkblue;
+}
+
+.view-btn1:hover {
+    background-color: darkgreen;
+}
+
+.view-btn2:hover {
+    background-color: darkred;
+}
+
+/* Pagination */
+.pagination {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.pagination button {
+    margin-left: -60px;
+    margin-right: 10px;
+    padding: 2px 10px;
+    border: none;
+    background-color: black;
+    color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.pagination button:hover {
+    background-color: gray;
+}
+
+.pagination input {
+    width: 40px;
+    text-align: center;
+}
+
+.admin-icon {
+    font-size: 14px;
+    color: black;
+    font-weight: bold;
+}
+
+.pagination {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    align-items: center;
+    font-size: 14px;
+    color: #666;
+}
+
+.perpage {
+    outline: none;
+    border: none;
+}
+
+

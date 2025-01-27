@@ -1,0 +1,407 @@
+.selection_div {
+    margin: 50px 10px 10px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: auto;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 1px 0px 5px rgba(0, 0, 0, 0.3);
+    background-color: #fff;
+}
+
+/* Styling for the selection container */
+.selection_div {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    margin: 10px;
+    box-shadow: 0px 0px 5px #ccc;
+    overflow-x: auto;
+    /* Allows horizontal scrolling if content overflows */
+}
+
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+    /* Enables horizontal scrolling for tables */
+    margin-top: 20px;
+}
+
+
+.label {
+    margin: 0;
+    font-weight: 500;
+}
+
+.main-content {
+    width: 100%;
+}
+
+/* SEARCH BAR */
+.search {
+    display: flex;
+    justify-content: space-between;
+    /* Align h3 to the left and search-bar to the right */
+    align-items: center;
+    /* Vertically align items in the container */
+    border-radius: 3px;
+
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+input[type="text"] {
+    padding: 2px;
+    font-size: 16px;
+    margin-right: 80px;
+    border-radius: 5px;
+}
+
+.search-btn {
+    background-color: blue;
+    color: #fff;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+.search-btn:hover {
+    background-color: darkblue;
+}
+
+/* Responsive styling */
+@media (max-width: 768px) {
+    .selection_div {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+
+
+table {
+    width: 100%;
+    /* Ensures the table stretches to fit the container */
+    border-collapse: collapse;
+    margin-top: 10px;
+    table-layout: fixed;
+    /* Prevents uneven column widths */
+}
+
+table th,
+table td {
+    vertical-align: middle;
+    text-align: center;
+    border: 1px solid #ddd;
+    padding: 8px;
+    white-space: nowrap;
+    /* Prevents text wrapping */
+    overflow: hidden;
+    /* Ensures overflow is hidden */
+    text-overflow: ellipsis;
+    /* Adds ellipsis for overflowing text */
+}
+
+table th {
+    background-color: #f8f8f8;
+    color: #333;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+table tr:hover {
+    background-color: #f1f1f1;
+}
+
+.view-btn {
+    background-color: #007bff;
+    color: #fff;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.view-btn:hover {
+    background-color: #0056b3;
+}
+
+.pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    margin-top: 20px;
+    color: #666;
+    flex-wrap: wrap;
+    /* Ensures pagination adjusts for small screens */
+}
+
+.pagination p {
+    margin: 0;
+}
+
+.pagination button {
+    margin: 5px;
+    padding: 5px 10px;
+    border: none;
+    background-color: #333;
+    color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.pagination button:hover {
+    background-color: #555;
+}
+
+.pagination input {
+    width: 40px;
+    text-align: center;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin: 5px;
+    outline: none;
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 10% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    border-radius: 8px;
+}
+
+.close-btn {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close-btn:hover,
+.close-btn:focus {
+    color: black;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.search-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.search-box {
+    width: 50%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.search-btn {
+    padding: 8px 16px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.search-btn:hover {
+    background-color: #0056b3;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+table,
+th,
+td {
+    border: 1px solid #ddd;
+}
+
+th,
+td {
+    padding: 8px;
+    text-align: left;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.back-btn {
+    padding: 8px 16px;
+    border: none;
+    background-color: #dc3545;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.back-btn:hover {
+    background-color: #a71d2a;
+}
+
+.pagination {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    align-items: center;
+    font-size: 14px;
+    color: #666;
+}
+
+.perpage {
+    outline: none;
+    border: none;
+}
+
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    /* Space between the title and year */
+    align-items: center;
+    /* Vertically center them */
+    width: 100%;
+    /* Ensure the header takes the full width */
+}
+
+.title {
+    margin: 0;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.year {
+    margin: 0;
+    font-size: 20px;
+    font-weight: bold;
+    text-align: right;
+    /* Align the year to the right */
+}
+
+/* Styling for Employee Information */
+.employee-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.employee-info span {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+/* Styling for Employee Stats */
+.employee-stats {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+
+.stat {
+    flex: 1 1 45%; /* Flex grow, shrink, basis */
+    margin-bottom: 10px; /* Space between rows */
+    font-size: 16px;
+}
+
+.stat span {
+    display: block; /* Ensures the content is aligned properly */
+}
+
+/* Optional: Adjust the layout for smaller screens */
+@media (max-width: 768px) {
+    .stat {
+        flex: 1 1 100%; /* Stacks the items on smaller screens */
+    }
+}
+
+/* Table styling */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+table th,
+table td {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    text-align: center;
+    font-size: 14px;
+}
+
+table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+/* Total Row with black background */
+.total-row {
+    background-color: black;
+    color: white;
+    font-weight: bold;
+}
+.total-row:hover{
+    background-color: black;
+}
+
+/* Adjusting the HR for spacing */
+hr {
+    margin: 10px 0;
+}
