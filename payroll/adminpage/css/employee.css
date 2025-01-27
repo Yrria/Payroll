@@ -74,7 +74,7 @@ input.department-count-box {
     justify-content: flex-start;
     align-items: stretch;
     margin: 10px;
-    position: relative;
+    /* position: relative; */
 }
 
 
@@ -118,8 +118,8 @@ input.department-count-box {
 
 .add-new-btn {
     position: absolute;
-    right: 20px;
-    top: 20px;
+    right: 50px;
+    top: 430px;
     padding: 8px 16px;
     cursor: pointer;
     border: none;

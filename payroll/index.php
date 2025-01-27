@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Login</title>
-    <link rel="shortcut icon" href="./assets/logo.png" type="image/svg+xml">
+    <link rel="shortcut icon" href="./assets/logowhite-.png" type="image/svg+xml">
     <link rel="stylesheet" href="./assets//css/login.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
@@ -13,7 +13,7 @@
 <body>
     <div class="login-container">
         <div class="login-box">
-        <a href="./index.php" class="title-tags"><span class="comp-name"><img src="./assets/title.png" class="title-name" alt="ExPense"></span></a>
+        <a href="./index.php" class="title-tags"><span class="comp-name"><img src="./assets/expense.png" class="title-name" alt="ExPense"></span></a>
             <p>Welcome to [Company Name]'s Payroll System! Easily manage your payroll, access pay slips, and keep track of your payment details all in one secure place. Log in with your employee ID and password to get started.</p>
             <form action="#">
                 <label for="employee-id">Employee ID:</label>

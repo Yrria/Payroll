@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reset Password</title>
-    <link rel="shortcut icon" href="./assets/logo.png" type="image/svg+xml">
+    <link rel="shortcut icon" href="./assets/logowhite-.png" type="image/svg+xml">
     <link rel="stylesheet" href="./assets/css/otp.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
@@ -13,7 +13,7 @@
 <body>
     <div class="email-container">
         <div class="email-box">
-        <a href="./index.php" class="title-tags"><span class="comp-name"><img src="./assets/title.png" class="title-name" alt="ExPense"></span></a>
+        <a href="./index.php" class="title-tags"><span class="comp-name"><img src="./assets/expense.png" class="title-name" alt="ExPense"></span></a>
             <p>Enter the reset code sent to your email; it’s valid for 5 minutes, and you can reset your password only once within 24 hours.</p>
         </div>
         <div class="form-box">

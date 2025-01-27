@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" href="../assets/logo.png" type="image/svg+xml">
+    <link rel="shortcut icon" href="../assets/logowhite-.png" type="image/svg+xml">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="./css/view_slips.css">
@@ -41,7 +41,7 @@
                     <tr>
                         <td> 
                             <div style="display:flex; align-items:center;">
-                                <img src="../assets/logo.png" alt="logo" style="height:40px; margin-right:2%;"><img src="../assets/title.png" alt="ExPense" style="height:15px;">
+                                <img src="../assets/logoblack-.png" alt="logo" style="height:40px; margin-right:2%;"><img src="../assets/title.png" alt="ExPense" style="height:15px;">
                             </div>
                         </td>
                         <td style="text-align:right;">Payslip No: 023123</td>

@@ -20,7 +20,7 @@
                 <span id="current-date"></span> - <span id="current-time"></span>
             </span>
             <div class="profile" onclick="toggleDropdown()">
-                <i class="bi bi-person-circle profile-icon"></i> <span class="user-name">Emp0001</span>
+                <i class="bi bi-person-circle profile-icon"></i> <span class="user-name">Emp0001</span><i class="bi bi-caret-down-fill profile-arrow"></i>
                 <!-- Dropdown Menu -->
                 <ul class="dropdown-menu">
                     <a href="./profile.php">
@@ -36,7 +36,7 @@
         <!-- SIDENAV START -->
         <div class="logodetails">
             <a href="dashboard.php" class="logo">
-                <img src="../assets/logo.png" alt="logo">
+                <img src="../assets/logowhite-.png" alt="logo">
             </a>
         </div>
         <ul class="nav-links">

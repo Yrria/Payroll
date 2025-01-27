@@ -11,8 +11,8 @@ ITEC 80A - Simple Project
 * Admin manage employee salary.
 * Login two types of account (Admin and Employee) | Auto filter login.
 * Forgot Password with OTP / recovery code sent through email.
-* Export PDF files for Reports aswell as list of alumni, etc.
-* Integrated system - Mailer and E-wallet donation (API).
+* Export PDF files for Reports as well as list of employee, etc.
+* Integrated system - Mailer (API).
 
 ## Help And Guide ( Git Commands )
 

@@ -365,6 +365,16 @@ li a i.indicators {
     cursor: pointer;
 }
 
+.profile-arrow {
+    font-size: 14px !important; /* Use !important to override inherited font-size */
+    transition: transform 0.2s ease; /* Smooth rotation */
+}
+
+/* Rotate arrow when 'active' class is added */
+.profile.active .profile-arrow {
+    transform: rotate(-180deg); /* Only rotate, no font-size change */
+}
+
 .menu-icon {
     font-size: 23px;
     transition: all 0.2s ease;
