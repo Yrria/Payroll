@@ -9,7 +9,7 @@
     font-size: 24px;
 }
 
-.content {
+.content-dashboard {
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: auto;
@@ -117,7 +117,7 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     padding: 16px;
     max-width: 400px;
-    /* margin: 20px auto; */
+    margin: 20px auto;
 }
 
 .Event-header {
@@ -148,7 +148,6 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    
 }
 
 .event-item:first-child {
@@ -423,8 +422,7 @@
     flex-direction: column;
     justify-content: flex-start;
     align-items: stretch;
-    margin-left: 10px;
-    margin-right: 10px;
+    margin: 10px;
     position: relative;
 }
 

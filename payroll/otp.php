@@ -1,3 +1,10 @@
+<?php
+session_start();
+
+include './assets/databse/connection.php';
+include './assets/databse/withIndexSession.php';
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 

@@ -1,3 +1,9 @@
+<?php
+session_start();
+include '../assets/databse/connection.php';
+include './database/session.php';
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 

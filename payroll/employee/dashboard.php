@@ -1,3 +1,9 @@
+<?php
+session_start();
+include '../assets/databse/connection.php';
+include './database/session.php';
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -23,7 +29,7 @@
 
                 <div class="main-content">
                     <div class="sub-content">
-                        <div class="content">
+                        <div class="content-dashboard">
                             <!-- Separate boxes for statistics -->
                             <div class="card active-employees" style="margin-top: 130px;">
                                 <div class="info">
@@ -41,13 +47,13 @@
                                 </div>
                             </div>
 
-                            <!-- <div class="card remaining-leaves" style="margin-top: 130px;">
+                            <div class="card remaining-leaves" style="margin-top: 130px;">
                                 <div class="info">
                                     <p>Remaining Leaves</p>
                                     <hr>
                                     <h2>14</h2>
                                 </div>
-                            </div> -->
+                            </div>
 
 
                             <!-- Upcoming Holidays and Event Section -->
@@ -159,6 +165,7 @@
                                         <h5>Pending Approval</h5>
                                     </div>
                                 </div>
+                                <button id="view-all-btn" class="view-all-btn">Apply Leave</button>
                             </div>
                         </div>
                     </div>

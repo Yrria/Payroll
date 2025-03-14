@@ -1,16 +1,8 @@
 <?php
 session_start();
 
-$servername = "localhost";
-$username = "root";
-$password = "";
-$database = "payroll";
-
-$conn = new mysqli($servername, $username, $password, $database);
-
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+include './assets/databse/connection.php';
+include './assets/databse/withIndexSession.php';
 
 function sendOTP($email) {
     global $conn;

@@ -112,6 +112,16 @@ textarea {
 }
 
 /* css for viewing leave */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: -1;
+}
+
 .info-container {
     position: absolute;
     top: 50%;
@@ -123,7 +133,6 @@ textarea {
     background-color: #F6F7FA;
     padding: 20px 20px;
     width: 70%;
-    border: 1px solid #888888;
 }
 
 .info-box{

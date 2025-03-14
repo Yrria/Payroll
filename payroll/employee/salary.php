@@ -1,3 +1,9 @@
+<?php
+session_start();
+include '../assets/databse/connection.php';
+include './database/session.php';
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -41,7 +47,7 @@
                                 <td>₱10,000</td>
                                 <td>₱20,000</td>
                                 <td>
-                                    <button>Cut Off 1</button>
+                                    <button onclick="show()">Cut Off 1</button>
                                     <button>Cut Off 2</button>
                                 </td>
                             </tr>
@@ -164,12 +170,69 @@
                             </tr>
                         </table>
                     </div>
+                    <div class="overlay" id="overlay">
+                        <div class="info-container">
+                            <h2>More Info</h2>
+                            <hr>
+                            <div class="con">
+                                <div class="info-grid">
+                                    <img src="" alt="">
+                                    <h1>Michael Tan</h1>
+                                </div>
+                                <div class="info-grid">
+                                    <p>Cut Off 1 - 2024</p>
+                                </div>
+                                <div class="info-grid">
+                                    <p><strong>Avg Daily Hours:</strong>       4hrs 5m</p>
+                                </div>
+                                <div class="info-grid">
+                                    <p><strong>Pay Type:</strong>                 Hourly</p>
+                                </div>
+                                <div class="info-grid">
+                                    <p><strong>Total Regular Hours Worked:</strong>                       1820hrs</p>
+                                </div>
+                                <div class="info-grid">
+                                    <p><strong>Rate:</strong>                       ₱67/hr</p>
+                                </div>
+                                <div class="info-grid">
+                                    <p><strong>Total Overtime Hours Worked:</strong>                  387hrs</p>
+                                </div>
+                                <div class="info-grid">
+                                    <p><strong>Total Wage:</strong>                           ₱13,244</p>
+                                </div>
+                                <div class="info-grid">
+                                    <table>
+                                        <tr>
+                                            <th>Month</th>
+                                            <th>Regular Hours</th>
+                                            <th>Overtime Hours</th>
+                                            <th>Total Worked Hours</th>
+                                            <th>Total Wage</th>
+                                        </tr>
+                                        <tr>
+                                            <td>January</td>
+                                            <td>159h 33m</td>
+                                            <td>9h 35m</td>
+                                            <td>168h 58m</td>
+                                            <td>₱10,080</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="info-grid">
+                                    <button class="btn">Pay Slip</button>
+                                    <button class="btn">More Info</button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
             </div>
         </div>
     </div>
     <!-- SCRIPT -->
     <script src="./javascript/main.js"></script>
+    <script src="./javascript/salary.js"></script>
 </body>
 
 </html>

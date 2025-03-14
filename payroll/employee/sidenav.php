@@ -20,13 +20,13 @@
                 <span id="current-date"></span> - <span id="current-time"></span>
             </span>
             <div class="profile" onclick="toggleDropdown()">
-                <i class="bi bi-person-circle profile-icon"></i> <span class="user-name">Emp0001</span><i class="bi bi-caret-down-fill profile-arrow"></i>
+                <i class="bi bi-person-circle profile-icon"></i> <span class="user-name"><?php echo $user['fname']; ?></span><i class="bi bi-caret-down-fill profile-arrow"></i>
                 <!-- Dropdown Menu -->
                 <ul class="dropdown-menu">
                     <a href="./profile.php">
                         <li><span>Profile</span></li>
                     </a>
-                    <a href="../index.php">
+                    <a href="../assets/databse/logout.php">
                         <li><span>Logout</span></li>
                     </a>
                 </ul>
