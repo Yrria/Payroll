@@ -2,6 +2,47 @@
 session_start();
 include '../assets/databse/connection.php';
 include './database/session.php';
+
+// Fetch total number of records from report_leave table
+$query_count = "SELECT COUNT(*) AS total FROM report_leave";
+$result_count = mysqli_query($conn, $query_count);
+$row_count = mysqli_fetch_assoc($result_count);
+$total_records = $row_count['total'];
+
+$limit = 10; // Number of records per page
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$offset = ($page - 1) * $limit;
+
+// Handle search and date filters
+$search = "";
+$from_date = "";
+$to_date = "";
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if (isset($_POST['search'])) {
+        $search = trim($_POST['search']);
+    }
+    if (isset($_POST['from_date'])) {
+        $from_date = $_POST['from_date'];
+    }
+    if (isset($_POST['to_date'])) {
+        $to_date = $_POST['to_date'];
+    }
+}
+
+// Build query dynamically based on filters
+$query = "SELECT emp_id, subject, name, leave_type, date_filed, no_of_leave, remaining_leave, total_leave 
+          FROM report_leave 
+          WHERE (emp_id LIKE '%$search%' OR name LIKE '%$search%')";
+
+if (!empty($from_date) && !empty($to_date)) {
+    $query .= " AND date_filed BETWEEN '$from_date' AND '$to_date'";
+}
+
+$query .= " LIMIT $limit OFFSET $offset"; // Apply pagination
+$result = mysqli_query($conn, $query);
+
+$total_pages = ceil($total_records / $limit);
 ?>
 
 <!DOCTYPE html>
@@ -36,8 +77,10 @@ include './database/session.php';
                         <p style="margin: 0;font-weight: 500;">Leave Report</p>
                         <div style="display: flex;align-items: center;width:60%;justify-content:right;margin-right:-4%;">
                             <div class="search-bar">
-                                <button class="search-btn">Search</button>
-                                <input type="text" placeholder="Search employee..." />
+                                <form method="POST" style="display: flex; align-items: center;">
+                                    <button class="search-btn">Search</button>
+                                    <input type="text" name="search" placeholder="Search employee..." value="<?php echo htmlspecialchars($search); ?>" />
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -46,19 +89,19 @@ include './database/session.php';
                             <label for="show-entries">Show
                                 <select id="show-entries">
                                     <option value="10">10</option>
-                                    <option value="25">25</option>
-                                    <option value="50">50</option>
-                                    <option value="100">100</option>
                                 </select>
                                 entries
                             </label>
                             <div class="date-range">
-                                <label for="from-date">From:
-                                    <input type="date" id="from-date" />
-                                </label>
-                                <label for="to-date">To:
-                                    <input type="date" id="to-date" />
-                                </label>
+                                <form method="POST" style="display: flex; align-items: center;">
+                                    <label for="from-date">From:
+                                        <input type="date" id="from-date" name="from_date" value="<?php echo $from_date; ?>" />
+                                    </label>
+                                    <label for="to-date">To:
+                                        <input type="date" id="to-date" name="to_date" value="<?php echo $to_date; ?>" />
+                                    </label>
+                                    <button class="search-btn">Search</button>
+                                </form>
                             </div>
                         </div>
                         <table>
@@ -68,87 +111,68 @@ include './database/session.php';
                                     <th>Subject</th>
                                     <th>Name</th>
                                     <th>Leave Type</th>
+                                    <th>Date Filed</th>
                                     <th>No. Of Leave</th>
                                     <th>Remaining Leave</th>
-                                    <th>Total Leaves</th>
+                                    <th>Total Leave</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>001</td>
-                                    <td>Manager</td>
-                                    <td>Willy Wonka</td>
-                                    <td>Emergency Leave</td>
-                                    <td>08</td>
-                                    <td>20</td>
-                                    <td>20</td>
-                                </tr>
-                                <tr>
-                                    <td>002</td>
-                                    <td>Crew</td>
-                                    <td>Ken Flerlage</td>
-                                    <td>Annual Leave</td>
-                                    <td>08</td>
-                                    <td>20</td>
-                                    <td>20</td>
-                                </tr>
-                                <tr>
-                                    <td>003</td>
-                                    <td>Crew</td>
-                                    <td>George Orwell</td>
-                                    <td>Bereavement Leave</td>
-                                    <td>08</td>
-                                    <td>20</td>
-                                    <td>20</td>
-                                </tr>
-                                <tr>
-                                    <td>004</td>
-                                    <td>Crew</td>
-                                    <td>Natalie Maines</td>
-                                    <td>Maternity Leave</td>
-                                    <td>08</td>
-                                    <td>20</td>
-                                    <td>20</td>
-                                </tr>
-                                <tr>
-                                    <td>005</td>
-                                    <td>Crew</td>
-                                    <td>Hellen Mirren</td>
-                                    <td>Vacation Leave</td>
-                                    <td>20</td>
-                                    <td>20</td>
-                                    <td>20</td>
-                                </tr>
+                                <?php
+                                if (mysqli_num_rows($result) > 0) {
+                                    while ($row = mysqli_fetch_assoc($result)) {
+                                        $formatted_date = date("F-d-Y", strtotime($row['date_filed']));
+                                        echo "<tr>
+                                                <td>" . htmlspecialchars($row['emp_id']) . "</td>
+                                                <td>" . htmlspecialchars($row['subject']) . "</td>
+                                                <td>" . htmlspecialchars($row['name']) . "</td>
+                                                <td>" . htmlspecialchars($row['leave_type']) . "</td>
+                                                <td>" . htmlspecialchars($formatted_date) . "</td>
+                                                <td>" . htmlspecialchars($row['no_of_leave']) . "</td>
+                                                <td>" . htmlspecialchars($row['remaining_leave']) . "</td>
+                                                <td>" . htmlspecialchars($row['total_leave']) . "</td>
+                                              </tr>";
+                                    }
+                                } else {
+                                    echo "<tr><td colspan='8' style='text-align: center;'>No records found</td></tr>";
+                                }
+                                ?>
                             </tbody>
                         </table>
                         <br>
                         <!-- Pagination -->
                         <div class="pagination">
-                            <p>Showing 1 / 100 Results</p>
+                            <p>Showing <?php echo min($limit, $total_records - $offset); ?> / <?php echo $total_records; ?> Results</p>
                             <div class="pagination">
-                                <button>Prev</button>
-                                <input type="text" class="perpage" value="1" readonly />
-                                <button>Next</button>
+                                <button id="prevPage" <?php echo ($page <= 1) ? 'disabled' : ''; ?>>Prev</button>
+                                <input type="text" class="perpage" value="<?php echo $page; ?>" readonly />
+                                <button id="nextPage" <?php echo ($page >= $total_pages) ? 'disabled' : ''; ?>>Next</button>
                             </div>
                         </div>
                     </div>
                 </div>
-                <!-- <p>This is a simple responsive page with a header and a side navigation bar that can be minimized.</p>
-                    <br>
-                    <p>This is a simple responsive page with a header and a side navigation bar that can be minimized.</p>
-                    <br>
-                    <p>This is a simple responsive page with a header and a side navigation bar that can be minimized.</p>
-                    <br>
-                    <p>This is a simple responsive page with a header and a side navigation bar that can be minimized.</p>
-                    <br>
-                    <p>This is a simple responsive page with a header and a side navigation bar that can be minimized.</p> -->
             </div>
         </div>
     </div>
-    </div>
-    </div>
-    <!-- SCRIPT -->
-    <script src="./javascript/main.js"></script>
+
+    <!-- JavaScript for Pagination -->
+    <script>
+        document.getElementById("prevPage").addEventListener("click", function() {
+            let currentPage = <?php echo $page; ?>;
+            if (currentPage > 1) {
+                window.location.href = "?page=" + (currentPage - 1);
+            }
+        });
+
+        document.getElementById("nextPage").addEventListener("click", function() {
+            let currentPage = <?php echo $page; ?>;
+            let totalPages = <?php echo $total_pages; ?>;
+            if (currentPage < totalPages) {
+                window.location.href = "?page=" + (currentPage + 1);
+            }
+        });
+    </script>
+
 </body>
 
 </html>
