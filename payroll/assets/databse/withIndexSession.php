@@ -27,10 +27,5 @@ if (isset($_SESSION['user_id'])) {
         exit();
     }
     $stmt->close();
-} else {
-    // Redirect to login if no matching user found
-    session_destroy();
-    header('Location: index.php');
-    exit();
 }
 ?>
