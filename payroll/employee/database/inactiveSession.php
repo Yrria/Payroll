@@ -25,15 +25,10 @@ if (isset($_SESSION['user_id'])) {
     if ($user_result->num_rows > 0) {
         // employee user
         $row = $user_result->fetch_assoc();
+        $user = $row;
 
         if ($row['status'] == "active") {
-            $user = $row;
-        } else {
-
-            $_SESSION['email'] = $account_email;
-            $_SESSION['alert'] = 'inactive';
-            sleep(2);
-            header('Location: inactive.php');
+            header('Location: dashboard.php');
             exit();
         }
     }
@@ -44,4 +39,3 @@ if (isset($_SESSION['user_id'])) {
     header('Location: ../index.php');
     exit();
 }
-?>

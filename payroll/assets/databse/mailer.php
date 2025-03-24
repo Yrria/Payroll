@@ -91,7 +91,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['email']) && isset($_PO
     $icon = 'error';
     $iconHtml = '<i class=\"fas fa-exclamation-circle\"></i>';
     $title = 'The email you input does not exist!';
-    $text = 'Please create an account first or try again.';
+    $text = 'Please try again.';
 
     echo "<script>
               document.addEventListener('DOMContentLoaded', function() {

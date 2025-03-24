@@ -3,6 +3,16 @@ session_start();
 
 include './assets/databse/connection.php';
 include './assets/databse/withIndexSession.php';
+
+$email = $_SESSION['email'];
+if ($email == 0) {
+  header('Location: index.php');
+  exit();
+}
+
+
+
+
 ?>
 
 <!DOCTYPE html>
