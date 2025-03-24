@@ -2,6 +2,51 @@
 session_start();
 include '../assets/databse/connection.php';
 include './database/session.php';
+
+$records_per_page = 10; // Number of records to display per page
+$current_page = isset($_GET['page']) ? $_GET['page'] : 1; // Get current page number, default to 1
+
+// Calculate the limit clause for SQL query
+$start_from = ($current_page - 1) * $records_per_page;
+
+// Initialize variables
+$sql = "SELECT * FROM tbl_salary ";
+
+// Check if search query is provided
+if (isset($_GET['query']) && !empty($_GET['query'])) {
+    $search_query = $_GET['query'];
+    // Modify SQL query to include search filter
+    $sql .= "WHERE emp_id LIKE '%$search_query%' 
+            OR f_name LIKE '%$search_query%' 
+            OR m_name LIKE '%$search_query%' 
+            OR l_name LIKE '%$search_query%'
+            OR emp_position LIKE '%$search_query%'
+            OR emp_shift LIKE '%$search_query%'
+            OR total_wage LIKE '%$search_query%'
+            OR emp_status LIKE '%$search_query%'";
+}
+
+$sql .= "LIMIT $start_from, $records_per_page";
+
+$result = $conn->query($sql);
+
+// Count total number of records
+$total_records_query = "SELECT COUNT(*) FROM tbl_salary";
+if (isset($_GET['query']) && !empty($_GET['query'])) {
+    $total_records_query .= "WHERE alumni_id LIKE '%$search_query%' 
+                            OR f_name LIKE '%$search_query%' 
+                            OR m_name LIKE '%$search_query%' 
+                            OR l_name LIKE '%$search_query%'
+                            OR emp_position LIKE '%$search_query%'
+                            OR emp_shift LIKE '%$search_query%'
+                            OR total_wage LIKE '%$search_query%'
+                            OR emp_status LIKE '%$search_query%'";
+}
+$total_records_result = mysqli_query($conn, $total_records_query);
+$total_records_row = mysqli_fetch_array($total_records_result);
+$total_records = $total_records_row[0];
+
+$total_pages = ceil($total_records / $records_per_page);
 ?>
 
 <!DOCTYPE html>
@@ -106,86 +151,48 @@ include './database/session.php';
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>001</td>
-                                    <td>Marc Rodney Toledo</td>
-                                    <td>Service Crew</td>
-                                    <td>Night</td>
-                                    <td>₱10,000</td>
-                                    <td class="td-text">Unpaid</td>
-                                    <td class="td-text">
-                                        <div class="action-buttons">
-                                            <a href="./create_payslip.php"><button class="slip-btn">Generate Slip</button></a>
-                                            <button class="view-btn">Summary</button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>001</td>
-                                    <td>Marc Rodney Toledo</td>
-                                    <td>Service Crew</td>
-                                    <td>Night</td>
-                                    <td>₱10,000</td>
-                                    <td class="td-text">Unpaid</td>
-                                    <td class="td-text">
-                                        <div class="action-buttons">
-                                            <a href="./create_payslip.php"><button class="slip-btn">Generate Slip</button></a>
-                                            <button class="view-btn">Summary</button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>001</td>
-                                    <td>Marc Rodney Toledo</td>
-                                    <td>Service Crew</td>
-                                    <td>Night</td>
-                                    <td>₱10,000</td>
-                                    <td class="td-text">Unpaid</td>
-                                    <td class="td-text">
-                                        <div class="action-buttons">
-                                            <a href="./create_payslip.php"><button class="slip-btn">Generate Slip</button></a>
-                                            <button class="view-btn">Summary</button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>001</td>
-                                    <td>Marc Rodney Toledo</td>
-                                    <td>Service Crew</td>
-                                    <td>Night</td>
-                                    <td>₱10,000</td>
-                                    <td class="td-text">Unpaid</td>
-                                    <td class="td-text">
-                                        <div class="action-buttons">
-                                            <a href="./create_payslip.php"><button class="slip-btn">Generate Slip</button></a>
-                                            <button class="view-btn">Summary</button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>001</td>
-                                    <td>Marc Rodney Toledo</td>
-                                    <td>Service Crew</td>
-                                    <td>Night</td>
-                                    <td>₱10,000</td>
-                                    <td class="td-text">Unpaid</td>
-                                    <td class="td-text">
-                                        <div class="action-buttons">
-                                            <a href="./create_payslip.php"><button class="slip-btn">Generate Slip</button></a>
-                                            <button class="view-btn">Summary</button>
-                                        </div>
-                                    </td>
-                                </tr>
+                                <?php 
+                                    if($result->num_rows > 0){
+                                        while($row = $result->fetch_assoc()){
+                                            if(!empty($row['m_name'])){
+                                                $fullname = $row['l_name'] . " , ". $row['f_name'] . " , " . $row['m_name'] . ".";
+                                            }
+                                            else{
+                                                $fullname = $row['l_name'] . " , ". $row['f_name'];
+                                            }
+                                ?>
+                                    <tr>
+                                        <td><?php echo $row['emp_id'] ?></td>
+                                        <td><?php echo htmlspecialchars($fullname)?></td>
+                                        <td><?php echo $row['position_name'] ?></td>
+                                        <td><?php echo $row['emp_shift'] ?></td>
+                                        <td><?php echo $row['basic_pay'] ?></td>
+                                        <td class="td-text"><?php echo $row['status'] ?></td>
+                                        <td class="td-text">
+                                            <div class="action-buttons">
+                                                <a href="./create_payslip.php"><button class="slip-btn">Generate Slip</button></a>
+                                                <button class="view-btn">Summary</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <?php
+                                        }
+                                    }
+                                ?>
                             </tbody>
                         </table>
                         <br>
                         <!-- Pagination -->
-                        <div class="pagination">
-                            <p>Showing 1 / 100 Results</p>
-                            <div class="pagination">
-                                <button>Prev</button>
-                                <input type="text" class="perpage" value="1" readonly />
-                                <button>Next</button>
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding-right: 1.5%; padding-left: 1.5%;">
+                            <p style="margin: 0;">Page <?= $current_page ?> out of <?= $total_pages ?></p>
+                            <div class="pagination" id="content">
+                                <?php if ($current_page > 1) : ?>
+                                    <a href="?page=<?= ($current_page - 1); ?>&query=<?php echo isset($_GET['query']) ? $_GET['query'] : ''; ?>" class="prev" style="border-radius:4px;background-color:#368DB8;color:white;margin-bottom:13px; padding: 10px;">&laquo; Previous</a>
+                                <?php endif; ?>
+
+                                <?php if ($current_page < $total_pages) : ?>
+                                    <a href="?page=<?= ($current_page + 1); ?>&query=<?php echo isset($_GET['query']) ? $_GET['query'] : ''; ?>" class="next" style="border-radius:4px;background-color:#368DB8;color:white;margin-bottom:13px; padding: 10px;">Next &raquo;</a>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
