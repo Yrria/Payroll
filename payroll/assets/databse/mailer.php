@@ -10,12 +10,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['email']) && isset($_PO
   $email = mysqli_real_escape_string($conn, $email);
   $verification_code = mysqli_real_escape_string($conn, $verification_code);
 
-  $check_email_admin_qry = mysqli_query($conn, "SELECT * FROM admin_acc WHERE email = '$email'");
-  $check_email_emp_qry = mysqli_query($conn, "SELECT * FROM emp_acc WHERE email = '$email'");
+  $check_email_admin_qry = mysqli_query($conn, "SELECT * FROM tbl_admin_acc WHERE email = '$email'");
+  $check_email_emp_qry = mysqli_query($conn, "SELECT * FROM tbl_emp_acc WHERE email = '$email'");
 
   if (mysqli_num_rows($check_email_admin_qry) > 0) {
     // Email exists and is verified
-    $insert_verifcodes_qry = mysqli_query($conn, "UPDATE admin_acc SET otp = '$verification_code' WHERE email = '$email'");
+    $insert_verifcodes_qry = mysqli_query($conn, "UPDATE tbl_admin_acc SET otp = '$verification_code' WHERE email = '$email'");
     $mail = new PHPMailer(true);
 
     $mail->isSMTP();
@@ -51,7 +51,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['email']) && isset($_PO
           </script>";
   } else if (mysqli_num_rows($check_email_emp_qry) > 0) {
     // Email exists and is verified
-    $insert_verifcodes_qry = mysqli_query($conn, "UPDATE emp_acc SET otp = '$verification_code' WHERE email = '$email'");
+    $insert_verifcodes_qry = mysqli_query($conn, "UPDATE tbl_emp_acc SET otp = '$verification_code' WHERE email = '$email'");
     $mail = new PHPMailer(true);
 
     $mail->isSMTP();

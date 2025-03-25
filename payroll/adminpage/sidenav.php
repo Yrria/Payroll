@@ -20,7 +20,7 @@
                 <span id="current-date"></span> - <span id="current-time"></span>
             </span>
             <div class="profile" onclick="toggleDropdown()">
-                <i class="bi bi-person-circle profile-icon"></i> <span class="user-name"><?php echo $user['name']; ?></span><i class="bi bi-caret-down-fill profile-arrow"></i>
+                <i class="bi bi-person-circle profile-icon"></i> <span class="user-name"><?php echo $user['firstname']; ?></span><i class="bi bi-caret-down-fill profile-arrow"></i>
                 <!-- Dropdown Menu -->
                 <ul class="dropdown-menu">
                     <a href="./profile.php">
