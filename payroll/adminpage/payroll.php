@@ -3,7 +3,7 @@ session_start();
 include '../assets/databse/connection.php';
 include './database/session.php';
 
-$records_per_page = 5; // Number of records to display per page
+$records_per_page = 7; // Number of records to display per page
 $current_page = isset($_GET['page']) ? $_GET['page'] : 1; // Get current page number, default to 1
 
 // Calculate the limit clause for SQL query
@@ -33,7 +33,7 @@ $result = $conn->query($sql);
 // Count total number of records
 $total_records_query = "SELECT COUNT(*) FROM tbl_salary";
 if (isset($_GET['query']) && !empty($_GET['query'])) {
-    $total_records_query .= "WHERE alumni_id LIKE '%$search_query%' 
+    $total_records_query .= " WHERE emp_id LIKE '%$search_query%' 
                             OR f_name LIKE '%$search_query%' 
                             OR m_name LIKE '%$search_query%' 
                             OR l_name LIKE '%$search_query%'
@@ -42,6 +42,7 @@ if (isset($_GET['query']) && !empty($_GET['query'])) {
                             OR total_wage LIKE '%$search_query%'
                             OR emp_status LIKE '%$search_query%'";
 }
+
 $total_records_result = mysqli_query($conn, $total_records_query);
 $total_records_row = mysqli_fetch_array($total_records_result);
 $total_records = $total_records_row[0];
@@ -59,6 +60,7 @@ $total_pages = ceil($total_records / $records_per_page);
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="./css/main.css">
     <link rel="stylesheet" href="./css/payroll.css">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
     <title>Payroll</title>
 </head>
 
@@ -132,8 +134,7 @@ $total_pages = ceil($total_records / $records_per_page);
                         <div class="search">
                             <button class="payall_btn">Pay All</button>
                             <div class="search-bar">
-                                <input type="text" class="search_emp_input" placeholder="Search employee..." />
-                                <button class="search-btn">Search</button>
+                                <input type="text" id="search_emp_input" class="search_emp_input" placeholder="Search employee..." />
                             </div>
                         </div>
 
@@ -150,7 +151,7 @@ $total_pages = ceil($total_records / $records_per_page);
                                     <th>Action</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="showdata">
                                 <?php 
                                     if($result->num_rows > 0){
                                         while($row = $result->fetch_assoc()){
@@ -203,6 +204,26 @@ $total_pages = ceil($total_records / $records_per_page);
     <!-- SCRIPT -->
     <script src="./javascript/main.js"></script>
     <script src="./javascript/payroll.js"></script>
+    <script>
+        $(document).ready(function(){
+            $('#search_emp_input').on("keyup",function(){
+                var getName = $(this).val();
+                $.ajax({
+                    method : 'POST',
+                    url : 'search_payroll.php',
+                    data : {name:getName},
+                    success:function(response)
+                    {
+                        if ($.trim(response) === "") {
+                            $("#showdata").html("<tr><td colspan='7' class='no-data'>No records found</td></tr>");
+                        } else {
+                            $("#showdata").html(response);
+                        }
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 
 </html>

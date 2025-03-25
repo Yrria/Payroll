@@ -130,6 +130,7 @@
 table {
     width: 100%;
     border-collapse: collapse;
+    min-height: 250px;
     margin-top: 20px;
   }
   
@@ -150,6 +151,13 @@ table {
     /* Sets a fixed width for the cell */
     font-size: 14px;
   }
+
+  .no-data {
+    text-align: center;
+    font-weight: bold;
+    color: gray;
+    padding: 20px;
+}
   
   /* SEARCH BAR */
   .search {
@@ -174,11 +182,9 @@ table {
   .td-text {
     white-space: nowrap;
     /* Prevents text wrapping */
-    overflow: hidden;
-    /* Ensures overflow is hidden */
     text-overflow: ellipsis;
     /* Shows ellipsis when text overflows */
-    max-width: 50px;
+    max-width: 70px;
     /* Set max width for the cell */
     color: red;
   }
@@ -350,7 +356,7 @@ table {
     background-color: #33996d;
     transition: all 0.1s ease-in-out; /* Smooth animation */
 }
-.search_emp_input{
+#search_emp_input{
     width: 300px;
     padding: 6px 5px;
     border-radius: 4px;
