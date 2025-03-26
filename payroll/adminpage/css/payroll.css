@@ -237,6 +237,7 @@ table {
     cursor: pointer;
     margin: 1px;
     font-size: smaller;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
   }
   
   .slip-btn:hover {
@@ -258,6 +259,7 @@ table {
     cursor: pointer;
     margin: 1px;
     font-size: smaller;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
   }
   
   .view-btn:hover {

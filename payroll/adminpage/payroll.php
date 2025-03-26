@@ -88,6 +88,7 @@ $total_pages = ceil($total_records / $records_per_page);
                                     <input type="text" class="dropdown-input" style="width:75%;" readonly placeholder="Select Month" />
                                     <div class="dropdown-indicator">&#9662;</div>
                                     <div class="dropdown-content">
+                                        <div class="dropdown-item clear-selection" data-value="" style="opacity: 0.5;">Select Month</div>
                                         <div class="dropdown-item" data-value="01" style="font-size: 14px;">January</div>
                                         <div class="dropdown-item" data-value="02" style="font-size: 14px;">February</div>
                                         <div class="dropdown-item" data-value="03" style="font-size: 14px;">March</div>
@@ -108,6 +109,7 @@ $total_pages = ceil($total_records / $records_per_page);
                                     <input type="text" class="dropdown-input" style="width:75%;" readonly placeholder="Select Year" />
                                     <div class="dropdown-indicator" style="right:47px;">&#9662;</div>
                                     <div class="dropdown-content">
+                                        <div class="dropdown-item clear-selection" data-value="" style="opacity: 0.5;">Select Year</div>
                                         <div class="dropdown-item" data-value="2024" style="font-size: 14px;">2024</div>
                                         <div class="dropdown-item" data-value="2023" style="font-size: 14px;">2023</div>
                                         <div class="dropdown-item" data-value="2022" style="font-size: 14px;">2022</div>
@@ -121,9 +123,9 @@ $total_pages = ceil($total_records / $records_per_page);
                                     <input type="text" class="dropdown-input" readonly placeholder="Select Cutoff" />
                                     <div class="dropdown-indicator">&#9662;</div>
                                     <div class="dropdown-content">
-                                        <div class="dropdown-item" style="font-size: 14px;">First Cutoff</div>
-                                        <div class="dropdown-item" style="font-size: 14px;">Second Cutoff</div>
-                                        <div class="dropdown-item" style="font-size: 14px;">Full Month</div>
+                                        <div class="dropdown-item clear-selection" data-value="" style="opacity: 0.5;">Select Cutoff</div>
+                                        <div class="dropdown-item" data-value="F" style="font-size: 14px;">First Cutoff</div>
+                                        <div class="dropdown-item" data-value="S" style="font-size: 14px;">Second Cutoff</div>
                                     </div>
                                 </div>
                             </div>
@@ -205,24 +207,63 @@ $total_pages = ceil($total_records / $records_per_page);
     <script src="./javascript/main.js"></script>
     <script src="./javascript/payroll.js"></script>
     <script>
-        $(document).ready(function(){
-            $('#search_emp_input').on("keyup",function(){
-                var getName = $(this).val();
+       $(document).ready(function () {
+            function fetchPayroll() {
+                var name = $("#search_emp_input").val();
+                var month = $(".month-dropdown .dropdown-input").val();
+                var year = $(".year-dropdown .dropdown-input").val();
+                var cutoff = $(".cutoff-dropdown .dropdown-input").val();
+
+                console.log("Sending Data:", { name, month, year, cutoff }); // Debugging
+
                 $.ajax({
-                    method : 'POST',
-                    url : 'search_payroll.php',
-                    data : {name:getName},
-                    success:function(response)
-                    {
-                        if ($.trim(response) === "") {
-                            $("#showdata").html("<tr><td colspan='7' class='no-data'>No records found</td></tr>");
-                        } else {
-                            $("#showdata").html(response);
-                        }
+                    method: "POST",
+                    url: "search_payroll.php",
+                    data: { name: name, month: month, year: year, cutoff: cutoff },
+                    success: function (response) {
+                        console.log("Response:", response); // Debugging output
+                        $("#showdata").html(response);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("AJAX Error:", error);
                     }
                 });
+            }
+
+            $("#search_emp_input").on("keyup", fetchPayroll);
+
+            var cutoffMap = {
+                "First Cutoff": "1",
+                "Second Cutoff": "2"
+            };
+
+            $(".dropdown-item").on("click", function () {
+                var dropdownType = $(this).closest(".dropdown").hasClass("month-dropdown")
+                    ? "month"
+                    : $(this).closest(".dropdown").hasClass("year-dropdown")
+                    ? "year"
+                    : "cutoff";
+
+                var selectedValue = $(this).data("value"); // Get the actual data-value
+
+                // Convert cutoff text to numeric value
+                if (dropdownType === "cutoff" && selectedValue !== "") {
+                    selectedValue = cutoffMap[$(this).text().trim()] || "";
+                }
+
+                // If "Clear Selection" is clicked, reset the input field
+                if (selectedValue === "") {
+                    $("." + dropdownType + "-dropdown .dropdown-input").val("").attr("placeholder", "Select " + dropdownType.charAt(0).toUpperCase() + dropdownType.slice(1));
+                } else {
+                    $("." + dropdownType + "-dropdown .dropdown-input").val($(this).text());
+                }
+
+                fetchPayroll(); // Update the payroll list based on the new selection
             });
+
         });
+
+
     </script>
 </body>
 
