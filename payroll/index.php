@@ -29,7 +29,7 @@ include './assets/databse/login.php';
                 <label for="employee-id">Employee/Admin ID:</label>
                 <div class="input-container">
                     <i class="fas fa-user icon"></i>
-                    <input type="text" name="id" id="id" placeholder="Enter Employee or Admin ID" required>
+                    <input type="text" name="email" id="id" placeholder="Enter Employee or Admin ID" required>
                 </div>
 
                 <label for="password">Password:</label>

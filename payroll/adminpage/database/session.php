@@ -1,10 +1,10 @@
 <?php
 // SESSION
-if (isset($_SESSION['user_id'])) {
-    $account = $_SESSION['user_id'];
+if (isset($_SESSION['email'])) {
+    $account = $_SESSION['email'];
 
     // Check if user is an admin
-    $stmt = $conn->prepare("SELECT * FROM tbl_admin_acc WHERE admin_id = ?");
+    $stmt = $conn->prepare("SELECT * FROM tbl_admin_acc WHERE email = ?");
     $stmt->bind_param("s", $account);
     $stmt->execute();
     $user_result = $stmt->get_result();
@@ -16,7 +16,7 @@ if (isset($_SESSION['user_id'])) {
     $stmt->close();
 
     // Check if user is a coordinator
-    $stmt = $conn->prepare("SELECT * FROM tbl_emp_acc WHERE emp_id = ?");
+    $stmt = $conn->prepare("SELECT * FROM tbl_emp_acc WHERE email = ?");
     $stmt->bind_param("s", $account);
     $stmt->execute();
     $user_result = $stmt->get_result();
