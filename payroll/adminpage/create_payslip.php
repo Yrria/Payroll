@@ -2,6 +2,58 @@
 session_start();
 include '../assets/databse/connection.php';
 include './database/session.php';
+
+include '../assets/databse/connection.php';
+
+if (isset($_GET['id'])) {
+    $emp_id = $_GET['id'];
+    
+    $query = "
+        SELECT 
+            e.emp_id,
+            e.lastname,
+            e.firstname,
+            e.middlename,
+            e.gender,
+            e.email,
+            e.address,
+            e.phone_no,
+            a.present_days,
+            a.absent_days,
+            a.hours_present,
+            a.hours_late,
+            a.hours_overtime,
+            a.holiday,
+            a.position_name,
+            a.emp_shift,
+            s.basic_pay,
+            s.ot_pay
+        FROM tbl_emp_acc AS e
+        INNER JOIN tbl_attendance AS a ON e.emp_id = a.emp_id
+        INNER JOIN tbl_salary AS s ON e.emp_id = s.emp_id
+        WHERE e.emp_id = ?
+    ";
+
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("s", $emp_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows > 0) {
+        $employee = $result->fetch_assoc();
+        $emp_id = $employee['emp_id'];
+        $gender = $employee['gender'];
+        $address = $employee['address'];
+        $position_name = $employee['position_name'];
+        $present_days = $employee['present_days'];
+    
+        // Define fullname properly
+        $fullname = $employee['firstname'] . ' ' . $employee['middlename'] . ' ' . $employee['lastname'];
+    } else {
+        echo "No employee data found.";
+    }
+    
+}
 ?>
 
 <!DOCTYPE html>
@@ -35,29 +87,29 @@ include './database/session.php';
                 <table>
                     <tr>
                         <td>Employee ID:</td>
-                        <td>1</td>
+                        <td><?php echo $emp_id  ?></td>
                         <td>Bank Name:</td>
                         <td>BPO Bank</td>
                     </tr>
                     <tr>
                         <td>Employee Name:</td>
-                        <td>Juan Dela Cruz</td>
+                        <td><?php echo htmlspecialchars($fullname)?></td>
                         <td>Bank Account:</td>
                         <td>01236183</td>
                     </tr>
                     <tr>
                         <td>Gender:</td>
-                        <td>Male</td>
+                        <td><?php echo $gender ?></td>
                         <td>Payable Working Days:</td>
-                        <td>8</td>
+                        <td><?php echo $present_days ?></td>
                     </tr>
                     <tr>
                         <td>Address:</td>
-                        <td>Biringan City</td>
+                        <td><?php echo $address ?></td>
                     </tr>
                     <tr>
                         <td>Position:</td>
-                        <td>Service Crew</td>
+                        <td><?php echo $position_name ?></td>
                     </tr>
                     <tr>
                         <td>Date Joined:</td>

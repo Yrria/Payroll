@@ -159,9 +159,11 @@ $total_pages = ceil($total_records / $records_per_page);
                                         while($row = $result->fetch_assoc()){
                                             if(!empty($row['m_name'])){
                                                 $fullname = $row['l_name'] . " , ". $row['f_name'] . " , " . $row['m_name'] . ".";
+                                                $_SESSION['fullname'] =$fullname;
                                             }
                                             else{
                                                 $fullname = $row['l_name'] . " , ". $row['f_name'];
+                                                $_SESSION['fullname'] =$fullname;
                                             }
                                 ?>
                                     <tr>
@@ -173,7 +175,7 @@ $total_pages = ceil($total_records / $records_per_page);
                                         <td class="td-text"><?php echo $row['status'] ?></td>
                                         <td class="td-text">
                                             <div class="action-buttons">
-                                                <a href="./create_payslip.php"><button class="slip-btn">Generate Slip</button></a>
+                                                <a href='./create_payslip.php?id=<?php echo $row["emp_id"]; ?>'><button class="slip-btn">Generate Slip</button></a>
                                                 <button class="view-btn">Summary</button>
                                             </div>
                                         </td>
