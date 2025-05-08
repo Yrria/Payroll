@@ -42,4 +42,21 @@
             timer: 5000,
         });
     }
+
+     // NO LINK
+    function alertMessageNolink(title, text, icon, iconHtml) {
+    Swal.fire({
+        icon: icon,
+        iconHtml: iconHtml, // Custom icon using Font Awesome
+        title: title,
+        text: text,
+        customClass: {
+            popup: 'swal-custom'
+        },
+        showConfirmButton: true,
+        confirmButtonColor: '#4CAF50',
+        confirmButtonText: 'OK',
+        timer: 5000
+    });
+}
 </script>

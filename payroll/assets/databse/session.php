@@ -1,6 +1,11 @@
 <?php
 // SESSION
-if (isset($_SESSION['email'])) {
+// Remove only the verification code session
+
+unset($_SESSION['verifCode']);
+unset($_SESSION['inputcode']);
+
+if (isset($_SESSION['email']) && isset($_SESSION['account_id'])) {
     $account = $_SESSION['email'];
 
     // Check if user is an admin

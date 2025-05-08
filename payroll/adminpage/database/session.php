@@ -1,6 +1,6 @@
 <?php
 // SESSION
-if (isset($_SESSION['email'])) {
+if (isset($_SESSION['email']) && isset($_SESSION['account_id'])) {
     $account = $_SESSION['email'];
 
     // Check if user is an admin

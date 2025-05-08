@@ -36,6 +36,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['email']) && isset($_PO
 
     $mail->send();
     $_SESSION['email'] = $email;
+    $_SESSION['verifCode'] = $verification_code;
 
     // WARNING NOT VERIFIED
     $icon = 'success';
@@ -72,6 +73,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['email']) && isset($_PO
 
     $mail->send();
     $_SESSION['email'] = $email;
+    $_SESSION['verifCode'] = $verification_code;
 
     // WARNING NOT VERIFIED
     $icon = 'success';

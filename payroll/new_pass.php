@@ -2,7 +2,8 @@
 session_start();
 
 include './assets/databse/connection.php';
-include './assets/databse/withIndexSession.php';
+include './assets/databse/newPassSession.php';
+include './assets/databse/newpass.php';
 ?>
 
 <!DOCTYPE html>

@@ -12,7 +12,7 @@ include './assets/databse/login.php';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Login</title>
+    <title>Login</title>
     <link rel="shortcut icon" href="./assets/logowhite-.png" type="image/svg+xml">
     <link rel="stylesheet" href="./assets//css/login.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -26,10 +26,10 @@ include './assets/databse/login.php';
                 details all in one secure place. Log in with your employee ID and password to get started.</p>
             <form action="" method="POST">
     
-                <label for="employee-id">Employee/Admin ID:</label>
+                <label for="employee-id">Employee/Admin Email:</label>
                 <div class="input-container">
                     <i class="fas fa-user icon"></i>
-                    <input type="text" name="email" id="id" placeholder="Enter Employee or Admin ID" required>
+                    <input type="text" name="email" id="id" placeholder="Enter Employee or Admin Email" required>
                 </div>
 
                 <label for="password">Password:</label>
