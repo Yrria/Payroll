@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 08, 2025 at 11:06 AM
+-- Generation Time: May 09, 2025 at 08:39 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -38,7 +38,7 @@ CREATE TABLE `tbl_admin_acc` (
   `middlename` varchar(100) DEFAULT NULL,
   `email` varchar(100) NOT NULL,
   `password` varchar(100) NOT NULL,
-  `otp` int(10) NOT NULL
+  `otp` int(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -46,7 +46,7 @@ CREATE TABLE `tbl_admin_acc` (
 --
 
 INSERT INTO `tbl_admin_acc` (`admin_id`, `lastname`, `firstname`, `middlename`, `email`, `password`, `otp`) VALUES
-(2, 'santos', 'rodney', 'galario', 'ic.rodney.santos@cvsu.edu.ph', 'rabbit', 0);
+(2, 'santos', 'rodney', 'galario', 'ic.rodney.santos@cvsu.edu.ph', 'rabbit', 47033);
 
 -- --------------------------------------------------------
 
@@ -58,13 +58,24 @@ DROP TABLE IF EXISTS `tbl_attendance`;
 CREATE TABLE `tbl_attendance` (
   `emp_id` int(100) NOT NULL,
   `attendance_id` int(100) NOT NULL,
+  `gender` varchar(55) NOT NULL,
   `present_days` int(100) NOT NULL,
   `absent_days` int(100) DEFAULT NULL,
   `hours_present` double NOT NULL,
   `hours_late` double DEFAULT NULL,
   `hours_overtime` double DEFAULT NULL,
-  `holiday` int(100) DEFAULT NULL
+  `holiday` int(100) DEFAULT NULL,
+  `position_name` varchar(55) NOT NULL,
+  `emp_shift` varchar(55) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tbl_attendance`
+--
+
+INSERT INTO `tbl_attendance` (`emp_id`, `attendance_id`, `gender`, `present_days`, `absent_days`, `hours_present`, `hours_late`, `hours_overtime`, `holiday`, `position_name`, `emp_shift`) VALUES
+(1, 1, 'Male', 20, 8, 160, 3, 10, 1, 'Manager', 'Morning'),
+(2, 2, 'Male', 20, 10, 160, 3, 10.5, 1, 'Assistant Manager', 'Night');
 
 -- --------------------------------------------------------
 
@@ -101,6 +112,8 @@ CREATE TABLE `tbl_emp_acc` (
   `address` varchar(100) DEFAULT NULL,
   `phone_no` bigint(100) DEFAULT NULL,
   `gender` varchar(100) DEFAULT NULL,
+  `rate_per_day` int(100) NOT NULL,
+  `status` varchar(50) NOT NULL,
   `otp` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -108,8 +121,9 @@ CREATE TABLE `tbl_emp_acc` (
 -- Dumping data for table `tbl_emp_acc`
 --
 
-INSERT INTO `tbl_emp_acc` (`emp_id`, `lastname`, `firstname`, `middlename`, `email`, `password`, `address`, `phone_no`, `gender`, `otp`) VALUES
-(1, 'toledo', 'marc andrei', 'kalapati', 'ic.marcandrei.toledo@cvsu.edu.ph', 'P@ssword1', 'habay, bacoor', 99123456789, 'male', 0);
+INSERT INTO `tbl_emp_acc` (`emp_id`, `lastname`, `firstname`, `middlename`, `email`, `password`, `address`, `phone_no`, `gender`, `rate_per_day`, `status`, `otp`) VALUES
+(1, 'Toledo', 'Marc Andrei', 'Andrei', 'ic.marcandrei.toledo@cvsu.edu.ph', 'P@ssword1', 'habay, bacoor', 99123456789, 'male', 600, 'active', 822690),
+(2, 'Lofamia', 'Dhaniel', 'Dela Cruz', 'dhanieeel0907@gmail.com', 'hahaediwow', 'jan lang', 937383717, 'Male', 500, 'active', NULL);
 
 -- --------------------------------------------------------
 
@@ -194,9 +208,9 @@ DROP TABLE IF EXISTS `tbl_salary`;
 CREATE TABLE `tbl_salary` (
   `salary_id` int(100) NOT NULL,
   `emp_id` int(100) NOT NULL,
+  `l_name` varchar(55) NOT NULL,
   `f_name` varchar(55) NOT NULL,
   `m_name` varchar(55) NOT NULL,
-  `l_name` varchar(55) NOT NULL,
   `position_name` varchar(55) NOT NULL,
   `emp_shift` varchar(55) NOT NULL,
   `year` int(100) NOT NULL,
@@ -216,14 +230,9 @@ CREATE TABLE `tbl_salary` (
 -- Dumping data for table `tbl_salary`
 --
 
-INSERT INTO `tbl_salary` (`salary_id`, `emp_id`, `f_name`, `m_name`, `l_name`, `position_name`, `emp_shift`, `year`, `month`, `cutoff`, `status`, `basic_pay`, `holiday_pay`, `ot_pay`, `pagibig_deduction`, `philhealth_deduction`, `sss_deduction`, `other_dedution`) VALUES
-(1, 1, 'Dhaniel', 'Dela', 'Lofs', 'Service Crew', 'Night', 2024, 'January', 'First Cutoff', 'Unpaid', 30000, 500, 500, 500, 500, 500, 500),
-(2, 2, 'Wodney', 'San', 'Tos', 'Service Crew', 'Day', 2024, 'January', 'Second Cutoff', 'Unpaid', 30000, 500, 500, 500, 500, 500, 500),
-(3, 3, 'Okay', 'Santos', 'Toledo', 'Service Crew', 'Night', 2024, 'Feb', 'First Cutoff', 'Unpaid', 40000, 500, 500, 500, 500, 500, 500),
-(4, 3, 'Okay', 'Santos', 'Toledo', 'Service Crew', 'Night', 2024, 'Feb', 'Second Cutoff', 'Unpaid', 40000, 500, 500, 500, 500, 500, 500),
-(5, 3, 'Okay', 'Santos', 'Toledo', 'Service Crew', 'Night', 2024, 'Feb', 'First Cutoff', 'Unpaid', 40000, 500, 500, 500, 500, 500, 500),
-(6, 3, 'Okay', 'Santos', 'Toledo', 'Service Crew', 'Night', 2024, 'Feb', 'Second Cutoff', 'Unpaid', 40000, 500, 500, 500, 500, 500, 500),
-(7, 1, 'Dhaniel', 'Dela', 'Lofs', 'Service Crew', 'Night', 2024, 'January', 'First Cutoff', 'Unpaid', 30000, 500, 500, 500, 500, 500, 500);
+INSERT INTO `tbl_salary` (`salary_id`, `emp_id`, `l_name`, `f_name`, `m_name`, `position_name`, `emp_shift`, `year`, `month`, `cutoff`, `status`, `basic_pay`, `holiday_pay`, `ot_pay`, `pagibig_deduction`, `philhealth_deduction`, `sss_deduction`, `other_dedution`) VALUES
+(1, 1, 'Toledo', 'Marc Andrei', 'Andrei', 'Service Crew', 'Night', 2024, 'January', 'First Cutoff', 'Unpaid', 30000, 500, 500, 500, 500, 500, 500),
+(2, 2, 'Lofamia', 'Dhaniel', 'Dela Cruz', 'Service Crew', 'Day', 2024, 'January', 'Second Cutoff', 'Unpaid', 30000, 500, 500, 500, 500, 500, 500);
 
 --
 -- Indexes for dumped tables
@@ -236,6 +245,13 @@ ALTER TABLE `tbl_admin_acc`
   ADD PRIMARY KEY (`admin_id`);
 
 --
+-- Indexes for table `tbl_attendance`
+--
+ALTER TABLE `tbl_attendance`
+  ADD PRIMARY KEY (`attendance_id`),
+  ADD KEY `fk_attendance_emp` (`emp_id`);
+
+--
 -- Indexes for table `tbl_emp_acc`
 --
 ALTER TABLE `tbl_emp_acc`
@@ -245,7 +261,8 @@ ALTER TABLE `tbl_emp_acc`
 -- Indexes for table `tbl_salary`
 --
 ALTER TABLE `tbl_salary`
-  ADD PRIMARY KEY (`salary_id`);
+  ADD PRIMARY KEY (`salary_id`),
+  ADD KEY `fk_salary_emp` (`emp_id`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -258,16 +275,38 @@ ALTER TABLE `tbl_admin_acc`
   MODIFY `admin_id` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
+-- AUTO_INCREMENT for table `tbl_attendance`
+--
+ALTER TABLE `tbl_attendance`
+  MODIFY `attendance_id` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
 -- AUTO_INCREMENT for table `tbl_emp_acc`
 --
 ALTER TABLE `tbl_emp_acc`
-  MODIFY `emp_id` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `emp_id` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `tbl_salary`
 --
 ALTER TABLE `tbl_salary`
   MODIFY `salary_id` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `tbl_attendance`
+--
+ALTER TABLE `tbl_attendance`
+  ADD CONSTRAINT `fk_attendance_emp` FOREIGN KEY (`emp_id`) REFERENCES `tbl_emp_acc` (`emp_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `tbl_salary`
+--
+ALTER TABLE `tbl_salary`
+  ADD CONSTRAINT `fk_salary_emp` FOREIGN KEY (`emp_id`) REFERENCES `tbl_emp_acc` (`emp_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
