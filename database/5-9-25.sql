@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 09, 2025 at 08:39 AM
+-- Generation Time: May 09, 2025 at 04:01 PM
 -- Server version: 10.4.32-MariaDB
--- PHP Version: 8.2.12
+-- PHP Version: 8.0.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -123,7 +123,12 @@ CREATE TABLE `tbl_emp_acc` (
 
 INSERT INTO `tbl_emp_acc` (`emp_id`, `lastname`, `firstname`, `middlename`, `email`, `password`, `address`, `phone_no`, `gender`, `rate_per_day`, `status`, `otp`) VALUES
 (1, 'Toledo', 'Marc Andrei', 'Andrei', 'ic.marcandrei.toledo@cvsu.edu.ph', 'P@ssword1', 'habay, bacoor', 99123456789, 'male', 600, 'active', 822690),
-(2, 'Lofamia', 'Dhaniel', 'Dela Cruz', 'dhanieeel0907@gmail.com', 'hahaediwow', 'jan lang', 937383717, 'Male', 500, 'active', NULL);
+(2, 'Lofamia', 'Dhaniel', 'Dela Cruz', 'dhanieeel0907@gmail.com', 'hahaediwow', 'jan lang', 937383717, 'Male', 500, 'active', NULL),
+(3, 'Valentino', 'Martin', 'Malapo', 'ic.martinlouis.valentino@cvsu.edu.ph', 'martin123', 'malumot,panapaan bacolor city', 9924210601, 'Male', 2600, 'single', 3),
+(4, 'Fidelis', 'Alen', 'Nicanor', 'ic.alen.fidelis@cvsu.edu.ph', 'fidelis', 'dexterville sabang', 9924210601, 'Male', 2500, 'single', 4),
+(5, 'Carlos', 'Nicol', 'Obes', 'ic.carlosjr.nicol@cvsu.edu.ph', 'nicol', 'panapaan', 9924210601, 'Male', 2800, 'single', 5),
+(6, 'Macaspac', 'Patrick', 'Pitalco', 'ic.johnpatrick.macaspac@cvsu.edu.ph', 'patrick', 'carbag', 9924210601, 'Male', 2900, 'single', 10),
+(7, 'Javier', 'Harvey', 'Camacho', 'ic.harvey.havier@cvsu.edu.ph', 'javier', 'binakayan', 9924210601, 'Male', 3000, 'single', 11);
 
 -- --------------------------------------------------------
 
@@ -170,6 +175,19 @@ CREATE TABLE `tbl_leave` (
   `no_of_leave` int(11) DEFAULT NULL,
   `total_leaves` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tbl_leave`
+--
+
+INSERT INTO `tbl_leave` (`emp_id`, `leave_id`, `subject`, `date_applied`, `start_date`, `end_date`, `leave_type`, `message`, `status`, `rejection_reason`, `remaining_leave`, `no_of_leave`, `total_leaves`) VALUES
+(1, 50, 'Sick Leave', '2025-05-01', '2025-05-02', '2025-05-03', 'Sick Leave', 'aasdasdsafhfdhdf34353', 'Approved', 'n/a', 2, 0, 5),
+(2, 51, 'Maternity Leave', '2025-05-04', '2025-05-05', '2025-05-06', 'Sick Leave', 'adsdasdwad22', 'Pending', 'n/a', 0, 0, 6),
+(3, 52, 'Sick Leave', '2025-05-07', '2025-05-08', '2025-05-09', 'Maternity', 'dkkdsmkdmfksmf', 'Approved', 'n/a', 3, 2, 5),
+(4, 53, 'Maternity Leave', '2025-05-10', '2025-05-11', '2025-05-12', 'Sick Leave', 'mmkemtkrmtkrmtk', 'Pending', 'n/a', 2, 3, 5),
+(5, 54, 'Casual Leave', '2025-05-14', '2025-05-15', '2025-05-16', 'Casual Leave', 'asdsadsadlkn2kenj3', 'Approved', 'n/a', 5, 6, 11),
+(6, 55, 'Paternity Leave', '2025-05-19', '2025-05-20', '2025-05-21', 'Paternity Leave', 'fdfgrdgsrlewk', 'Pending', 'n/a', 7, 6, 15),
+(7, 56, 'Parental Leave', '2025-05-22', '2025-05-23', '2025-05-24', 'Parental Leave', 'wrqwrqqweqw', 'Pending', 'n/a', 9, 5, 14);
 
 -- --------------------------------------------------------
 
@@ -258,6 +276,12 @@ ALTER TABLE `tbl_emp_acc`
   ADD PRIMARY KEY (`emp_id`);
 
 --
+-- Indexes for table `tbl_leave`
+--
+ALTER TABLE `tbl_leave`
+  ADD PRIMARY KEY (`leave_id`);
+
+--
 -- Indexes for table `tbl_salary`
 --
 ALTER TABLE `tbl_salary`
@@ -284,7 +308,7 @@ ALTER TABLE `tbl_attendance`
 -- AUTO_INCREMENT for table `tbl_emp_acc`
 --
 ALTER TABLE `tbl_emp_acc`
-  MODIFY `emp_id` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `emp_id` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `tbl_salary`
