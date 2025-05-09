@@ -18,6 +18,7 @@ if (isset($_GET['id'])) {
             e.email,
             e.address,
             e.phone_no,
+            e.rate_per_day,
             a.present_days,
             a.absent_days,
             a.hours_present,
@@ -27,6 +28,9 @@ if (isset($_GET['id'])) {
             a.position_name,
             a.emp_shift,
             s.basic_pay,
+            s.pagibig_deduction,
+            s.philhealth_deduction,
+            s.sss_deduction,
             s.ot_pay
         FROM tbl_emp_acc AS e
         INNER JOIN tbl_attendance AS a ON e.emp_id = a.emp_id
@@ -46,7 +50,22 @@ if (isset($_GET['id'])) {
         $address = $employee['address'];
         $position_name = $employee['position_name'];
         $present_days = $employee['present_days'];
-    
+        $rate_pday = $employee['rate_per_day'];
+        $hours_overtime = $employee['hours_overtime'];
+        $holiday_present = $employee['holiday'];
+        $pagibig_deduction = $employee['pagibig_deduction'];
+        $philhealth_deduction = $employee['philhealth_deduction'];
+        $sss_deduction = $employee['sss_deduction'];
+
+        // computations
+        $compute_present_holiday = $present_days - $holiday_present;
+        $compute_ot = $rate_pday / 8;
+        $computed_ot = $compute_ot * $hours_overtime;
+        $computed_rate_wage = $rate_pday * $present_days;
+        $compute_holiday = $holiday_present * 2;
+        $computed_holiday = $compute_holiday * $rate_pday;
+        $computed_present_holiday = ($compute_present_holiday * $rate_pday) + $computed_holiday;
+        
         // Define fullname properly
         $fullname = $employee['firstname'] . ' ' . $employee['middlename'] . ' ' . $employee['lastname'];
     } else {
@@ -120,17 +139,46 @@ if (isset($_GET['id'])) {
             <div class="inc_dec_div">
                 <div class="income_div">
                     <span>Income</span><br>
-                    <span>Pay Method:</span><input class="income_inputs" type="text" name="" id=""><span>Rate per Day:</span><input class="income_inputs" type="text" name="" id=""><br>
-                    <span>No. Of Days:</span><input class="income_inputs" type="text" name="" id=""><span>Rate Wage:</span><input class="income_inputs" type="text" name="" id=""><br>
-                    <span>OT hr/Day:</span><input class="income_inputs" type="text" name="" id=""><span>OT hr/Day:</span><input class="income_inputs" type="text" name="" id=""><br>
-                    <span>Holiday Pay (day):</span><input class="income_inputs" type="text" name="" id=""><span>Holiday Pay:</span><input class="income_inputs" type="text" name="" id=""><br>
+                    <span>Rate per Day:</span><input class="income_inputs" type="text" readonly value="<?php echo $rate_pday?>" name="" id=""><br>
+                    <span>No. Of Days:</span><input class="income_inputs" value="<?php echo $present_days?>" type="text" name="days_input" id=""><span>Rate Wage:</span><input class="income_inputs" readonly value="<?php echo $computed_present_holiday ?>" type="text" name="" id=""><br>
+                    <span>OT hr/Day:</span><input class="income_inputs" readonly value="<?php echo $hours_overtime?>" type="text" name="" id=""><span>OT hr/Day:</span><input class="income_inputs" readonly value="<?php echo $computed_ot?>" type="text" name="" id=""><br>
+                    <span>Holiday Pay (day):</span><input class="income_inputs" type="text" readonly value="<?php echo $holiday_present?>" name="" id=""><span>Holiday Pay:</span><input class="income_inputs" readonly value="<?php echo $computed_holiday?>"  type="text" name="" id=""><br>
+                    <span>Net Income:</span><input class="income_inputs" type="text" readonly value="" name="" id="">
                 </div>
                 <div class="deduction_div">
                     <span style="margin-right:40%;">Deductions</span> <span>Other Deductions</span><br>
-                    <span>Philhealth:</span><input class="deduction_inputs" type="text" name="" id=""><input class="deduction_inputs" style="margin-left: 6%;" type="text" name="" id=""><input class="deduction_inputs" style="margin-left: 0;" type="text" name="" id=""><br>
-                    <span>PAGIBIG:</span><input class="deduction_inputs" type="text" name="" id=""><input class="deduction_inputs" style="margin-left: 9%;" type="text" name="" id=""><input class="deduction_inputs" style="margin-left: 0;" type="text" name="" id=""><br>
-                    <span>SSS:</span><input class="deduction_inputs" type="text" name="" id=""><input class="deduction_inputs" style="margin-left: 15%;" type="text" name="" id=""><input class="deduction_inputs" style="margin-left: 0;" type="text" name="" id=""><br>
-                    <span>Loan:</span><input class="deduction_inputs" type="text" name="" id=""><input class="deduction_inputs" style="margin-left: 13%;" type="text" name="" id=""><input class="deduction_inputs" style="margin-left: 0;" type="text" name="" id="">
+                    <div style="display: flex; flex-direction: row;">
+                        <div style="display: flex; flex-direction: column;">
+                            <div>
+                                <span>Philhealth:</span><input class="deduction_inputs" readonly value="<?php echo $pagibig_deduction?>"  type="text" name="" id="">
+                            </div>
+                            <div>
+                                <span>PAGIBIG:</span><input class="deduction_inputs" readonly value="<?php echo $philhealth_deduction?>"  type="text" name="" id="">
+                            </div>
+                            <div>
+                                <span>SSS:</span><input class="deduction_inputs" readonly value="<?php echo $sss_deduction?>"  type="text" name="" id="">
+                            </div>
+                        </div>
+                        <div style="display: flex; flex-direction: column;">
+                            <div style="display: flex; justify-content: space-between; width: 230px;">
+                                <span>Deduction Name</span>
+                                <span>Value</spans>
+                            </div>
+                            <div>
+                                <input class="deduction_inputs" type="text" name="" id=""><input class="deduction_inputs"  type="text" name="" id="">
+                            </div>
+                            <div>
+                                <input class="deduction_inputs" type="text" name="" id=""><input class="deduction_inputs"  type="text" name="" id="">
+                            </div>
+                            <div>
+                                <input class="deduction_inputs" type="text" name="" id=""><input class="deduction_inputs"  type="text" name="" id="">
+                            </div>
+                            <div>
+                                <input class="deduction_inputs"  type="text" name="" id=""><input class="deduction_inputs" type="text" name="" id="">
+                            </div>
+                        </div>
+                    </div>
+                    <span>Total Deductions:</span><input class="deduction_inputs" readonly value=""  type="text" name="" id="">
                 </div>  
             </div>
             <div class="res_can_pay_div">
@@ -147,6 +195,18 @@ if (isset($_GET['id'])) {
     <!-- SCRIPT -->
     <script src="./javascript/main.js"></script>
     <script src="./javascript/payroll.js"></script>
+    <script>
+        // JavaScript to allow only numeric input and limit the length to 6 digits
+        document.getElementById('days_input').addEventListener('input', function(e) {
+            // Remove any non-digit characters
+            e.target.value = e.target.value.replace(/\D/g, '');
+
+            // Limit input to 6 digits
+            if (e.target.value.length > 6) {
+                e.target.value = e.target.value.slice(0, 6);
+            }
+        });
+    </script>
 </body>
 
 </html>
