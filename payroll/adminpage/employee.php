@@ -7,71 +7,34 @@ $records_per_page = 5;
 $current_page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
 $start_from = ($current_page - 1) * $records_per_page;
 
-// Build the base SELECT
-$sql = "SELECT * FROM tbl_emp_acc";
+$search_query = '';
+$where_clause = '';
 
-// If there's a search term, extend WHERE to include tbl_leave fields AND names from tbl_emp_acc
 if (!empty($_GET['query'])) {
     $q = $conn->real_escape_string($_GET['query']);
+    $search_query = "&query=" . urlencode($_GET['query']);
 
-    $sql .= " WHERE (
-        emp_id           LIKE '%{$q}%'
-     OR leave_id         LIKE '%{$q}%'
-     OR subject          LIKE '%{$q}%'
-     OR date_applied     LIKE '%{$q}%'
-     OR start_date       LIKE '%{$q}%'
-     OR end_date         LIKE '%{$q}%'
-     OR status           LIKE '%{$q}%'
-     OR leave_type       LIKE '%{$q}%'
-     OR message          LIKE '%{$q}%'
-     OR rejection_reason LIKE '%{$q}%'
-     OR remaining_leave  LIKE '%{$q}%'
-     OR no_of_leave      LIKE '%{$q}%'
-     OR total_leaves     LIKE '%{$q}%'
-     -- search names in tbl_emp_acc
-     OR emp_id IN (
-        SELECT emp_id FROM tbl_emp_acc
-        WHERE firstname  LIKE '%{$q}%'
-           OR middlename LIKE '%{$q}%'
-           OR lastname   LIKE '%{$q}%'
-     )
+    $where_clause = "WHERE (
+        emp_id     LIKE '%{$q}%'
+        OR f_name  LIKE '%{$q}%'
+        OR m_name  LIKE '%{$q}%'
+        OR l_name  LIKE '%{$q}%'
+        OR email   LIKE '%{$q}%'
+        OR phone_no LIKE '%{$q}%'
+        OR gender   LIKE '%{$q}%'
+        OR status   LIKE '%{$q}%'
     )";
 }
 
-$sql .= " LIMIT $start_from, $records_per_page";
+$sql = "SELECT * FROM tbl_emp_acc $where_clause LIMIT $start_from, $records_per_page";
 $result = $conn->query($sql);
 
-// Count for pagination (same WHERE clause)
-$total_sql = "SELECT COUNT(*) FROM tbl_leave";
-if (!empty($_GET['query'])) {
-    $total_sql .= " WHERE (
-        emp_id           LIKE '%{$q}%'
-     OR leave_id         LIKE '%{$q}%'
-     OR subject          LIKE '%{$q}%'
-     OR date_applied     LIKE '%{$q}%'
-     OR start_date       LIKE '%{$q}%'
-     OR end_date         LIKE '%{$q}%'
-     OR status           LIKE '%{$q}%'
-     OR leave_type       LIKE '%{$q}%'
-     OR message          LIKE '%{$q}%'
-     OR rejection_reason LIKE '%{$q}%'
-     OR remaining_leave  LIKE '%{$q}%'
-     OR no_of_leave      LIKE '%{$q}%'
-     OR total_leaves     LIKE '%{$q}%'
-     OR emp_id IN (
-        SELECT emp_id FROM tbl_emp_acc
-        WHERE firstname  LIKE '%{$q}%'
-           OR middlename LIKE '%{$q}%'
-           OR lastname   LIKE '%{$q}%'
-     )
-    )";
-}
+// Pagination count
+$total_sql = "SELECT COUNT(*) FROM tbl_emp_acc $where_clause";
 $total_rows = $conn->query($total_sql)->fetch_row()[0];
 $total_pages = ceil($total_rows / $records_per_page);
-
-// preserve query in pagination links
-$qp = !empty($_GET['query']) ? '&query=' . urlencode($_GET['query']) : '';
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -125,7 +88,6 @@ $qp = !empty($_GET['query']) ? '&query=' . urlencode($_GET['query']) : '';
                         <h3>Records</h3>
                         <div class="search-filters">
                             <input type="text" placeholder="Search employee..." class="search-box">
-                            <button class="search-btn">Search</button>
                         </div>
 
                         <button class="add-new-btn"><span class="plus-icon">+</span>Add New</button>
@@ -136,6 +98,7 @@ $qp = !empty($_GET['query']) ? '&query=' . urlencode($_GET['query']) : '';
                                     <th>Employee ID</th>
                                     <th>Name</th>
                                     <th>Position</th>
+                                    <th>Shift</th>
                                     <th>Gender</th>
                                     <th>Email</th>
                                     <th>Phone No.</th>
@@ -149,25 +112,39 @@ $qp = !empty($_GET['query']) ? '&query=' . urlencode($_GET['query']) : '';
                                 <?php
                                 if ($result->num_rows > 0) {
                                     while ($row = $result->fetch_assoc()) {
+                                        $emp_id = $row['emp_id'];
+
+                                        // Fetch additional info from tbl_emp_info using emp_id
+                                        $info_sql = "SELECT shift, position, rate FROM tbl_emp_info WHERE emp_id = '$emp_id' LIMIT 1";
+                                        $info_result = $conn->query($info_sql);
+                                        $info = $info_result->fetch_assoc();
+
+                                        $shift = $info['shift'] ?? 'N/A';
+                                        $position = $info['position'] ?? 'N/A';
+                                        $rate = $info['rate'] ?? 'N/A';
+
                                         if (!empty($row['m_name'])) {
-                                            $fullname = $row['l_name'] . " , " . $row['f_name'] . " , " . $row['m_name'] . ".";
-                                            $_SESSION['fullname'] = $fullname;
+                                            $fullname = $row['Firstname'] . " " . $row['middlename'] . ". " . $row['lastnamename'] . "";
                                         } else {
-                                            $fullname = $row['l_name'] . " , " . $row['f_name'];
-                                            $_SESSION['fullname'] = $fullname;
+                                            $fullname = $row['firstname'] . " " . $row['lastname'];
                                         }
+
+                                        $_SESSION['fullname'] = $fullname;
                                 ?>
                                         <tr>
                                             <td><?php echo $row['emp_id'] ?></td>
                                             <td><?php echo htmlspecialchars($fullname) ?></td>
-                                            <td><?php echo $row['position'] ?></td>
-                                            <td><?php echo $row['emp_shift'] ?></td>
-                                            <td><?php echo $row['basic_pay'] ?></td>
+                                            <td><?php echo $position ?></td>
+                                            <td><?php echo $shift ?></td>
+                                            <td><?php echo $row['gender'] ?></td>
+                                            <td><?php echo $row['email'] ?></td>
+                                            <td><?php echo $row['phone_no'] ?></td>
+                                            <td><?php echo $row['address'] ?></td>
+                                            <td><?php echo $rate ?></td>
                                             <td class="td-text"><?php echo $row['status'] ?></td>
                                             <td class="td-text">
                                                 <div class="action-buttons">
-                                                    <a href='./create_payslip.php?id=<?php echo $row["emp_id"]; ?>'><button class="slip-btn">Generate Slip</button></a>
-                                                    <button class="view-btn">Summary</button>
+                                                    <a href='#'><button class="slip-btn">View Info</button></a>
                                                 </div>
                                             </td>
                                         </tr>
@@ -178,12 +155,18 @@ $qp = !empty($_GET['query']) ? '&query=' . urlencode($_GET['query']) : '';
                             </tbody>
                         </table>
 
-                        <div class="pagination">
-                            <p class="results-info">1/100 Results</p>
-                            <div class="pagination-controls">
-                                <button class="prev-btn">Prev</button>
-                                <input type="number" class="page-number" value="1" min="1" max="10">
-                                <button class="next-btn">Next</button>
+                        <br>
+                        <!-- Pagination -->
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding-right: 1.5%; padding-left: 1.5%;">
+                            <p style="margin: 0;">Page <?= $current_page ?> out of <?= $total_pages ?></p>
+                            <div class="pagination" id="content">
+                                <?php if ($current_page > 1) : ?>
+                                    <a href="?page=<?= ($current_page - 1) . $search_query; ?>" class="prev" style="border-radius:4px;background-color:#368DB8;color:white;margin-bottom:13px; padding: 10px;">&laquo; Previous</a>
+                                <?php endif; ?>
+
+                                <?php if ($current_page < $total_pages) : ?>
+                                    <a href="?page=<?= ($current_page + 1) . $search_query; ?>" class="next" style="border-radius:4px;background-color:#368DB8;color:white;margin-bottom:13px; padding: 10px;">Next &raquo;</a>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
