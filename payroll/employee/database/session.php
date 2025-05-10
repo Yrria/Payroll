@@ -28,6 +28,7 @@ if (isset($_SESSION['email']) && isset($_SESSION['account_id'])) {
 
         if ($row['status'] == "active") {
             $user = $row;
+            $_SESSION['emp_id'] = $row['emp_id'];
         } else {
 
             $_SESSION['email'] = $account;

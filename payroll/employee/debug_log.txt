@@ -1,0 +1,17 @@
+Session emp_id: 1
+submit_leave.php reached
+Session emp_id: 1
+submit_leave.php reached
+Session emp_id: 1
+submit_leave.php reached
+Session emp_id: 1
+submit_leave.php reached
+POST received: Array
+(
+    [subject] => Test Subject
+    [startdate] => 2025-05-17
+    [enddate] => 2025-05-21
+    [leavetype] => Medical Leave
+    [message] => asddassad
+)
+Session emp_id: 1

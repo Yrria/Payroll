@@ -9,8 +9,7 @@
     grid-column: span 2;
 }
 
-#maindiv > .grid-item:nth-child(4),
-#alter > .grid-item:nth-child(5) {
+#maindiv > .grid-item:nth-child(4) {
     justify-content: right;
 }
 
@@ -18,6 +17,7 @@ table {
     width: 100%;
     border-collapse: collapse;
     margin: 20px 0;
+    table-layout: fixed;
 }
 
 th,
@@ -26,6 +26,8 @@ td {
     padding: 12px;
     text-align: left;
     border: 1px solid #CCC;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 th {
@@ -54,21 +56,32 @@ tr:nth-child(odd) {
     color: #FFFFFF;
 }
 
-.pagination {
-    background-color: #FFFFFF;
-    box-shadow: 0px 3px 5px #888888;
+.view {
+    background-color: #324E79;
+    color: #FFFFFF;
 }
 
-.button, .pagination, .textbox {
+.pagination {
+    gap: 5px;
+    height: 100%;
+    border: none;
+    transition: 0.3s;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0px 3px 3px 0px rgba(0, 0, 0, 0.1);
+}
+
+.button, .textbox, .view {
     font-size: 15px;
     border-radius: 5px;
-    padding: 5px 15px;
+    padding: 5px;
     border: none;
     transition: 0.3s;
 }
 
 .textbox {
-    padding-left: 10px;
     width: 100%;
 }
 
@@ -78,6 +91,10 @@ textarea {
 
 .button:hover {
     background-color: #10131C;
+}
+
+.view:hover {
+    background-color: #20242c;
 }
 
 .pagination:hover {
@@ -102,7 +119,8 @@ textarea {
 #alter > .grid-item:nth-child(1),
 #alter > .grid-item:nth-child(2),
 #alter > .grid-item:nth-child(3),
-#alter > .grid-item:nth-child(4) {
+#alter > .grid-item:nth-child(4),
+#alter > .grid-item:nth-child(5) {
     flex-direction: column;
     padding: 10px 10px;
 }
@@ -111,15 +129,22 @@ textarea {
     padding: 10px 10px;
 }
 
+#alter > .grid-item:nth-child(6) {
+    grid-column: span 2;
+    justify-content: right;
+    margin: 5px 0px;
+}
+
 /* css for viewing leave */
 .overlay {
+    display: none;
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
-    z-index: -1;
+    z-index: 1000;
 }
 
 .info-container {
@@ -176,8 +201,4 @@ textarea {
 
 .info-grid > .textbox {
     padding: 5px 5px;
-}
-
-#approved, #declined, #pending {
-    display: none;
 }
