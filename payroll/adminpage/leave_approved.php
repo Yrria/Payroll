@@ -280,5 +280,17 @@ $qp = !empty($_GET['query']) ? '&query=' . urlencode($_GET['query']) : '';
   });
 
   // FOR Search
+  document.getElementById('search_emp_input').addEventListener('keyup', function() {
+    let query = this.value;
+    let status = 'Approved'; // This will be for the approved page.
 
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", "search_leave.php?query=" + encodeURIComponent(query) + "&status=" + encodeURIComponent(status), true);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+        document.getElementById('showdata').innerHTML = xhr.responseText;
+      }
+    };
+    xhr.send();
+  });
 </script>
