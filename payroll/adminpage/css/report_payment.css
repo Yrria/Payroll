@@ -1,4 +1,64 @@
 /* REPORT_PAYMENT CONTENT */
+.table_div {
+    margin: 30px 10px 10px 10px;
+    height: auto;
+    padding: 20px;
+    border-radius: 3px;
+    box-shadow: 1px 0px 5px rgba(0, 0, 0, 0.3);
+    background-color: #fff;
+    overflow-y: hidden;
+    overflow-x: auto;
+}
+
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-height: 250px;
+    margin-top: 20px;
+}
+
+table thead th {
+    text-align: center;
+}
+
+table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    /* text-align: left; */
+    white-space: nowrap;
+    /* Prevents text wrapping */
+    overflow: hidden;
+    /* Ensures overflow is hidden */
+    text-overflow: ellipsis;
+    /* Shows ellipsis when text overflows */
+    max-width: 25px;
+    /* Set max width for the cell */
+    width: 5ch;
+    /* Sets a fixed width for the cell */
+    font-size: 14px;
+}
+
+.no-data {
+    text-align: center;
+    font-weight: bold;
+    color: gray;
+    padding: 20px;
+}
+
+
+table th {
+    background-color: white;
+    color: black;
+}
+
+table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+table tr:hover {
+    background-color: #f1f1f1;
+}
 
 .selection_div {
     margin: 50px 10px 10px 10px;
@@ -51,22 +111,101 @@
 .payment_details {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 20px;
+    white-space: nowrap;
 }
 
-.year_label {
-    margin-right: 10px;
+/* Dropdown Container */
+.dropdown {
+    width: 200px;
+    position: relative;
 }
 
-.year-picker {
-    padding: 5px 10px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+/* Dropdown Input */
+.dropdown-input {
+    width: 75%;
+    padding: 6px 10px;
+    border: 1px solid #aaaaaa6c;
+    border-radius: 5px;
+    outline: none;
+    box-sizing: border-box;
     cursor: pointer;
-    width: 150px;
-    /* Ensures dropdown arrow is visible */
 }
+
+.dropdown-input:hover {
+    color: #7DA0CA;
+    transition: all 0.3s ease-in-out;
+}
+
+.dropdown-input:focus {
+    color: #fff;
+    background-color: #AAC7D8;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.13);
+}
+
+/* Dropdown Indicator */
+.dropdown-indicator {
+    font-size: 27px;
+    position: absolute;
+    right: 55px;
+    transition: transform 0.3s ease;
+    cursor: pointer;
+}
+
+.dropdown-indicator.rotated {
+    transform: rotate(180deg);
+}
+
+/* Dropdown Content */
+.dropdown-content {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 75%;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    border-radius: 5px;
+    overflow-y: auto;
+    max-height: 150px;
+    opacity: 0;
+    transform: scaleY(0);
+    transform-origin: top;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    pointer-events: none;
+}
+
+.dropdown-content.show {
+    opacity: 1;
+    transform: scaleY(1);
+    pointer-events: auto;
+}
+
+.dropdown-content .dropdown-item {
+    padding: 5px 5px;
+    cursor: pointer;
+}
+
+.dropdown-content .dropdown-item:hover {
+    background-color: #AAC7D8;
+    transition: all 0.2s ease-in-out;
+}
+
+/* Dropdown Wrapper */
+.dropdown-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.dropdown-div {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
 
 .total_payment {
     margin: 0;
@@ -94,33 +233,6 @@
     }
 }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-}
-
-table th,
-table td {
-    padding: 10px;
-    border: 1px solid #ddd;
-    text-align: center;
-    white-space: normal;
-    /* Allow text to wrap */
-}
-
-table th {
-    background-color: white;
-    color: black;
-}
-
-table tr:nth-child(even) {
-    background-color: #f9f9f9;
-}
-
-table tr:hover {
-    background-color: #f1f1f1;
-}
 
 /* Responsive adjustments for smaller screens */
 @media (max-width: 768px) {
@@ -140,17 +252,21 @@ table tr:hover {
 }
 
 .view-btn {
-    background-color: blue;
-    color: white;
-    padding: 5px 10px;
+    background-color: #5483B3;
+    color: #fff;
+    padding: 4px 10px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    margin: 1px;
     font-size: smaller;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
 }
 
 .view-btn:hover {
-    background-color: darkblue;
+    background-color: #6f9fce;
+    transition: all 0.3s ease-in-out;
+    /* Smooth animation */
 }
 
 
@@ -250,16 +366,21 @@ table tr:hover {
 }
 
 .search-btn {
-    padding: 8px 16px;
+    background-color: #5483B3;
+    color: #fff;
+    padding: 4px 10px;
     border: none;
-    background-color: #007bff;
-    color: white;
-    border-radius: 4px;
+    border-radius: 5px;
     cursor: pointer;
+    margin: 1px;
+    font-size: smaller;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
 }
 
 .search-btn:hover {
-    background-color: #0056b3;
+    background-color: #6f9fce;
+    transition: all 0.3s ease-in-out;
+    /* Smooth animation */
 }
 
 table {

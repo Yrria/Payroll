@@ -1,5 +1,60 @@
 /* REPORT_LEAVE CONTEN T */
+.table_div {
+    margin: 30px 10px 10px 10px;
+    height: auto;
+    padding: 20px;
+    border-radius: 3px;
+    box-shadow: 1px 0px 5px rgba(0, 0, 0, 0.3);
+    background-color: #fff;
+    overflow-y: hidden;
+    overflow-x: auto;
+}
 
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-height: 250px;
+    margin-top: 20px;
+}
+
+table th,
+table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    /* text-align: left; */
+    white-space: nowrap;
+    /* Prevents text wrapping */
+    overflow: hidden;
+    /* Ensures overflow is hidden */
+    text-overflow: ellipsis;
+    /* Shows ellipsis when text overflows */
+    max-width: 25px;
+    /* Set max width for the cell */
+    width: 5ch;
+    /* Sets a fixed width for the cell */
+    font-size: 14px;
+}
+
+.no-data {
+    text-align: center;
+    font-weight: bold;
+    color: gray;
+    padding: 20px;
+}
+
+table th {
+    background-color: white;
+    color: black;
+}
+
+table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+table tr:hover {
+    background-color: #f1f1f1;
+}
 
 .selection_div {
     margin: 50px 10px 10px 10px;
@@ -38,17 +93,21 @@ input[type="text"] {
 }
 
 .search-btn {
-    background-color: blue;
+    background-color: #5483B3;
     color: #fff;
-    padding: 5px 10px;
+    padding: 4px 10px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    margin-right: 10px;
+    margin: 1px;
+    font-size: smaller;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
 }
 
 .search-btn:hover {
-    background-color: darkblue;
+    background-color: #6f9fce;
+    transition: all 0.3s ease-in-out;
+    /* Smooth animation */
 }
 
 .content {
@@ -167,42 +226,6 @@ input[type="text"] {
     align-items: center;
 }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-}
-
-table th,
-table td {
-    vertical-align: middle;
-    text-align: center;
-    border: 1px solid #ddd;
-    padding: 5px;
-    /* text-align: left; */
-    white-space: nowrap;
-    /* Prevents text wrapping */
-    overflow: hidden;
-    /* Ensures overflow is hidden */
-    text-overflow: ellipsis;
-    /* Shows ellipsis when text overflows */
-    max-width: 25px;
-    /* Set max width for the cell */
-    width: 5ch;
-    /* Sets a fixed width for the cell */
-    font-size: 14px;
-}
-
-.td-text {
-    white-space: nowrap;
-    /* Prevents text wrapping */
-    overflow: hidden;
-    /* Ensures overflow is hidden */
-    text-overflow: ellipsis;
-    /* Shows ellipsis when text overflows */
-    max-width: 50px;
-    /* Set max width for the cell */
-}
 
 .action-buttons {
     display: flex;
@@ -216,34 +239,6 @@ table td {
     width: 100%;
     /* Matches the width of the table cell */
     gap: 5px;
-}
-
-table th {
-    background-color: white;
-    color: black;
-}
-
-table tr:nth-child(even) {
-    background-color: #f9f9f9;
-}
-
-table tr:hover {
-    background-color: #f1f1f1;
-}
-
-.status-approved {
-    color: green;
-    font-weight: bold;
-}
-
-.status-declined {
-    color: red;
-    font-weight: bold;
-}
-
-.status-pending {
-    color: #f39c12;
-    font-weight: bold;
 }
 
 h3 {
@@ -338,5 +333,3 @@ h3 {
     outline: none;
     border: none;
 }
-
-

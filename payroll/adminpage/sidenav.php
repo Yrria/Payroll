@@ -107,7 +107,7 @@
                 <ul class="sub-menu">
                     <span class="link-name">Report</span>
                     <li><a href="./report_leave.php"><span>Leave</span></a></li>
-                    <li><a href="./report_payment.php"><span>Payment</span></a></li>
+                    <li><a href="./report_payment.php"><span>Annual Dues</span></a></li>
                     <li><a href="./report_yearwise.php"><span>Year wise</span></a></li>
                 </ul>
             </li>

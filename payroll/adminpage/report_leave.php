@@ -14,7 +14,7 @@ $offset = ($page - 1) * $limit;
 // SQL query to fetch data with filters
 $sql = "SELECT 
             l.emp_id AS EmployeeID, 
-            e.position AS Subject, 
+            l.subject AS Subject, 
             CONCAT(a.lastname, ', ', a.firstname, ' ', a.middlename) AS Name, 
             l.leave_type AS LeaveType, 
             l.date_applied AS DateFiled, 
@@ -22,9 +22,8 @@ $sql = "SELECT
             l.remaining_leave AS RemainingLeave, 
             l.total_leaves AS TotalLeave
         FROM tbl_leave l
-        JOIN tbl_emp_info e ON l.emp_id = e.emp_id
         JOIN tbl_emp_acc a ON l.emp_id = a.emp_id
-        WHERE 1";
+        WHERE l.status IN ('Approved', 'Declined')";
 
 // Apply search filter
 if (!empty($search)) {
@@ -79,7 +78,6 @@ $result = mysqli_query($conn, $sql);
                         <div style="display: flex;align-items: center;width:60%;justify-content:right;margin-right:-4%;">
                             <div class="search-bar">
                                 <form method="POST" action="report_leave.php" id="searchForm" style="display: flex; align-items: center;">
-                                    <button type="submit" class="search-btn">Search</button>
                                     <input type="text" name="search" id="searchInput" placeholder="Search employee..." value="<?php echo htmlspecialchars($search); ?>" />
                                 </form>
                             </div>
@@ -126,29 +124,33 @@ $result = mysqli_query($conn, $sql);
                                     <th>Total Leave</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="showdata">
                                 <?php
                                 if (mysqli_num_rows($result) > 0) {
                                     while ($row = mysqli_fetch_assoc($result)) {
                                         $formatted_date = date("F-d-Y", strtotime($row['DateFiled']));
-
-                                        echo "<tr>
-                                                <td>{$row['EmployeeID']}</td>
-                                                <td>{$row['Subject']}</td>
-                                                <td>{$row['Name']}</td>
-                                                <td>{$row['LeaveType']}</td>
-                                                <td>" . htmlspecialchars($formatted_date) . "</td>
-                                                <td>{$row['NoOfLeave']}</td>
-                                                <td>{$row['RemainingLeave']}</td>
-                                                <td>{$row['TotalLeave']}</td>
-                                            </tr>";
+                                ?>
+                                        <tr>
+                                            <td><?php echo $row['EmployeeID']; ?></td>
+                                            <td><?php echo $row['Subject']; ?></td>
+                                            <td><?php echo $row['Name']; ?></td>
+                                            <td><?php echo $row['LeaveType']; ?></td>
+                                            <td><?php echo htmlspecialchars($formatted_date); ?></td>
+                                            <td><?php echo $row['NoOfLeave']; ?></td>
+                                            <td><?php echo $row['RemainingLeave']; ?></td>
+                                            <td><?php echo $row['TotalLeave']; ?></td>
+                                        </tr>
+                                    <?php
                                     }
                                 } else {
-                                    echo "<tr><td colspan='8' style='text-align: center;'>No records found</td></tr>";
-                                }
-                                ?>
+                                    ?>
+                                    <tr>
+                                        <td colspan="8" style="text-align: center; font-weight: bold;">No Records Found</td>
+                                    </tr>
+                                <?php } ?>
                             </tbody>
                         </table>
+
                         <br>
                         <!-- Pagination -->
                         <div class="pagination">
@@ -188,16 +190,38 @@ $result = mysqli_query($conn, $sql);
             }
         });
 
-        document.getElementById("searchInput").addEventListener("input", function() {
+        let searchInput = document.getElementById("searchInput");
+        let fromDate = document.getElementById("from-date");
+        let toDate = document.getElementById("to-date");
+        let showEntries = document.getElementById("show-entries");
+        let tableBody = document.querySelector("table tbody");
+        let typingTimer;
 
-
-            let items = document.querySelectorAll(".search-item"); // Adjust based on your structure
-
-            items.forEach(function(item) {
-                let text = item.textContent.toLowerCase();
-                item.style.display = text.includes(filter) ? "" : "none";
-            });
+        searchInput.addEventListener("input", function() {
+            clearTimeout(typingTimer);
+            typingTimer = setTimeout(fetchSearchResults, 300);
         });
+
+        function fetchSearchResults() {
+            const formData = new FormData();
+            formData.append("search", searchInput.value);
+            formData.append("from_date", fromDate.value);
+            formData.append("to_date", toDate.value);
+            formData.append("show_entries", showEntries.value);
+            formData.append("page", 1); // You can later make this dynamic if needed
+
+            fetch("search_reportleave.php", {
+                    method: "POST",
+                    body: formData
+                })
+                .then((res) => res.text())
+                .then((data) => {
+                    tableBody.innerHTML = data;
+                })
+                .catch((err) => {
+                    console.error("Error:", err);
+                });
+        }
     </script>
 
 

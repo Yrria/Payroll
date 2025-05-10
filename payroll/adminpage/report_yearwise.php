@@ -53,7 +53,7 @@ include './database/session.php';
                                     <th>View Details</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="showdata">
                                 <tr>
                                     <td>Emp 000</td>
                                     <td>Willy Wonka</td>
@@ -185,7 +185,7 @@ include './database/session.php';
                                     <th>Total Wage</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="showdata">
                                 <tr>
                                     <td>January</td>
                                     <td>150</td>

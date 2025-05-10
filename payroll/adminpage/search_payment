@@ -1,0 +1,61 @@
+<?php
+include '../assets/databse/connection.php'; // Ensure correct connection file
+
+// Initialize filter variables
+$name = $month = $year = $cutoff = '';
+
+// Check if filter parameters are set and sanitize them
+if (isset($_POST['name']) || isset($_POST['month']) || isset($_POST['year']) || isset($_POST['cutoff'])) {
+    $name = isset($_POST['name']) ? mysqli_real_escape_string($conn, $_POST['name']) : '';
+    $month = isset($_POST['month']) ? mysqli_real_escape_string($conn, $_POST['month']) : '';
+    $year = isset($_POST['year']) ? mysqli_real_escape_string($conn, $_POST['year']) : '';
+    $cutoff = isset($_POST['cutoff']) ? mysqli_real_escape_string($conn, $_POST['cutoff']) : '';
+
+    // Build the query with conditions
+    $query = "SELECT month, cutoff, total FROM tbl_payment WHERE 1=1"; // Start with all rows
+
+    // Apply filters based on provided data
+    if ($name !== '') {
+        $query .= " AND employee_name LIKE '%$name%'";
+    }
+    if ($month !== '') {
+        $query .= " AND month = '$month'";
+    }
+    if ($year !== '') {
+        $query .= " AND year = '$year'";
+    }
+    if ($cutoff !== '') {
+        $query .= " AND cutoff = '$cutoff'";
+    }
+
+    // Fetch the filtered results
+    $result = mysqli_query($conn, $query);
+    
+    // Check for errors in the query
+    if (!$result) {
+        die("Error executing query: " . mysqli_error($conn));
+    }
+
+    // Output the filtered data in a table
+    echo '<table>';
+    echo '<thead>';
+    echo '<tr>';
+    echo '<th>Month</th>';
+    echo '<th>Cutoff</th>';
+    echo '<th>Total Payment</th>';
+    echo '</tr>';
+    echo '</thead>';
+    echo '<tbody>';
+
+    while ($row = mysqli_fetch_assoc($result)) {
+        echo '<tr>';
+        echo '<td>' . $row['month'] . '</td>';
+        echo '<td>' . $row['cutoff'] . '</td>';
+        echo '<td>' . number_format($row['total'], 2) . '</td>';
+        echo '</tr>';
+    }
+
+    echo '</tbody>';
+    echo '</table>';
+}
+?>
