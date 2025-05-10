@@ -2,6 +2,75 @@
 session_start();
 include '../assets/databse/connection.php';
 include './database/session.php';
+
+$records_per_page = 5;
+$current_page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
+$start_from = ($current_page - 1) * $records_per_page;
+
+// Build the base SELECT
+$sql = "SELECT * FROM tbl_emp_acc";
+
+// If there's a search term, extend WHERE to include tbl_leave fields AND names from tbl_emp_acc
+if (!empty($_GET['query'])) {
+    $q = $conn->real_escape_string($_GET['query']);
+
+    $sql .= " WHERE (
+        emp_id           LIKE '%{$q}%'
+     OR leave_id         LIKE '%{$q}%'
+     OR subject          LIKE '%{$q}%'
+     OR date_applied     LIKE '%{$q}%'
+     OR start_date       LIKE '%{$q}%'
+     OR end_date         LIKE '%{$q}%'
+     OR status           LIKE '%{$q}%'
+     OR leave_type       LIKE '%{$q}%'
+     OR message          LIKE '%{$q}%'
+     OR rejection_reason LIKE '%{$q}%'
+     OR remaining_leave  LIKE '%{$q}%'
+     OR no_of_leave      LIKE '%{$q}%'
+     OR total_leaves     LIKE '%{$q}%'
+     -- search names in tbl_emp_acc
+     OR emp_id IN (
+        SELECT emp_id FROM tbl_emp_acc
+        WHERE firstname  LIKE '%{$q}%'
+           OR middlename LIKE '%{$q}%'
+           OR lastname   LIKE '%{$q}%'
+     )
+    )";
+}
+
+$sql .= " LIMIT $start_from, $records_per_page";
+$result = $conn->query($sql);
+
+// Count for pagination (same WHERE clause)
+$total_sql = "SELECT COUNT(*) FROM tbl_leave";
+if (!empty($_GET['query'])) {
+    $total_sql .= " WHERE (
+        emp_id           LIKE '%{$q}%'
+     OR leave_id         LIKE '%{$q}%'
+     OR subject          LIKE '%{$q}%'
+     OR date_applied     LIKE '%{$q}%'
+     OR start_date       LIKE '%{$q}%'
+     OR end_date         LIKE '%{$q}%'
+     OR status           LIKE '%{$q}%'
+     OR leave_type       LIKE '%{$q}%'
+     OR message          LIKE '%{$q}%'
+     OR rejection_reason LIKE '%{$q}%'
+     OR remaining_leave  LIKE '%{$q}%'
+     OR no_of_leave      LIKE '%{$q}%'
+     OR total_leaves     LIKE '%{$q}%'
+     OR emp_id IN (
+        SELECT emp_id FROM tbl_emp_acc
+        WHERE firstname  LIKE '%{$q}%'
+           OR middlename LIKE '%{$q}%'
+           OR lastname   LIKE '%{$q}%'
+     )
+    )";
+}
+$total_rows = $conn->query($total_sql)->fetch_row()[0];
+$total_pages = ceil($total_rows / $records_per_page);
+
+// preserve query in pagination links
+$qp = !empty($_GET['query']) ? '&query=' . urlencode($_GET['query']) : '';
 ?>
 
 <!DOCTYPE html>
@@ -64,30 +133,48 @@ include './database/session.php';
                         <table id="leave-table">
                             <thead>
                                 <tr>
-                                    <th>#</th>
-                                    <th>Employee</th>
-                                    <th>Leave Type</th>
-                                    <th>Leave From</th>
-                                    <th>Leave To</th>
-                                    <th>Days</th>
+                                    <th>Employee ID</th>
+                                    <th>Name</th>
+                                    <th>Position</th>
+                                    <th>Gender</th>
+                                    <th>Email</th>
+                                    <th>Phone No.</th>
+                                    <th>Address</th>
+                                    <th>Rate Per Day</th>
                                     <th>Status</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr class="pending-leave">
-                                    <td>423491</td>
-                                    <td>Ravi</td>
-                                    <td>Sick Leave</td>
-                                    <td>12/03/2024</td>
-                                    <td>15/03/2024</td>
-                                    <td>3</td>
-                                    <td>Pending</td>
-                                    <td>
-                                        <button class="view-info">View Info</button>
-                                    </td>
-                                </tr>
-                                <!-- Add more rows as needed for demonstration -->
+                            <tbody id="showdata">
+                                <?php
+                                if ($result->num_rows > 0) {
+                                    while ($row = $result->fetch_assoc()) {
+                                        if (!empty($row['m_name'])) {
+                                            $fullname = $row['l_name'] . " , " . $row['f_name'] . " , " . $row['m_name'] . ".";
+                                            $_SESSION['fullname'] = $fullname;
+                                        } else {
+                                            $fullname = $row['l_name'] . " , " . $row['f_name'];
+                                            $_SESSION['fullname'] = $fullname;
+                                        }
+                                ?>
+                                        <tr>
+                                            <td><?php echo $row['emp_id'] ?></td>
+                                            <td><?php echo htmlspecialchars($fullname) ?></td>
+                                            <td><?php echo $row['position'] ?></td>
+                                            <td><?php echo $row['emp_shift'] ?></td>
+                                            <td><?php echo $row['basic_pay'] ?></td>
+                                            <td class="td-text"><?php echo $row['status'] ?></td>
+                                            <td class="td-text">
+                                                <div class="action-buttons">
+                                                    <a href='./create_payslip.php?id=<?php echo $row["emp_id"]; ?>'><button class="slip-btn">Generate Slip</button></a>
+                                                    <button class="view-btn">Summary</button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                <?php
+                                    }
+                                }
+                                ?>
                             </tbody>
                         </table>
 
