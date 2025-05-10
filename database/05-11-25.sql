@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 09, 2025 at 04:01 PM
+-- Generation Time: May 10, 2025 at 07:11 PM
 -- Server version: 10.4.32-MariaDB
--- PHP Version: 8.0.30
+-- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -20,7 +20,6 @@ SET time_zone = "+00:00";
 --
 -- Database: `payroll`
 --
-DROP DATABASE IF EXISTS `payroll`;
 CREATE DATABASE IF NOT EXISTS `payroll` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 USE `payroll`;
 
@@ -46,7 +45,7 @@ CREATE TABLE `tbl_admin_acc` (
 --
 
 INSERT INTO `tbl_admin_acc` (`admin_id`, `lastname`, `firstname`, `middlename`, `email`, `password`, `otp`) VALUES
-(2, 'santos', 'rodney', 'galario', 'ic.rodney.santos@cvsu.edu.ph', 'rabbit', 47033);
+(1, 'santos', 'rodney', 'galario', 'ic.rodney.santos@cvsu.edu.ph', 'pass', 47033);
 
 -- --------------------------------------------------------
 
@@ -58,24 +57,26 @@ DROP TABLE IF EXISTS `tbl_attendance`;
 CREATE TABLE `tbl_attendance` (
   `emp_id` int(100) NOT NULL,
   `attendance_id` int(100) NOT NULL,
-  `gender` varchar(55) NOT NULL,
   `present_days` int(100) NOT NULL,
   `absent_days` int(100) DEFAULT NULL,
   `hours_present` double NOT NULL,
   `hours_late` double DEFAULT NULL,
   `hours_overtime` double DEFAULT NULL,
-  `holiday` int(100) DEFAULT NULL,
-  `position_name` varchar(55) NOT NULL,
-  `emp_shift` varchar(55) NOT NULL
+  `holiday` int(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `tbl_attendance`
 --
 
-INSERT INTO `tbl_attendance` (`emp_id`, `attendance_id`, `gender`, `present_days`, `absent_days`, `hours_present`, `hours_late`, `hours_overtime`, `holiday`, `position_name`, `emp_shift`) VALUES
-(1, 1, 'Male', 20, 8, 160, 3, 10, 1, 'Manager', 'Morning'),
-(2, 2, 'Male', 20, 10, 160, 3, 10.5, 1, 'Assistant Manager', 'Night');
+INSERT INTO `tbl_attendance` (`emp_id`, `attendance_id`, `present_days`, `absent_days`, `hours_present`, `hours_late`, `hours_overtime`, `holiday`) VALUES
+(1, 1, 15, 0, 120, 0, 0, 2),
+(2, 2, 15, 0, 120, 0, 0, 2),
+(3, 3, 10, 5, 80, 0, 0, 1),
+(4, 4, 11, 4, 88, 0, 0, 1),
+(5, 5, 10, 5, 80, 0, 0, 1),
+(6, 6, 11, 4, 88, 0, 0, 1),
+(7, 7, 12, 3, 96, 0, 0, 2);
 
 -- --------------------------------------------------------
 
@@ -95,6 +96,19 @@ CREATE TABLE `tbl_deduction` (
   `other_deduction` double DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `tbl_deduction`
+--
+
+INSERT INTO `tbl_deduction` (`emp_id`, `deduction_id`, `year`, `month`, `pagibig_deduction`, `philhealth_deduction`, `sss_deduction`, `other_deduction`) VALUES
+(1, 1, 2025, 'May', 500, 500, 500, 0),
+(2, 2, 2025, 'May', 500, 500, 500, 0),
+(3, 3, 2025, 'May', 500, 500, 500, 0),
+(4, 4, 2025, 'May', 500, 500, 500, 0),
+(5, 5, 2025, 'May', 500, 500, 500, 0),
+(6, 6, 2025, 'May', 500, 500, 500, 0),
+(7, 7, 2025, 'May', 500, 500, 500, 0);
+
 -- --------------------------------------------------------
 
 --
@@ -112,7 +126,6 @@ CREATE TABLE `tbl_emp_acc` (
   `address` varchar(100) DEFAULT NULL,
   `phone_no` bigint(100) DEFAULT NULL,
   `gender` varchar(100) DEFAULT NULL,
-  `rate_per_day` int(100) NOT NULL,
   `status` varchar(50) NOT NULL,
   `otp` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -121,14 +134,14 @@ CREATE TABLE `tbl_emp_acc` (
 -- Dumping data for table `tbl_emp_acc`
 --
 
-INSERT INTO `tbl_emp_acc` (`emp_id`, `lastname`, `firstname`, `middlename`, `email`, `password`, `address`, `phone_no`, `gender`, `rate_per_day`, `status`, `otp`) VALUES
-(1, 'Toledo', 'Marc Andrei', 'Andrei', 'ic.marcandrei.toledo@cvsu.edu.ph', 'P@ssword1', 'habay, bacoor', 99123456789, 'male', 600, 'active', 822690),
-(2, 'Lofamia', 'Dhaniel', 'Dela Cruz', 'dhanieeel0907@gmail.com', 'hahaediwow', 'jan lang', 937383717, 'Male', 500, 'active', NULL),
-(3, 'Valentino', 'Martin', 'Malapo', 'ic.martinlouis.valentino@cvsu.edu.ph', 'martin123', 'malumot,panapaan bacolor city', 9924210601, 'Male', 2600, 'single', 3),
-(4, 'Fidelis', 'Alen', 'Nicanor', 'ic.alen.fidelis@cvsu.edu.ph', 'fidelis', 'dexterville sabang', 9924210601, 'Male', 2500, 'single', 4),
-(5, 'Carlos', 'Nicol', 'Obes', 'ic.carlosjr.nicol@cvsu.edu.ph', 'nicol', 'panapaan', 9924210601, 'Male', 2800, 'single', 5),
-(6, 'Macaspac', 'Patrick', 'Pitalco', 'ic.johnpatrick.macaspac@cvsu.edu.ph', 'patrick', 'carbag', 9924210601, 'Male', 2900, 'single', 10),
-(7, 'Javier', 'Harvey', 'Camacho', 'ic.harvey.havier@cvsu.edu.ph', 'javier', 'binakayan', 9924210601, 'Male', 3000, 'single', 11);
+INSERT INTO `tbl_emp_acc` (`emp_id`, `lastname`, `firstname`, `middlename`, `email`, `password`, `address`, `phone_no`, `gender`, `status`, `otp`) VALUES
+(1, 'Toledo', 'Marc Andrei', 'Andrei', 'ic.marcandrei.toledo@cvsu.edu.ph', 'pass', 'habay, bacoor', 99123456789, 'male', 'active', 0),
+(2, 'Lofamia', 'Dhaniel', 'Dela Cruz', 'dhanieeel0907@gmail.com', 'pass', 'jan lang', 937383717, 'Male', 'active', 0),
+(3, 'Valentino', 'Martin', 'Malapo', 'ic.martinlouis.valentino@cvsu.edu.ph', 'pass', 'malumot,panapaan bacolor city', 9924210601, 'Male', 'active', 0),
+(4, 'Fidelis', 'Alen', 'Nicanor', 'ic.alen.fidelis@cvsu.edu.ph', 'pass', 'dexterville sabang', 9924210601, 'Male', 'active', 0),
+(5, 'Carlos', 'Nicol', 'Obes', 'ic.carlosjr.nicol@cvsu.edu.ph', 'pass', 'panapaan', 9924210601, 'Male', 'active', 0),
+(6, 'Macaspac', 'Patrick', 'Pitalco', 'ic.johnpatrick.macaspac@cvsu.edu.ph', 'pass', 'carbag', 9924210601, 'Male', 'active', 0),
+(7, 'Javier', 'Harvey', 'Camacho', 'ic.harvey.havier@cvsu.edu.ph', 'pass', 'binakayan', 9924210601, 'Male', 'active', 0);
 
 -- --------------------------------------------------------
 
@@ -138,6 +151,7 @@ INSERT INTO `tbl_emp_acc` (`emp_id`, `lastname`, `firstname`, `middlename`, `ema
 
 DROP TABLE IF EXISTS `tbl_emp_info`;
 CREATE TABLE `tbl_emp_info` (
+  `emp_info_id` int(11) NOT NULL,
   `emp_id` int(100) NOT NULL,
   `shift` varchar(100) NOT NULL,
   `position` varchar(100) NOT NULL,
@@ -150,8 +164,14 @@ CREATE TABLE `tbl_emp_info` (
 -- Dumping data for table `tbl_emp_info`
 --
 
-INSERT INTO `tbl_emp_info` (`emp_id`, `shift`, `position`, `bank_acc`, `pay_type`, `rate`) VALUES
-(1, 'night', 'manager', 123456789, '?', 500);
+INSERT INTO `tbl_emp_info` (`emp_info_id`, `emp_id`, `shift`, `position`, `bank_acc`, `pay_type`, `rate`) VALUES
+(1, 1, 'night', 'manager', 123456789, '?', 1000),
+(2, 2, 'Morning', 'Crew', 98765432123, 'Cash', 520),
+(3, 3, 'Morning', 'Server Crew', 98765432123, 'Cash', 520),
+(4, 4, 'Morning', 'Manager', 98765432123, 'Cash', 720),
+(5, 5, 'Morning', 'Crew', 98765432123, 'Cash', 520),
+(6, 6, 'Morning', 'Crew', 98765432123, 'Cash', 520),
+(7, 7, 'Morning', 'Server Crew', 98765432123, 'Cash', 520);
 
 -- --------------------------------------------------------
 
@@ -270,16 +290,34 @@ ALTER TABLE `tbl_attendance`
   ADD KEY `fk_attendance_emp` (`emp_id`);
 
 --
+-- Indexes for table `tbl_deduction`
+--
+ALTER TABLE `tbl_deduction`
+  ADD PRIMARY KEY (`deduction_id`);
+
+--
 -- Indexes for table `tbl_emp_acc`
 --
 ALTER TABLE `tbl_emp_acc`
   ADD PRIMARY KEY (`emp_id`);
 
 --
+-- Indexes for table `tbl_emp_info`
+--
+ALTER TABLE `tbl_emp_info`
+  ADD PRIMARY KEY (`emp_info_id`);
+
+--
 -- Indexes for table `tbl_leave`
 --
 ALTER TABLE `tbl_leave`
   ADD PRIMARY KEY (`leave_id`);
+
+--
+-- Indexes for table `tbl_payment`
+--
+ALTER TABLE `tbl_payment`
+  ADD PRIMARY KEY (`payment_id`);
 
 --
 -- Indexes for table `tbl_salary`
@@ -302,7 +340,7 @@ ALTER TABLE `tbl_admin_acc`
 -- AUTO_INCREMENT for table `tbl_attendance`
 --
 ALTER TABLE `tbl_attendance`
-  MODIFY `attendance_id` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `attendance_id` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `tbl_emp_acc`
