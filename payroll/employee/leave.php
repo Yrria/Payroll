@@ -56,6 +56,8 @@ $result = $stmt->get_result();
                                         <option value="Medical Leave">Medical Leave</option>
                                         <option value="Annual Leave">Annual Leave</option>
                                         <option value="Bereavement Leave">Bereavement Leave</option>
+                                        <option value="Paternity Leave">Paternity Leave</option>
+                                        <option value="Casual Leave">Casual Leave</option>
                                 </select>
                                 <select name="statusfilter" id="statusfilter" class="textbox">
                                         <option value="">Status</option>
@@ -142,6 +144,8 @@ $result = $stmt->get_result();
                                         <option value="Medical Leave">Medical Leave</option>
                                         <option value="Annual Leave">Annual Leave</option>
                                         <option value="Bereavement Leave">Bereavement Leave</option>
+                                        <option value="Paternity Leave">Paternity Leave</option>
+                                        <option value="Casual Leave">Casual Leave</option>
                                     </select>
                                 </div>
                                 <div class="grid-item">
@@ -160,12 +164,12 @@ $result = $stmt->get_result();
                                 <h1>Leave Info</h1>
                                 <hr>
                                 <div class="info-box">
-                                    <div class="info-grid"><h6>Subject</h6><p></p></div>
-                                    <div class="info-grid"><h6>Status</h6><p></p></div>
-                                    <div class="info-grid"><h6>Start Date (DD/MM/YYYY)</h6><p></p></div>
-                                    <div class="info-grid"><h6>End Date (DD/MM/YYYY)</h6><p></p></div>
-                                    <div class="info-grid"><h6>Leave Type</h6><p></p></div>
-                                    <div class="info-grid"><h6>Message</h6><p></p></div>
+                                    <div class="info-grid"><h4>Subject</h4><p></p></div>
+                                    <div class="info-grid"><h4>Status</h4><p></p></div>
+                                    <div class="info-grid"><h4>Start Date (DD/MM/YYYY)</h4><p></p></div>
+                                    <div class="info-grid"><h4>End Date (DD/MM/YYYY)</h4><p></p></div>
+                                    <div class="info-grid"><h4>Leave Type</h4><p></p></div>
+                                    <div class="info-grid"><h4>Message</h4><p></p></div>
                                     <div class="info-grid"><button class="button">Back</button></div>
                                 </div>
                             </div>
@@ -180,6 +184,8 @@ $result = $stmt->get_result();
     <script src="./javascript/date.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- LEAVE APPLICATION AJAX -->
     <script>
         $('#leaveForm').on('submit', function(e) {
             e.preventDefault();
@@ -213,6 +219,7 @@ $result = $stmt->get_result();
         });
     </script>
 
+    <!-- VIEW INFO OVERLAY -->
     <script>
         document.querySelectorAll('.view').forEach(button => {
             button.addEventListener('click', function () {
@@ -254,33 +261,7 @@ $result = $stmt->get_result();
         });
     </script>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const leaveFilter = document.getElementById("leavefilter");
-            const statusFilter = document.getElementById("statusfilter");
-            const table = document.getElementById("leaveTable");
-            const rows = table.getElementsByTagName("tr");
-
-            function filterTable() {
-                const leaveValue = leaveFilter.value.toLowerCase();
-                const statusValue = statusFilter.value.toLowerCase();
-
-                for (let i = 1; i < rows.length; i++) { // Start at 1 to skip header
-                    const typeCell = rows[i].cells[5].textContent.toLowerCase();
-                    const statusCell = rows[i].cells[6].textContent.toLowerCase();
-
-                    const typeMatch = leaveValue === "" || typeCell === leaveValue;
-                    const statusMatch = statusValue === "" || statusCell === statusValue;
-
-                    rows[i].style.display = (typeMatch && statusMatch) ? "" : "none";
-                }
-            }
-
-            leaveFilter.addEventListener("change", filterTable);
-            statusFilter.addEventListener("change", filterTable);
-        });
-    </script>
-
+    <!-- FILTER -->
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const leaveFilter = document.getElementById("leavefilter");

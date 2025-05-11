@@ -9,6 +9,10 @@ td {
     padding: 5px;
     text-align: center;
     border: 1px solid #CCC;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 10px;
 }
 
 th {
@@ -40,6 +44,30 @@ tr:nth-child(14) {
 
 button:hover {
     background-color: #20242C;
+}
+
+.filterDiv {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+
+.textbox {
+    width: 100%;
+    font-size: 15px;
+    border-radius: 5px;
+    padding: 5px;
+    border: none;
+    transition: 0.3s;
+}
+
+.textbox:focus {
+    outline: none;
+}
+
+.textbox:focus {
+    background-color: #F7F6FE;
 }
 
 /* view */

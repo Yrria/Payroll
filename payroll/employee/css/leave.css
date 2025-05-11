@@ -17,7 +17,6 @@ table {
     width: 100%;
     border-collapse: collapse;
     margin: 20px 0;
-    table-layout: fixed;
 }
 
 th,
@@ -28,6 +27,8 @@ td {
     border: 1px solid #CCC;
     overflow: hidden;
     text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 10px;
 }
 
 th {
@@ -172,10 +173,6 @@ textarea {
     gap: 10px;
 }
 
-.info-grid {
-    padding: 10px 10px 10px 0;
-}
-
 .info-box > .info-grid:nth-child(1) {
     grid-column: span 3;
 }
@@ -192,13 +189,26 @@ textarea {
 
 .info-grid:nth-child(6) {
     display: flex;
+    flex-direction: column;
+}
+
+.info-grid:nth-child(7) {
+    display: flex;
     justify-content: right;
+    grid-column: span 4;
 }
 
 .textbox:disabled {
     background-color: #FFFFFF;
 }
 
-.info-grid > .textbox {
-    padding: 5px 5px;
+.info-grid > h4 {
+    margin: 5px 5px;
+}
+
+.info-grid > p {
+    background-color: #FFFFFF;
+    margin: 10px 0px;
+    padding: 10px 10px;
+    border-radius: 5px;
 }
