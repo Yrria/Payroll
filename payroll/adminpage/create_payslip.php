@@ -18,15 +18,15 @@ if (isset($_GET['id'])) {
             e.email,
             e.address,
             e.phone_no,
-            e.rate_per_day,
             a.present_days,
             a.absent_days,
             a.hours_present,
             a.hours_late,
             a.hours_overtime,
             a.holiday,
-            a.position_name,
-            a.emp_shift,
+            i.shift,
+            i.rate,
+            i.position,
             s.basic_pay,
             s.pagibig_deduction,
             s.philhealth_deduction,
@@ -35,6 +35,7 @@ if (isset($_GET['id'])) {
         FROM tbl_emp_acc AS e
         INNER JOIN tbl_attendance AS a ON e.emp_id = a.emp_id
         INNER JOIN tbl_salary AS s ON e.emp_id = s.emp_id
+        INNER JOIN tbl_emp_info AS i ON i.emp_id = i.emp_id
         WHERE e.emp_id = ?
     ";
 
@@ -48,9 +49,9 @@ if (isset($_GET['id'])) {
         $emp_id = $employee['emp_id'];
         $gender = $employee['gender'];
         $address = $employee['address'];
-        $position_name = $employee['position_name'];
+        $position_name = $employee['position'];
         $present_days = $employee['present_days'];
-        $rate_pday = $employee['rate_per_day'];
+        $rate_pday = $employee['rate'];
         $hours_overtime = $employee['hours_overtime'];
         $holiday_present = $employee['holiday'];
         $pagibig_deduction = $employee['pagibig_deduction'];
@@ -65,6 +66,8 @@ if (isset($_GET['id'])) {
         $compute_holiday = $holiday_present * 2;
         $computed_holiday = $compute_holiday * $rate_pday;
         $computed_present_holiday = ($compute_present_holiday * $rate_pday) + $computed_holiday;
+        $all_deduction = $pagibig_deduction + $philhealth_deduction + $sss_deduction;
+        $net_income = $computed_present_holiday -  $all_deduction;
         
         // Define fullname properly
         $fullname = $employee['firstname'] . ' ' . $employee['middlename'] . ' ' . $employee['lastname'];
@@ -143,7 +146,7 @@ if (isset($_GET['id'])) {
                     <span>No. Of Days:</span><input class="income_inputs" value="<?php echo $present_days?>" type="text" name="days_input" id=""><span>Rate Wage:</span><input class="income_inputs" readonly value="<?php echo $computed_present_holiday ?>" type="text" name="" id=""><br>
                     <span>OT hr/Day:</span><input class="income_inputs" readonly value="<?php echo $hours_overtime?>" type="text" name="" id=""><span>OT hr/Day:</span><input class="income_inputs" readonly value="<?php echo $computed_ot?>" type="text" name="" id=""><br>
                     <span>Holiday Pay (day):</span><input class="income_inputs" type="text" readonly value="<?php echo $holiday_present?>" name="" id=""><span>Holiday Pay:</span><input class="income_inputs" readonly value="<?php echo $computed_holiday?>"  type="text" name="" id=""><br>
-                    <span>Net Income:</span><input class="income_inputs" type="text" readonly value="" name="" id="">
+                    <span>Net Income:</span><input class="income_inputs" type="text" readonly value="<?php echo $net_income?>" value="" name="" id="">
                 </div>
                 <div class="deduction_div">
                     <span style="margin-right:40%;">Deductions</span> <span>Other Deductions</span><br>
