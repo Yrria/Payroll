@@ -202,10 +202,19 @@ input[type="text"] {
     max-width: 70px;
 }
 
-.action-buttons,
-.action-tb {
-    max-width: 100px;
-    /* Set max width for the cell */
+
+.action-buttons {
+    display: flex;
+    /* Enables flexbox */
+    justify-content: center;
+    /* Centers the button horizontally */
+    align-items: center;
+    /* Centers the button vertically */
+    height: 70%;
+    /* Matches the height of the table cell */
+    width: 100%;
+    /* Matches the width of the table cell */
+    gap: 5px;
 }
 
 .view-btn {
