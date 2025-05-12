@@ -3,7 +3,7 @@ session_start();
 include '../assets/databse/connection.php';
 include './database/session.php';
 
-$records_per_page = 7; // Number of records to display per page
+$records_per_page = 1; // Number of records to display per page
 $current_page = isset($_GET['page']) ? $_GET['page'] : 1; // Get current page number, default to 1
 
 // Calculate the limit clause for SQL query
@@ -13,6 +13,20 @@ $start_from = ($current_page - 1) * $records_per_page;
 $sql = "SELECT * FROM tbl_leave WHERE status = 'Pending'";
 
 // Check if search query is provided
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['approve_btn'])) {
+  $leave_id = $conn->real_escape_string($_POST['approve_leave_id']);
+
+  // Update leave status to Approved
+  $update_sql = "UPDATE tbl_leave SET status = 'Approved' WHERE leave_id = '$leave_id'";
+  if ($conn->query($update_sql)) {
+    header("Location: leave_approved.php");
+    exit();
+  } else {
+    echo "<script>alert('Failed to approve leave request.');</script>";
+  }
+}
+
 if (isset($_GET['query']) && !empty($_GET['query'])) {
   $search_query = $_GET['query'];
   // Modify SQL query to include search filter
@@ -150,26 +164,30 @@ $qp = !empty($_GET['query']) ? '&query=' . urlencode($_GET['query']) : '';
                       $middle = $e['middlename'];
                     }
                     $_SESSION['fullname'] = trim("$first $middle $last"); // First, Middle, Last
-                  ?>
-                    <tr>
+                    ?>
+                    <tr data-start-date="<?php echo htmlspecialchars($row['start_date']); ?>"
+                      data-end-date="<?php echo htmlspecialchars($row['end_date']); ?>">
+
                       <td><?php echo htmlspecialchars($row['emp_id']); ?></td>
                       <td><?php echo htmlspecialchars("$first $middle $last"); ?></td> <!-- Full Name in one cell -->
                       <td><?php echo htmlspecialchars($row['subject']); ?></td>
                       <td><?php echo htmlspecialchars($row['date_applied']); ?></td>
                       <td><?php echo htmlspecialchars($row['leave_type']); ?></td>
                       <td><?php echo htmlspecialchars($row['message']); ?></td>
-                      <td class="td-text 
-                        <?php
-                        if ($row['status'] === 'Approved') echo 'status-approved';
-                        elseif ($row['status'] === 'Declined') echo 'status-declined';
-                        elseif ($row['status'] === 'Pending') echo 'status-pending';
-                        ?>">
+                      <td class="td-text" style="<?php echo ($row['status'] === 'Pending') ? 'color: red;' : ''; ?>">
                         <?php echo htmlspecialchars($row['status']); ?>
                       </td>
+
                       <td class="td-text">
                         <div class="action-buttons">
                           <button class="view-btn">View Info</button>
-                          <button class="view-btn">Approve</button>
+                          <form method="post"
+                            onsubmit="return confirm('Are you sure you want to approve this leave request?');">
+                            <input type="hidden" name="approve_leave_id"
+                              value="<?php echo htmlspecialchars($row['leave_id']); ?>">
+                            <button type="submit" name="approve_btn" class="view-btn">Approve</button>
+                          </form>
+
                           <button class="view-btn">Decline</button>
                         </div>
                       </td>
@@ -184,15 +202,22 @@ $qp = !empty($_GET['query']) ? '&query=' . urlencode($_GET['query']) : '';
             </table>
             <br>
             <!-- Pagination -->
-            <div style="display: flex; justify-content: space-between; align-items: center; padding-right: 1.5%; padding-left: 1.5%;">
+            <div
+              style="display: flex; justify-content: space-between; align-items: center; padding-right: 1.5%; padding-left: 1.5%;">
               <p style="margin: 0;">Page <?= $current_page ?> out of <?= $total_pages ?></p>
               <div class="pagination" id="content">
-                <?php if ($current_page > 1) : ?>
-                  <a href="?page=<?= ($current_page - 1); ?>&query=<?php echo isset($_GET['query']) ? $_GET['query'] : ''; ?>" class="prev" style="border-radius:4px;background-color:#368DB8;color:white;margin-bottom:13px; padding: 10px;">&laquo; Previous</a>
+                <?php if ($current_page > 1): ?>
+                  <a href="?page=<?= ($current_page - 1); ?>&query=<?php echo isset($_GET['query']) ? $_GET['query'] : ''; ?>"
+                    class="prev"
+                    style="border-radius:4px;background-color:#368DB8;color:white;margin-bottom:13px; padding: 10px;">&laquo;
+                    Previous</a>
                 <?php endif; ?>
 
-                <?php if ($current_page < $total_pages) : ?>
-                  <a href="?page=<?= ($current_page + 1); ?>&query=<?php echo isset($_GET['query']) ? $_GET['query'] : ''; ?>" class="next" style="border-radius:4px;background-color:#368DB8;color:white;margin-bottom:13px; padding: 10px;">Next &raquo;</a>
+                <?php if ($current_page < $total_pages): ?>
+                  <a href="?page=<?= ($current_page + 1); ?>&query=<?php echo isset($_GET['query']) ? $_GET['query'] : ''; ?>"
+                    class="next"
+                    style="border-radius:4px;background-color:#368DB8;color:white;margin-bottom:13px; padding: 10px;">Next
+                    &raquo;</a>
                 <?php endif; ?>
               </div>
             </div>
@@ -208,49 +233,38 @@ $qp = !empty($_GET['query']) ? '&query=' . urlencode($_GET['query']) : '';
 
 </html>
 
-<!-- Modal -->
-<div id="infoModal" class="modal">
+<!-- Decline Reason Modal -->
+<div id="declineModal" class="modal">
   <div class="modal-content">
-    <h2>Leave Info</h2>
+    <h2>Decline Leave Request</h2>
     <hr>
-    <div class="modal-details">
-      <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-        <div style="width: 48%;">
-          <label><strong>Leave Subject</strong></label>
-          <input type="text" value="Leave for Medical Concerns" readonly
-            style="width: 100%; padding: 5px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px;" />
-        </div>
-        <div style="width: 48%;">
-          <label><strong>Status</strong></label>
-          <input type="text" value="Approved" readonly
-            style="width: 100%; padding: 5px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px;" />
-        </div>
-      </div>
-      <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-        <div style="width: 48%;">
-          <label><strong>Leave Date (MM/DD/YYYY)</strong></label>
-          <input type="text" value="01/06/2024" readonly
-            style="width: 100%; padding: 5px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px;" />
-        </div>
-        <div style="width: 48%;">
-          <label><strong>Leave Type</strong></label>
-          <input type="text" value="Medical Leave" readonly
-            style="width: 100%; padding: 5px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px;" />
-        </div>
-      </div>
-      <div style="margin-bottom: 10px;">
-        <label><strong>Message</strong></label>
-        <textarea readonly
-          style="width: 100%; padding: 5px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; resize: none; height: 80px;">I won't be able to come to work due to my medical concerns.
-        </textarea>
-      </div>
+    <div class="modal-details" style="margin-bottom: 100px;">
+      <label for="declineReason"><strong>Reason for Decline</strong></label>
+      <textarea id="declineReason" placeholder="Enter reason..."
+        style="width: 100%; padding: 5px; margin-top: 5px; border: 1px solid #ccc; border-radius: 10px; resize: none; height: 100px;"></textarea>
     </div>
-    <!-- Back button -->
-    <div style="display: flex; justify-content: flex-end; margin-top: 20px;">
-      <button class="close"
-        style="padding: 8px 12px; background-color: black; color: white; border: none; border-radius: 4px; cursor: pointer;">
-        Back
-      </button>
+    <div style="display: flex; justify-content: flex-end; gap: 10px;">
+      <button id="submitDecline"
+        style="padding: 8px 16px; background-color: #5483B3; color: white; border: none; border-radius: 4px; cursor: pointer;">Okay</button>
+      <button class="close-decline"
+        style="padding: 8px 16px; background-color: black; color: white; border: none; border-radius: 4px; cursor: pointer;">Cancel</button>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- Approve Modal -->
+<div id="approveModal" class="modal">
+  <div class="modal-content">
+    <h2>Approve Leave Request</h2>
+    <hr>
+    <p>Are you sure you want to approve this leave request?</p>
+    <div style="display: flex; justify-content: flex-end; gap: 10px;">
+      <button id="confirmApprove"
+        style="padding: 8px 16px; background-color: #5483B3; color: white; border: none; border-radius: 4px; cursor: pointer;">Okay</button>
+      <button class="close-approve"
+        style="padding: 8px 16px; background-color: black; color: white; border: none; border-radius: 4px; cursor: pointer;">Cancel</button>
     </div>
   </div>
 </div>
@@ -285,17 +299,105 @@ $qp = !empty($_GET['query']) ? '&query=' . urlencode($_GET['query']) : '';
   });
 
   // FOR Search
-  document.getElementById('search_emp_input').addEventListener('keyup', function() {
+  document.getElementById('search_emp_input').addEventListener('keyup', function () {
     let query = this.value;
     let status = 'Pending'; // This will be for the pending page.
 
     const xhr = new XMLHttpRequest();
     xhr.open("GET", "search_leave.php?query=" + encodeURIComponent(query) + "&status=" + encodeURIComponent(status), true);
-    xhr.onreadystatechange = function() {
+    xhr.onreadystatechange = function () {
       if (xhr.readyState === 4 && xhr.status === 200) {
         document.getElementById('showdata').innerHTML = xhr.responseText;
       }
     };
     xhr.send();
   });
+
+  const declineModal = document.getElementById("declineModal");
+  const declineButtons = document.querySelectorAll(".action-buttons .view-btn:nth-child(3)"); // Assuming 3rd button is Decline
+  const closeDeclineBtns = document.querySelectorAll(".close-decline");
+
+  // Show decline modal on click
+  declineButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      declineModal.style.display = "block";
+    });
+  });
+
+  // Hide modal when Cancel or outside click
+  closeDeclineBtns.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      declineModal.style.display = "none";
+    });
+  });
+
+  window.addEventListener("click", (event) => {
+    if (event.target === declineModal) {
+      declineModal.style.display = "none";
+    }
+  });
+
+  // Submit action (adjust this part to save to DB or backend)
+  document.getElementById("submitDecline").addEventListener("click", () => {
+    const reason = document.getElementById("declineReason").value.trim();
+    if (reason === "") {
+      alert("Please enter a reason for decline.");
+      return;
+    }
+
+    // TODO: Send the reason to the server using AJAX or a form submission
+    console.log("Submitted decline reason:", reason);
+
+    declineModal.style.display = "none";
+  });
+
+  document.getElementById('showdata').addEventListener('click', function (e) {
+    if (e.target && e.target.classList.contains('view-btn') && e.target.textContent === "Decline") {
+      declineModal.style.display = "block";
+    }
+  });
+
+
+  // Reference modals
+  const infoModal = document.getElementById("infoModal");
+  const approveModal = document.getElementById("approveModal");
+
+  // View Info logic
+  document.querySelectorAll("#showdata .action-buttons .view-btn:nth-child(1)").forEach((btn) => {
+    btn.addEventListener("click", function () {
+      const row = this.closest("tr");
+      document.getElementById("modalEmpId").textContent = row.cells[0].textContent;
+      document.getElementById("modalFullName").textContent = row.cells[1].textContent;
+      document.getElementById("modalSubject").textContent = row.cells[2].textContent;
+      document.getElementById("modalDateApplied").textContent = row.cells[3].textContent;
+      document.getElementById("modalLeaveType").textContent = row.cells[4].textContent;
+      document.getElementById("modalMessage").textContent = row.cells[5].textContent;
+      // Add these if you fetch Start/End dates too:
+      document.getElementById("modalStartDate").textContent = row.getAttribute("data-start-date") || "N/A";
+      document.getElementById("modalEndDate").textContent = row.getAttribute("data-end-date") || "N/A";
+
+      infoModal.style.display = "block";
+    });
+  });
+
+  // Approve logic
+  document.querySelectorAll("#showdata .action-buttons .view-btn:nth-child(2)").forEach((btn) => {
+    btn.addEventListener("click", function () {
+      approveModal.style.display = "block";
+      // You can store the leave_id in a hidden input or JS variable if needed
+    });
+  });
+
+  // Close buttons for modals
+  document.querySelectorAll(".close-info").forEach((el) => {
+    el.addEventListener("click", () => infoModal.style.display = "none");
+  });
+  document.querySelectorAll(".close-approve").forEach((el) => {
+    el.addEventListener("click", () => approveModal.style.display = "none");
+  });
+  window.addEventListener("click", (event) => {
+    if (event.target === infoModal) infoModal.style.display = "none";
+    if (event.target === approveModal) approveModal.style.display = "none";
+  });
+
 </script>
