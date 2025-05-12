@@ -3,29 +3,45 @@ session_start();
 include '../assets/databse/connection.php';
 include './database/session.php';
 
-$records_per_page = 5;
+$records_per_page = 7;
 $current_page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
 $start_from = ($current_page - 1) * $records_per_page;
 
 $search_query = '';
 $where_clause = '';
 
+// Search query logic
 if (!empty($_GET['query'])) {
     $q = $conn->real_escape_string($_GET['query']);
     $search_query = "&query=" . urlencode($_GET['query']);
 
     $where_clause = "WHERE (
-        emp_id     LIKE '%{$q}%'
-        OR f_name  LIKE '%{$q}%'
-        OR m_name  LIKE '%{$q}%'
-        OR l_name  LIKE '%{$q}%'
-        OR email   LIKE '%{$q}%'
-        OR phone_no LIKE '%{$q}%'
-        OR gender   LIKE '%{$q}%'
-        OR status   LIKE '%{$q}%'
+        emp_id       LIKE '%{$q}%'
+        OR firstname  LIKE '%{$q}%'
+        OR middlename LIKE '%{$q}%'
+        OR lastname   LIKE '%{$q}%'
+        OR email      LIKE '%{$q}%'
+        OR phone_no   LIKE '%{$q}%'
+        OR gender     LIKE '%{$q}%'
+        OR status     LIKE '%{$q}%'
     )";
 }
 
+// Fetch additional info from tbl_emp_info outside the table loop
+$emp_info = [];
+$sql_info = "SELECT emp_id, shift, position, rate FROM tbl_emp_info";
+$info_result = $conn->query($sql_info);
+
+// Store the info in an associative array using emp_id as the key
+while ($info = $info_result->fetch_assoc()) {
+    $emp_info[$info['emp_id']] = [
+        'shift' => $info['shift'] ?? 'N/A',
+        'position' => $info['position'] ?? 'N/A',
+        'rate' => $info['rate'] ?? 'N/A'
+    ];
+}
+
+// Fetch employee data and display in the table
 $sql = "SELECT * FROM tbl_emp_acc $where_clause LIMIT $start_from, $records_per_page";
 $result = $conn->query($sql);
 
@@ -33,7 +49,16 @@ $result = $conn->query($sql);
 $total_sql = "SELECT COUNT(*) FROM tbl_emp_acc $where_clause";
 $total_rows = $conn->query($total_sql)->fetch_row()[0];
 $total_pages = ceil($total_rows / $records_per_page);
+
+// Pagination links
+$pagination_links = '';
+if ($total_pages > 1) {
+    for ($i = 1; $i <= $total_pages; $i++) {
+        $pagination_links .= "<a href='?page=$i$search_query'>$i</a> ";
+    }
+}
 ?>
+
 
 
 <!DOCTYPE html>
@@ -141,10 +166,12 @@ $total_pages = ceil($total_rows / $records_per_page);
                                             <td><?php echo $row['phone_no'] ?></td>
                                             <td><?php echo $row['address'] ?></td>
                                             <td><?php echo $rate ?></td>
-                                            <td class="td-text"><?php echo $row['status'] ?></td>
+                                            <td class="td-text" style="color: <?php echo (strtolower(trim($row['status'])) === 'active') ? 'green' : 'red'; ?>; font-weight: 500;">
+                                                <?php echo htmlspecialchars($row['status']); ?>
+                                            </td>
                                             <td class="td-text">
                                                 <div class="action-buttons">
-                                                    <a href='#'><button class="slip-btn">View Info</button></a>
+                                                    <button class="view-btn">View Info</button>
                                                 </div>
                                             </td>
                                         </tr>
@@ -420,8 +447,7 @@ $total_pages = ceil($total_rows / $records_per_page);
 
         // Initial display
         updateResultsDisplay();
-    </script>
-    <script>
+
         // Your existing JavaScript logic
         const confirmModal = document.querySelector('.confirm-modal');
         const confirmAddButton = document.getElementById('confirm-add');
@@ -470,6 +496,28 @@ $total_pages = ceil($total_rows / $records_per_page);
         // Close the success modal
         document.getElementById('close-success').addEventListener('click', () => {
             successModal2.style.display = 'none'; // Close success modal
+        });
+    </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // When the user types in the search input
+            $(".search-box").keyup(function() {
+                let query = $(this).val(); // Get the search input value
+
+                // Perform AJAX request based on search input
+                $.ajax({
+                    url: "emp_search.php",
+                    method: "GET",
+                    data: {
+                        query: query
+                    }, // Send the query to search
+                    success: function(data) {
+                        // Update the table with the search results or default data
+                        $("#showdata").html(data);
+                    }
+                });
+            });
         });
     </script>
 

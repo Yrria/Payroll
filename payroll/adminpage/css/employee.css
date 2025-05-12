@@ -14,7 +14,7 @@
 .search-box1 {
     border: 1px solid #ccc;
     border-radius: 5px;
-    width: 50px;
+    width: 100px;
     text-align: center;
     margin-top: 15px;
 }
@@ -74,7 +74,7 @@ input.department-count-box {
     justify-content: flex-start;
     align-items: stretch;
     margin: 10px;
-    
+
 }
 
 
@@ -95,19 +95,6 @@ input.department-count-box {
     flex: 0 1 200px;
 }
 
-/* Style for the search button */
-.search-btn {
-    padding: 10px 15px;
-    background-color: #20242C;
-    color: #ffffff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-right: 5px;
-    transition: all 0.5s ease;
-    margin-left: 10px;
-    margin-bottom: 10px;
-}
 
 .search-btn:hover {
     background-color: #000000;
@@ -119,7 +106,7 @@ input.department-count-box {
 .add-new-btn {
     position: absolute;
     right: 50px;
-    
+
     padding: 8px 16px;
     cursor: pointer;
     border: none;
@@ -143,17 +130,119 @@ input.department-count-box {
 }
 
 
-/* Table styles */
+.table_div {
+    margin: 30px 10px 10px 10px;
+    height: auto;
+    padding: 20px;
+    border-radius: 3px;
+    box-shadow: 1px 0px 5px rgba(0, 0, 0, 0.3);
+    background-color: #fff;
+    overflow-y: hidden;
+    overflow-x: auto;
+}
+
+
 table {
     width: 100%;
     border-collapse: collapse;
+    min-height: 250px;
+    margin-top: 20px;
 }
 
 table th,
 table td {
+    border: 1px solid #ddd;
     padding: 10px;
-    border: 2px solid #ddd;
+    /* text-align: left; */
+    white-space: nowrap;
+    /* Prevents text wrapping */
+    overflow: hidden;
+    /* Ensures overflow is hidden */
+    text-overflow: ellipsis;
+    /* Shows ellipsis when text overflows */
+    max-width: 25px;
+    /* Set max width for the cell */
+    width: 5ch;
+    /* Sets a fixed width for the cell */
+    font-size: 14px;
+}
+
+.no-data {
     text-align: center;
+    font-weight: bold;
+    color: gray;
+    padding: 20px;
+}
+
+/* SEARCH BAR */
+.search {
+    display: flex;
+    justify-content: space-between;
+    /* Align h3 to the left and search-bar to the right */
+    align-items: center;
+    /* Vertically align items in the container */
+
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+input[type="text"] {
+    font-size: 16px;
+}
+
+.td-text {
+    white-space: nowrap;
+    /* Prevents text wrapping */
+    text-overflow: ellipsis;
+    /* Shows ellipsis when text overflows */
+    max-width: 70px;
+}
+
+.action-buttons,
+.action-tb {
+    max-width: 100px;
+    /* Set max width for the cell */
+}
+
+.view-btn {
+    background-color: #5483B3;
+    color: #fff;
+    padding: 4px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 1px;
+    font-size: smaller;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.view-btn:hover {
+    background-color: #6f9fce;
+    transition: all 0.3s ease-in-out;
+    /* Smooth animation */
+}
+
+.view-btn:active {
+    background-color: #506c88;
+    transition: all 0.1s ease-in-out;
+    /* Smooth animation */
+}
+
+table th {
+    background-color: white;
+    color: black;
+}
+
+table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+table tr:hover {
+    background-color: #f1f1f1;
 }
 
 button.view-info {
