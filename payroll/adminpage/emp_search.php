@@ -14,7 +14,7 @@ $where_clause = '';
 if (!empty($_GET['query'])) {
     $q = $conn->real_escape_string($_GET['query']);
     $search_query = "&query=" . urlencode($_GET['query']);
-    
+
     $where_clause = "WHERE (
         a.emp_id LIKE '%{$q}%' OR
         a.firstname LIKE '%{$q}%' OR
@@ -44,12 +44,12 @@ $result = $conn->query($sql);
         <?php
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
-                $fullname = !empty($row['middlename']) 
-                            ? $row['firstname'] . " " . strtoupper(substr($row['middlename'], 0, 1)) . ". " . $row['lastname']
-                            : $row['firstname'] . " " . $row['lastname'];
+                $fullname = !empty($row['middlename'])
+                    ? $row['firstname'] . " " . strtoupper(substr($row['middlename'], 0, 1)) . ". " . $row['lastname']
+                    : $row['firstname'] . " " . $row['lastname'];
 
                 $_SESSION['fullname'] = $fullname;
-                ?>
+        ?>
                 <tr>
                     <td><?php echo htmlspecialchars($row['emp_id']); ?></td>
                     <td><?php echo htmlspecialchars($fullname); ?></td>
@@ -63,7 +63,7 @@ $result = $conn->query($sql);
                     <td style="color: <?php echo (strtolower(trim($row['status'])) === 'active') ? 'green' : 'red'; ?>; font-weight: 500;">
                         <?php echo htmlspecialchars($row['status']); ?>
                     </td>
-                    <td>
+                    <td class="td-text">
                         <div class="action-buttons">
                             <button class="view-btn">View Info</button>
                         </div>

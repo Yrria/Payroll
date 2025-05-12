@@ -432,47 +432,85 @@ select {
 }
 
 
+.button-container {
+    display: flex;
+    justify-content: flex-end;
+    /* Aligns buttons to the right */
+    align-items: center;
+    gap: 10px;
+    /* Space between buttons */
+    padding: 20px;
+    /* Optional: space around container */
+}
+
+/* Common button style */
+.save_btn,
 .back-btn {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
+    width: 180px;
+    height: 40px;
+    font-size: 17px;
+    border-radius: 8px;
+    border: 1px solid #aaaaaa6c;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+
+/* Save button */
+.save_btn {
+    background-color: #1BCD80;
+    color: #ffffff;
+}
+
+.save_btn:hover {
+    background-color: #39d491;
+    transition: all 0.3s ease-in-out;
+}
+
+.save_btn:active {
+    background-color: #33996d;
+    transition: all 0.1s ease-in-out;
+}
+
+/* Back button */
+.back-btn {
     background-color: #20242C;
     color: #ffffff;
-    cursor: pointer;
-    width: 150px;
 }
 
 .back-btn:hover {
     background-color: #000000;
-    color: #ffffff;
     box-shadow: 0 0 8px rgb(98, 184, 235);
+    transition: all 0.3s ease-in-out;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+.back-btn:active {
+    background-color: #121212;
+    transition: all 0.1s ease-in-out;
+}
 
 
 
 /* Basic styling for modal and backdrop */
 .modal2 {
+    display: none;
+    flex-direction: column;
+    width: 1000px;
+    background: white;
+    border: 4px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    position: fixed;
+    top: 53.5%;
+    left: 57%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    overflow-y: auto;
+    height: 80%;
+}
+
+/* Basic styling for modal and backdrop */
+.modal2-info {
     display: none;
     flex-direction: column;
     width: 1000px;

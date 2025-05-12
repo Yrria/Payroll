@@ -57,6 +57,29 @@ if ($total_pages > 1) {
         $pagination_links .= "<a href='?page=$i$search_query'>$i</a> ";
     }
 }
+
+// Count all employees
+$employee_total_result = $conn->query("SELECT COUNT(*) as total FROM tbl_emp_acc");
+$total_employees = $employee_total_result->fetch_assoc()['total'] ?? 0;
+
+// Count positions from tbl_emp_info
+$position_counts = [
+    'Manager' => 0,
+    'Crew' => 0,
+    'Server Crew' => 0
+];
+
+$position_query = "SELECT position, COUNT(*) as count FROM tbl_emp_info GROUP BY position";
+$position_result = $conn->query($position_query);
+
+while ($row = $position_result->fetch_assoc()) {
+    $position = $row['position'];
+    $count = $row['count'];
+
+    if (array_key_exists($position, $position_counts)) {
+        $position_counts[$position] = $count;
+    }
+}
 ?>
 
 
@@ -93,21 +116,23 @@ if ($total_pages > 1) {
                         <!-- Statistics Display -->
                         <div class="departments-count-container">
                             <label for="total-employees" class="employee-label">Total Employees:</label>
-                            <input type="text" id="total-employees" value="43" class="search-box1 employee-count-box" readonly>
+                            <input type="text" id="total-employees" value="<?= $total_employees ?>" class="search-box1 employee-count-box" readonly>
                         </div>
                         <div class="department1-count-container">
-                            <label for="position-manager" class="department-label">Position Manager:</label>
-                            <input type="text" id="position-manager" value="5" class="search-box1 department-count-box" readonly>
+                            <label for="position-manager" class="department-label" style="font-weight: 600;">Positions: </label>
+                            <label for="position-manager" class="department-label">Manager:</label>
+                            <input type="text" id="position-manager" value="<?= $position_counts['Manager'] ?>" class="search-box1 department-count-box" readonly>
                         </div>
                         <div class="department2-count-container">
                             <label for="crew-count" class="department-label">Crew:</label>
-                            <input type="text" id="crew-count" value="5" class="search-box1 department-count-box" readonly>
+                            <input type="text" id="crew-count" value="<?= $position_counts['Crew'] ?>" class="search-box1 department-count-box" readonly>
                         </div>
                         <div class="department3-count-container">
                             <label for="server-crew-count" class="department-label">Server Crew:</label>
-                            <input type="text" id="server-crew-count" value="5" class="search-box1 department-count-box" readonly>
+                            <input type="text" id="server-crew-count" value="<?= $position_counts['Server Crew'] ?>" class="search-box1 department-count-box" readonly>
                         </div>
                     </div>
+
 
                     <div class="leave-requests">
                         <h3>Records</h3>
@@ -343,6 +368,66 @@ if ($total_pages > 1) {
         </div>
     </div>
 
+    <!-- view-info Modal -->
+    <div class="modal2-info-backdrop" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 99;"></div>
+    <div class="modal2-info" style="display: none;">
+        <div class="profile-container2">
+            <div class="employee-details4">
+                <h3>First Name:</h3>
+                <input type="text" class="search-boxs" readonly>
+            </div>
+
+            <div class="employee-details5">
+                <h3>Middle Name:</h3>
+                <input type="text" class="search-boxs" readonly>
+            </div>
+
+            <div class="employee-details6">
+                <h3>Lastname:</h3>
+                <input type="text" placeholder="Input Rate..." class="search-boxs" readonly>
+            </div>
+        </div>
+
+        <div class="detail-container">
+            <div class="detail-left">
+                <h3>Contact Number:</h3>
+                <input type="text" class="search-boxes" readonly>
+
+                <h3>Bank Name:</h3>
+                <input type="text" class="search-boxes" readonly>
+
+                <h3>Email Address:</h3>
+                <input type="text" class="search-boxes" readonly>
+            </div>
+            <div class="detail-right">
+                <h3>Position:</h3>
+                <select class="search-boxes" disabled>
+                    <option>Crew</option>
+                    <option>Manager</option>
+                </select>
+
+                <h3>Bank Account:</h3>
+                <input type="text" class="search-boxes" readonly>
+
+                <div class="inline-inputs">
+                    <div class="pay-type-container">
+                        <h3>Pay Type:</h3>
+                        <input type="text" class="search-boxes pay-type-input" readonly>
+                    </div>
+                    <div class="rate-container">
+                        <h3>Rate:</h3>
+                        <input type="text" class="search-boxes rate-input" readonly>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="button-container">
+            <button class="save_btn" id="add-employee">Save</button>
+            <button class="back-btn" id="cancel-add">Back</button>
+        </div>
+    </div>
+
     <!-- Confirmation Modal -->
     <div class="confirm-modal">
         <div class="confirm-content">
@@ -517,6 +602,65 @@ if ($total_pages > 1) {
                         $("#showdata").html(data);
                     }
                 });
+            });
+        });
+    </script>
+
+    <!-- VIEW INFO -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const viewButtons = document.querySelectorAll(".view-btn");
+            const modal = document.querySelector(".modal2-info");
+            const modalBackdrop = document.querySelector(".modal2-info-backdrop");
+            const backBtn = document.querySelector(".modal2-info .back-btn");
+
+            viewButtons.forEach(button => {
+                button.addEventListener("click", function() {
+                    const row = this.closest("tr");
+                    const cells = row.querySelectorAll("td");
+
+                    // Populate modal fields
+                    const firstName = cells[0].textContent.trim();
+                    const middleName = cells[1].textContent.trim();
+                    const lastName = cells[2].textContent.trim();
+                    const contact = cells[3].textContent.trim();
+                    const bankName = cells[4].textContent.trim();
+                    const email = cells[5].textContent.trim();
+                    const position = cells[6].textContent.trim();
+                    const bankAccount = cells[7].textContent.trim();
+                    const payType = cells[8].textContent.trim();
+                    const rate = cells[9].textContent.trim();
+
+                    const inputs = modal.querySelectorAll("input.search-boxs, input.search-boxes, input.pay-type-input, input.rate-input");
+                    const selects = modal.querySelectorAll("select.search-boxes");
+
+                    inputs[0].value = firstName;
+                    inputs[1].value = middleName;
+                    inputs[2].value = lastName;
+                    inputs[3].value = contact;
+                    inputs[4].value = bankName;
+                    inputs[5].value = email;
+                    selects[0].value = position;
+                    inputs[6].value = bankAccount;
+                    inputs[7].value = payType;
+                    inputs[8].value = rate;
+
+                    // Show modal and backdrop
+                    modal.style.display = "block";
+                    modalBackdrop.style.display = "block";
+                });
+            });
+
+            // Back button closes the modal
+            backBtn.addEventListener("click", () => {
+                modal.style.display = "none";
+                modalBackdrop.style.display = "none";
+            });
+
+            // Click outside modal to close
+            modalBackdrop.addEventListener("click", () => {
+                modal.style.display = "none";
+                modalBackdrop.style.display = "none";
             });
         });
     </script>
