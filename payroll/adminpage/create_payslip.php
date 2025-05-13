@@ -3,8 +3,6 @@ session_start();
 include '../assets/databse/connection.php';
 include './database/session.php';
 
-include '../assets/databse/connection.php';
-
 if (isset($_GET['id'])) {
     $emp_id = $_GET['id'];
     
@@ -34,8 +32,8 @@ if (isset($_GET['id'])) {
             s.ot_pay
         FROM tbl_emp_acc AS e
         INNER JOIN tbl_attendance AS a ON e.emp_id = a.emp_id
+        INNER JOIN tbl_emp_info AS i ON e.emp_id = i.emp_id
         INNER JOIN tbl_salary AS s ON e.emp_id = s.emp_id
-        INNER JOIN tbl_emp_info AS i ON i.emp_id = i.emp_id
         WHERE e.emp_id = ?
     ";
 
@@ -76,6 +74,40 @@ if (isset($_GET['id'])) {
     }
     
 }
+
+$now = new DateTime();
+
+$month_now = $now->format('F');
+
+if (isset($_POST['gen_payslip'])) {
+    $month = $month_now;
+    $position_namee = $position_name;
+    $rate_pdayy = $_POST['num_days'] * 30 ;
+    $overtime_pay = $_POST['ot_pay'];
+    $holiday_pay = $_POST['holiday_pay'];
+    $net_pay = $_POST['netpay'];
+    $sss = $_POST['sss_total'];
+    $philhealth = $_POST['philhealth'];
+    $pagibig = $_POST['pagibig'];
+    $total_other_deduction = $_POST['total_other_deduction'];
+
+    $net_pay_sql = "UPDATE tbl_salary 
+    SET basic_pay = '$rate_pdayy',
+        ot_pay = '$overtime_pay',
+        pagibig_deduction = '$pagibig',
+        philhealth_deduction = '$philhealth',
+        sss_deduction = '$sss',
+        holiday_pay = '$holiday_pay',
+        other_deduction = '$total_other_deduction',
+        total_salary = '$net_pay'
+    WHERE emp_id = '$emp_id' AND month = '$month'";
+
+
+    $netpay_query = mysqli_query($conn, $net_pay_sql);
+
+    $update_paid = mysqli_query($conn, "UPDATE tbl_salary SET status = 'Paid' WHERE emp_id = '$emp_id' AND month = '$month'");
+
+}
 ?>
 
 <!DOCTYPE html>
@@ -104,7 +136,7 @@ if (isset($_GET['id'])) {
                 </div>
                 <hr>
             </div>
-                <p style="margin-left:1%;">Salary for January</p>
+                <p style="margin-left:1%;">Salary for <?php echo $month_now;?></p>
             <div class="selection_div">
                 <table>
                     <tr>
@@ -139,75 +171,145 @@ if (isset($_GET['id'])) {
                     </tr>
                 </table>
             </div>
-            <div class="inc_dec_div">
-                <div class="income_div">
-                    <span>Income</span><br>
-                    <span>Rate per Day:</span><input class="income_inputs" type="text" readonly value="<?php echo $rate_pday?>" name="" id=""><br>
-                    <span>No. Of Days:</span><input class="income_inputs" value="<?php echo $present_days?>" type="text" name="days_input" id=""><span>Rate Wage:</span><input class="income_inputs" readonly value="<?php echo $computed_present_holiday ?>" type="text" name="" id=""><br>
-                    <span>OT hr/Day:</span><input class="income_inputs" readonly value="<?php echo $hours_overtime?>" type="text" name="" id=""><span>OT hr/Day:</span><input class="income_inputs" readonly value="<?php echo $computed_ot?>" type="text" name="" id=""><br>
-                    <span>Holiday Pay (day):</span><input class="income_inputs" type="text" readonly value="<?php echo $holiday_present?>" name="" id=""><span>Holiday Pay:</span><input class="income_inputs" readonly value="<?php echo $computed_holiday?>"  type="text" name="" id=""><br>
-                    <span>Net Income:</span><input class="income_inputs" type="text" readonly value="<?php echo $net_income?>" value="" name="" id="">
-                </div>
-                <div class="deduction_div">
-                    <span style="margin-right:40%;">Deductions</span> <span>Other Deductions</span><br>
-                    <div style="display: flex; flex-direction: row;">
-                        <div style="display: flex; flex-direction: column;">
-                            <div>
-                                <span>Philhealth:</span><input class="deduction_inputs" readonly value="<?php echo $pagibig_deduction?>"  type="text" name="" id="">
-                            </div>
-                            <div>
-                                <span>PAGIBIG:</span><input class="deduction_inputs" readonly value="<?php echo $philhealth_deduction?>"  type="text" name="" id="">
-                            </div>
-                            <div>
-                                <span>SSS:</span><input class="deduction_inputs" readonly value="<?php echo $sss_deduction?>"  type="text" name="" id="">
-                            </div>
-                        </div>
-                        <div style="display: flex; flex-direction: column;">
-                            <div style="display: flex; justify-content: space-between; width: 230px;">
-                                <span>Deduction Name</span>
-                                <span>Value</spans>
-                            </div>
-                            <div>
-                                <input class="deduction_inputs" type="text" name="" id=""><input class="deduction_inputs"  type="text" name="" id="">
-                            </div>
-                            <div>
-                                <input class="deduction_inputs" type="text" name="" id=""><input class="deduction_inputs"  type="text" name="" id="">
-                            </div>
-                            <div>
-                                <input class="deduction_inputs" type="text" name="" id=""><input class="deduction_inputs"  type="text" name="" id="">
-                            </div>
-                            <div>
-                                <input class="deduction_inputs"  type="text" name="" id=""><input class="deduction_inputs" type="text" name="" id="">
-                            </div>
-                        </div>
+            <form method="POST">
+                <div class="inc_dec_div">
+                    <div class="income_div">
+                        <span>Income</span><br>
+                        <span>Rate per Day:</span><input class="income_inputs" type="text" value="<?php echo $rate_pday?>" name="num_days" id="daily_rate" oninput="benefits_deduction()"><br>
+                        <span>No. Of Days:</span><input class="income_inputs" value="<?php echo $present_days?>" type="text" name="days_input" id="days_input"><span>Rate Wage:</span><input class="income_inputs" readonly value="<?php echo $computed_present_holiday ?>" type="text" name="" id=""><br>
+                        <span>OT hr/Day:</span><input class="income_inputs" readonly value="<?php echo $hours_overtime?>" type="text" name="ot_pay" id=""><span>OT hr/Day:</span><input class="income_inputs" readonly value="<?php echo $computed_ot?>" type="text" name="" id=""><br>
+                        <span>Holiday Pay (day):</span><input class="income_inputs" name="" type="text" readonly value="<?php echo $holiday_present?>" id=""><span>Holiday Pay:</span><input class="income_inputs" readonly value="<?php echo $computed_holiday?>"  type="text" name="holiday_pay" id=""><br>
+                        <span>Net Income:</span><input class="income_inputs" type="text" readonly value="<?php echo $net_income?>" value="" name="netpay" id="netpay">
                     </div>
-                    <span>Total Deductions:</span><input class="deduction_inputs" readonly value=""  type="text" name="" id="">
-                </div>  
-            </div>
-            <div class="res_can_pay_div">
-                <div class="res_can_div">
-                    <button class="payall_btn">Reset</button>
-                    <a href="./payroll.php"><button class="cancel_btn">Cancel</button></a>
+                    <div class="deduction_div">
+                        <span style="margin-right:40%;">Deductions</span> <span>Other Deductions</span><br>
+                        <div style="display: flex; flex-direction: row;">
+                            <div style="display: flex; flex-direction: column;">
+                                <div>
+                                    <span>Philhealth:</span><input class="deduction_inputs" readonly value=""  type="text" name="philhealth" id="philhealth">
+                                </div>
+                                <div>
+                                    <span>PAGIBIG:</span><input class="deduction_inputs" readonly value=""  type="text" name="pagibig" id="pagibig">
+                                </div>
+                                <div>
+                                    <span>SSS:</span><input class="deduction_inputs" readonly value=""  type="text" name="sss_total" id="sss_total">
+                                </div>
+                            </div>
+                            <div style="display: flex; flex-direction: column;">
+                                <div style="display: flex; justify-content: space-between; width: 230px;">
+                                    <span>Deduction Name</span>
+                                    <span>Value</span>
+                                </div>
+                                <div>
+                                    <input class="deduction_inputs" type="text" name="" id=""><input class="deduction_inputs other-deduction-value"  type="text" name="" id="">
+                                </div>
+                                <div>
+                                    <input class="deduction_inputs" type="text" name="" id=""><input class="deduction_inputs other-deduction-value"  type="text" name="" id="">
+                                </div>
+                                <div>
+                                    <input class="deduction_inputs" type="text" name="" id=""><input class="deduction_inputs other-deduction-value"  type="text" name="" id="">
+                                </div>
+                                <div>
+                                    <input class="deduction_inputs"  type="text" name="" id=""><input class="deduction_inputs other-deduction-value" type="text" name="" id=""> <input class="deduction_inputs other-deduction-value" hidden type="text" name="total_other_deduction" id="total_other_deduction">
+                                </div>
+                            </div>
+                        </div>
+                        <span>Total Deductions:</span><input class="deduction_inputs" readonly value=""  type="text" name="total_deduction_name" id="total_deductions">
+                    </div>  
                 </div>
-                <div>
-                    <button class="pay_btn">Generate Slip</button>
+                <div class="res_can_pay_div">
+                    <div class="res_can_div">
+                        <button class="payall_btn">Reset</button>
+                        <a href="./payroll.php"><button class="cancel_btn">Cancel</button></a>
+                    </div>
+                    <div>
+                        <button class="pay_btn" type="submit" name="gen_payslip">Generate Slip</button>
+                    </div>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
     <!-- SCRIPT -->
     <script src="./javascript/main.js"></script>
     <script src="./javascript/payroll.js"></script>
     <script>
-        // JavaScript to allow only numeric input and limit the length to 6 digits
-        document.getElementById('days_input').addEventListener('input', function(e) {
-            // Remove any non-digit characters
-            e.target.value = e.target.value.replace(/\D/g, '');
+        const daily_rate = parseFloat(document.getElementById('daily_rate').value) || 0;
 
-            // Limit input to 6 digits
-            if (e.target.value.length > 6) {
-                e.target.value = e.target.value.slice(0, 6);
+        // Allow only numeric input and max 6 digits for 'days_input'
+        document.getElementById('days_input').addEventListener('input', function(e) {
+            e.target.value = e.target.value.replace(/\D/g, '').slice(0, 6);
+        });
+
+        // Apply the same logic to all 'other deduction' value inputs
+        document.querySelectorAll('.other-deduction-value').forEach(input => {
+            input.addEventListener('input', function(e) {
+                e.target.value = e.target.value.replace(/\D/g, '').slice(0, 6);
+            });
+        });
+
+        const baseSalary = <?php echo $computed_present_holiday; ?>;
+
+        function updateDeductions() {
+            // Get benefits
+            const philHealth = parseFloat(document.getElementById('philhealth').value) || 0;
+            const pagibig = parseFloat(document.getElementById('pagibig').value) || 0;
+            const sss = parseFloat(document.getElementById('sss_total').value) || 0;
+
+            // Get other deduction values
+            const otherInputs = document.querySelectorAll('.deduction_inputs[type="text"]:not(#philhealth):not(#pagibig):not(#sss_total):not(#total_deductions):not(#netpay)');
+            let otherTotal = 0;
+            otherInputs.forEach((input, index) => {
+                // Only take the value inputs (not name inputs)
+                if (index % 2 === 1) {
+                    const val = parseFloat(input.value) || 0;
+                    otherTotal += val;
+                }
+            });
+
+
+            const total = philHealth + pagibig + sss + otherTotal;
+            document.getElementById('total_deductions').value = total.toFixed(2);
+            document.getElementById('total_other_deduction').value = total.toFixed(2);
+
+            updateNetIncome(total);
+        }
+
+        function updateNetIncome(totalDeductions) {
+            const net = baseSalary - totalDeductions;
+            document.getElementById('netpay').value = net.toFixed(2);
+
+            if(net < 0){
+                document.getElementById('netpay').value = 0;
             }
+        }
+
+        // Enhance benefits_deduction to also recalculate totals
+        function benefits_deduction() {
+            const daily_rate = parseFloat(document.getElementById('daily_rate').value) || 0;
+            const monthly = daily_rate * 15;
+
+            const philHealth_total = monthly * 0.045;
+            const pagibig_total = monthly * 0.05;
+            const sss_total = monthly * 0.02;
+
+            document.getElementById('philhealth').value = philHealth_total.toFixed(2);
+            document.getElementById('pagibig').value = pagibig_total.toFixed(2);
+            document.getElementById('sss_total').value = sss_total.toFixed(2);
+
+            updateDeductions();
+        }
+
+        // Bind events to input fields for real-time calculation
+        document.addEventListener('DOMContentLoaded', () => {
+            benefits_deduction(); // initial call
+
+            // Add listeners to other deduction value fields
+            const deductionInputs = document.querySelectorAll('.deduction_inputs[type="text"]');
+            deductionInputs.forEach(input => {
+                input.addEventListener('input', () => {
+                    updateDeductions();
+                });
+            });
         });
     </script>
 </body>

@@ -10,7 +10,7 @@ $current_page = isset($_GET['page']) ? $_GET['page'] : 1; // Get current page nu
 $start_from = ($current_page - 1) * $records_per_page;
 
 // Initialize variables
-$sql = "SELECT * FROM tbl_salary ";
+$sql = "SELECT * FROM tbl_salary WHERE status = 'Unpaid'";
 
 // Check if search query is provided
 if (isset($_GET['query']) && !empty($_GET['query'])) {

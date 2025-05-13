@@ -1,4 +1,5 @@
 <?php
+
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $email = mysqli_real_escape_string($conn, $_POST['email']);
     $password = mysqli_real_escape_string($conn, $_POST['password']);
@@ -16,6 +17,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $_SESSION['email'] = $row['email'];
         $_SESSION['account_id'] = $row['emp_id'];
         $acc_id = $row['emp_id'];
+        date_default_timezone_set('Asia/Manila'); // or your relevant timezone
 
         $current_date = (new DateTime())->format('Y-m-d');
 
@@ -37,33 +39,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
             $status = null;
 
-            if ($shift === "Morning") {
-                $present_start = new DateTime('06:45:00');
-                $present_end = new DateTime('07:15:00');
-                $late_end = new DateTime('15:00:00');
-                $absent_after = new DateTime('15:00:00');
+            $today = (new DateTime())->format('Y-m-d');
+
+            $tomorrow = (new DateTime('tomorrow'))->format('Y-m-d');
+
+            if ($shift === "Night") {
+                $present_start = new DateTime("$today 18:45:00");
+                $present_end = new DateTime("$today 19:15:00");
+                $late_end = new DateTime("$tomorrow 03:00:00");
+                $absent_after = new DateTime("$tomorrow 03:00:01");
 
                 if ($now < $present_start) {
-                    
-                } elseif ($now >= $present_start && $now <= $present_end) {
-                    $status = 'Present';
-                } elseif ($now > $present_end && $now <= $late_end) {
-                    $status = 'Late';
-                } elseif ($now > $absent_after) {
-                    $status = 'Absent';
-                }
-
-            } elseif ($shift === "Night") {
-                $present_start = new DateTime('18:45:00');
-                $present_end = new DateTime('19:15:00');
-                $late_end = new DateTime('03:00:00');
-
-                if ($now < $present_start && $now->format('H') >= 0 && $now->format('H') < 3) {
-                  
-                    $late_end = new DateTime('03:00:00');
-                    $status = 'Late'; 
-                } elseif ($now < $present_start) {
-
+                    // too early
                 } elseif ($now >= $present_start && $now <= $present_end) {
                     $status = 'Present';
                 } elseif ($now > $present_end && $now <= $late_end) {
@@ -71,8 +58,22 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 } elseif ($now > $late_end) {
                     $status = 'Absent';
                 }
-            }
+            }elseif ($shift === "Morning") {
+                $present_start = new DateTime("$today 06:45:00");
+                $present_end = new DateTime("$today 07:15:00");
+                $late_end = new DateTime("$today 15:00:00");
+                $absent_after = new DateTime("$today 15:00:01");
 
+                if ($now < $present_start) {
+                    // too early, maybe do nothing
+                } elseif ($now >= $present_start && $now <= $present_end) {
+                    $status = 'Present';
+                } elseif ($now > $present_end && $now <= $late_end) {
+                    $status = 'Late';
+                } elseif ($now > $absent_after) {
+                    $status = 'Absent';
+                }
+            }
             if ($status) {
                 $current_date = date('Y-m-d');
                 $query = "UPDATE tbl_attendance 
