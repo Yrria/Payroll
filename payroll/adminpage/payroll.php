@@ -61,11 +61,60 @@ $total_pages = ceil($total_records / $records_per_page);
     <link rel="stylesheet" href="./css/main.css">
     <link rel="stylesheet" href="./css/payroll.css">
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+    <script src="https://kit.fontawesome.com/3b07bc6295.js" crossorigin="anonymous"></script>
     <title>Payroll</title>
+    <style>
+        #toastBox {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .toast {
+            background-color: #1BCD80;
+            color: white;
+            padding: 12px 18px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            min-width: 200px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: slideIn 0.3s ease, fadeOut 0.3s ease 2.7s forwards;
+        }
+
+        .toast.error {
+            background-color: #e74c3c;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+        }
+
+    </style>
 </head>
 
 <body>
     <?php include 'sidenav.php'; ?>
+    <div id="toastBox"></div>
     <div class="container">
         <div id="mainContent" class="main">
             <div class="head-title">
@@ -176,7 +225,6 @@ $total_pages = ceil($total_records / $records_per_page);
                                         <td class="td-text">
                                             <div class="action-buttons">
                                                 <a href='./create_payslip.php?id=<?php echo $row["emp_id"]; ?>'><button class="slip-btn">Generate Slip</button></a>
-                                                <button class="view-btn">Summary</button>
                                             </div>
                                         </td>
                                     </tr>
@@ -265,6 +313,29 @@ $total_pages = ceil($total_records / $records_per_page);
 
         });
 
+        let toastBox = document.getElementById('toastBox');
+        let successMess = '<i class="fa-solid fa-circle-check"></i> Payslip created successfully!';
+
+        function showToast(msg) {
+            let toast = document.createElement('div'); 
+            toast.classList.add('toast');
+            toast.innerHTML = msg;
+            toastBox.appendChild(toast); 
+
+            if (msg.includes('error')) {
+                toast.classList.add('error');
+            }
+
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('status') === 'success') {
+            showToast(successMess);
+            window.history.replaceState(null, null, window.location.pathname);
+        }
 
     </script>
 </body>

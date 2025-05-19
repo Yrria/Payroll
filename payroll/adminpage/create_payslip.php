@@ -90,6 +90,7 @@ if (isset($_POST['gen_payslip'])) {
     $philhealth = $_POST['philhealth'];
     $pagibig = $_POST['pagibig'];
     $total_other_deduction = $_POST['total_other_deduction'];
+    $grosspay = $_POST['grosspay'];
 
     $net_pay_sql = "UPDATE tbl_salary 
     SET basic_pay = '$rate_pdayy',
@@ -99,6 +100,7 @@ if (isset($_POST['gen_payslip'])) {
         sss_deduction = '$sss',
         holiday_pay = '$holiday_pay',
         other_deduction = '$total_other_deduction',
+        gross_pay = '$grosspay',
         total_salary = '$net_pay'
     WHERE emp_id = '$emp_id' AND month = '$month'";
 
@@ -106,7 +108,8 @@ if (isset($_POST['gen_payslip'])) {
     $netpay_query = mysqli_query($conn, $net_pay_sql);
 
     $update_paid = mysqli_query($conn, "UPDATE tbl_salary SET status = 'Paid' WHERE emp_id = '$emp_id' AND month = '$month'");
-
+    header("Location: payroll.php?status=success");
+    exit();
 }
 ?>
 
@@ -179,7 +182,7 @@ if (isset($_POST['gen_payslip'])) {
                         <span>No. Of Days:</span><input class="income_inputs" value="<?php echo $present_days?>" type="text" name="days_input" id="days_input"><span>Rate Wage:</span><input class="income_inputs" readonly value="<?php echo $computed_present_holiday ?>" type="text" name="" id=""><br>
                         <span>OT hr/Day:</span><input class="income_inputs" readonly value="<?php echo $hours_overtime?>" type="text" name="ot_pay" id=""><span>OT hr/Day:</span><input class="income_inputs" readonly value="<?php echo $computed_ot?>" type="text" name="" id=""><br>
                         <span>Holiday Pay (day):</span><input class="income_inputs" name="" type="text" readonly value="<?php echo $holiday_present?>" id=""><span>Holiday Pay:</span><input class="income_inputs" readonly value="<?php echo $computed_holiday?>"  type="text" name="holiday_pay" id=""><br>
-                        <span>Net Income:</span><input class="income_inputs" type="text" readonly value="<?php echo $net_income?>" value="" name="netpay" id="netpay">
+                        <span>Net Income:</span><input class="income_inputs" type="text" readonly value="<?php echo $net_income?>" value="" name="netpay" id="netpay"><input class="income_inputs" type="text" readonly value="<?php echo $net_income?>" hidden name="grosspay" id="grosspay">
                     </div>
                     <div class="deduction_div">
                         <span style="margin-right:40%;">Deductions</span> <span>Other Deductions</span><br>
@@ -255,24 +258,24 @@ if (isset($_POST['gen_payslip'])) {
             const pagibig = parseFloat(document.getElementById('pagibig').value) || 0;
             const sss = parseFloat(document.getElementById('sss_total').value) || 0;
 
-            // Get other deduction values
-            const otherInputs = document.querySelectorAll('.deduction_inputs[type="text"]:not(#philhealth):not(#pagibig):not(#sss_total):not(#total_deductions):not(#netpay)');
+            // Sum only visible other deductions (exclude hidden input)
             let otherTotal = 0;
-            otherInputs.forEach((input, index) => {
-                // Only take the value inputs (not name inputs)
-                if (index % 2 === 1) {
+            document.querySelectorAll('.other-deduction-value').forEach(input => {
+                if (!input.hasAttribute('hidden')) {
                     const val = parseFloat(input.value) || 0;
                     otherTotal += val;
                 }
             });
 
+            const totalDeductions = philHealth + pagibig + sss + otherTotal;
 
-            const total = philHealth + pagibig + sss + otherTotal;
-            document.getElementById('total_deductions').value = total.toFixed(2);
-            document.getElementById('total_other_deduction').value = total.toFixed(2);
+            // Set values in the corresponding fields
+            document.getElementById('total_deductions').value = totalDeductions.toFixed(2);
+            document.getElementById('total_other_deduction').value = otherTotal.toFixed(2); // Only the 'other' part goes here
 
-            updateNetIncome(total);
+            updateNetIncome(totalDeductions);
         }
+
 
         function updateNetIncome(totalDeductions) {
             const net = baseSalary - totalDeductions;

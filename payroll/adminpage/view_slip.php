@@ -2,6 +2,81 @@
 session_start();
 include '../assets/databse/connection.php';
 include './database/session.php';
+
+if (isset($_GET['id'])) {
+    $emp_id = $_GET['id'];
+    
+    $query = "
+        SELECT 
+            e.emp_id,
+            e.lastname,
+            e.firstname,
+            e.middlename,
+            e.gender,
+            e.email,
+            e.address,
+            e.phone_no,
+            a.present_days,
+            a.absent_days,
+            a.hours_present,
+            a.hours_late,
+            a.hours_overtime,
+            a.holiday,
+            i.shift,
+            i.rate,
+            i.position,
+            s.cutoff,
+            s.basic_pay,
+            s.holiday_pay,
+            s.ot_pay,
+            s.pagibig_deduction,
+            s.philhealth_deduction,
+            s.sss_deduction,
+            s.other_deduction,
+            s.total_salary
+        FROM tbl_emp_acc AS e
+        INNER JOIN tbl_attendance AS a ON e.emp_id = a.emp_id
+        INNER JOIN tbl_emp_info AS i ON e.emp_id = i.emp_id
+        INNER JOIN tbl_salary AS s ON e.emp_id = s.emp_id
+        WHERE e.emp_id = ?
+    ";
+
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("s", $emp_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows > 0) {
+        $employee = $result->fetch_assoc();
+        $email = $employee['email'];
+        $phone_num = $employee['phone_no'];
+        $cutoff = $employee['cutoff'];
+        $position_name = $employee['position'];
+        $present_days = $employee['present_days'];
+        $basic_pay = $employee['basic_pay'];
+        $holiday_pay = $employee['holiday_pay'];
+        $ot_pay = $employee['ot_pay'];
+        $total_salary = $employee['total_salary'];
+        $pagibig_deduction = $employee['pagibig_deduction'];
+        $philhealth_deduction = $employee['philhealth_deduction'];
+        $sss_deduction = $employee['sss_deduction'];
+        $other_deduction = $employee['other_deduction'];
+
+        // computations
+        $total_deductions = $pagibig_deduction + $philhealth_deduction + $sss_deduction + $other_deduction;
+        
+        // Define fullname properly
+        $fullname = $employee['firstname'] . ' ' . $employee['middlename'] . ' ' . $employee['lastname'];
+    } else {
+        echo "No employee data found.";
+    }
+    
+}
+$now = new DateTime();
+
+$month_now = $now->format('F');
+$year_now = $now->format('Y');
+
 ?>
 
 <!DOCTYPE html>
@@ -35,9 +110,9 @@ include './database/session.php';
                     <h5>Payslip</h5>
                 </div>
                 <div class="download-container">
-                        <a href="path/to/download" class="download-btn">
-                            <i class="fas fa-download"></i> Download
-                        </a>
+                    <a href="pdf_generator.php?id=<?php echo $emp_id; ?>" class="download-btn">
+                        <i class="fas fa-download"></i> Download
+                    </a>
                     </div>
                 <hr>
             </div>
@@ -50,11 +125,10 @@ include './database/session.php';
                                 <img src="../assets/logoblack-.png" alt="logo" style="height:40px; margin-right:2%;"><img src="../assets/title.png" alt="ExPense" style="height:15px;">
                             </div>
                         </td>
-                        <td style="text-align:right;">Payslip No: 023123</td>
                     </tr>
                     <tr>
-                        <td>First Cutoff</td>
-                        <td style="text-align:right;">Salary Month: October 2024</td>
+                        <td><?php echo $cutoff?></td>
+                        <td style="text-align:right;">Salary Month: <?php echo $month_now; echo $year_now?></td>
                     </tr>
                 </table>
                 <hr style="opacity:0.5;">
@@ -68,24 +142,24 @@ include './database/session.php';
                     <tbody>
                         <tr>
                             <td style="font-size: 15px;font-weight:600;">Expense</td>
-                            <td style="font-size: 15px;font-weight:600;">Juan Dela Cruz</td>
+                            <td style="font-size: 15px;font-weight:600;"><?php echo htmlspecialchars($fullname)?></td>
                         </tr>
                         <tr>
                             <td><span>CVSu 9632</span></td>
-                            <td><span>Service Crew</span></td>
+                            <td><span><?php echo $position_name ?></span></td>
                         </tr>
                         <tr>
                             <td><span >Email:</span>expensep@email.com</td>
-                            <td><span>Email:</span> juandc@email.com</td>
+                            <td><span>Email:</span><?php echo $email ?></td>
                         </tr>
                         <tr>
                             <td><span>Phone:</span> +1 936 281 832</td>
-                            <td><span>Phone:</span> 0937262822</td>
+                            <td><span>Phone:</span><?php echo $phone_num ?></td>
                         </tr>
                     </tbody>
                 </table>    
                 <hr style="opacity:0.5;">
-                <p>Payslip of the Month October</p>
+                <p>Payslip of the Month <?php echo $month_now?></p>
                 <div class="earn_deduc_div">
                     <div class="earnings-deductions-table">
                         <table class="earnings">
@@ -98,19 +172,19 @@ include './database/session.php';
                             <tbody>
                                 <tr>
                                     <td>Basic Pay</td>
-                                    <td>₱3000</td>
+                                    <td>₱<?php echo $basic_pay ?></td>
                                 </tr>
                                 <tr>
                                     <td>Holiday Pay</td>
-                                    <td>₱1000</td>
+                                    <td>₱<?php echo $holiday_pay ?></td>
                                 </tr>
                                 <tr>
                                     <td>Ot Pay</td>
-                                    <td>$200</td>
+                                    <td>$<?php echo $ot_pay ?></td>
                                 </tr>
                                 <tr>
                                     <td>Total Earnings</td>
-                                    <td>₱4000</td>
+                                    <td>₱<?php echo $total_salary ?></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -124,23 +198,23 @@ include './database/session.php';
                             <tbody>
                                 <tr>
                                     <td>PAGIBIG</td>
-                                    <td>₱743</td>
+                                    <td>₱<?php echo $pagibig_deduction ?></td>
                                 </tr>
                                 <tr>
                                     <td>SSS</td>
-                                    <td>₱573</td>
+                                    <td>₱<?php echo $sss_deduction ?></td>
                                 </tr>
                                 <tr>
                                     <td>PhilHealth</td>
-                                    <td>₱673</td>
+                                    <td>₱<?php echo $philhealth_deduction ?></td>
                                 </tr>
                                 <tr>
                                     <td>Others</td>
-                                    <td>₱100</td>
+                                    <td>₱<?php echo $other_deduction ?></td>
                                 </tr>
                                 <tr>
                                     <td>Total Deductions</td>
-                                    <td>$700</td>
+                                    <td>$<?php echo $total_deductions?></td>
                                 </tr>
                             </tbody>
                         </table>
