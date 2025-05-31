@@ -227,59 +227,67 @@ while ($row = $position_result->fetch_assoc()) {
         </div>
     </div>
 
-    <!-- Modal Backdrop for Viewing Info -->
-    <div class="modal-backdrop"></div>
-    <div class="modal">
-        <div class="profile-container">
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSLU5_eUUGBfxfxRd4IquPiEwLbt4E_6RYMw&s" alt="Profile Picture">
-            <div class="profile-details">
-                <h1 id="modal-employee-name">Michael Tan</h1>
+    <!-- view-info Modal -->
+    <div class="modal2-info-backdrop" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 99;"></div>
+
+    <div class="modal2-info" style="display: none;">
+        <div class="profile-container2">
+            <div class="employee-details4">
+                <h3>First Name:</h3>
+                <input type="text" class="search-boxs" readonly>
             </div>
-            <div class="employee-details1">
-                <h3>Employee Id:</h3>
-                <input type="text" placeholder="Input ID..." class="search-box">
+
+            <div class="employee-details5">
+                <h3>Middle Name:</h3>
+                <input type="text" class="search-boxs" readonly>
             </div>
-            <div class="employee-details2">
-                <h3>Pay Type:</h3>
-                <input type="text" placeholder="Input Pay Type..." class="search-box">
-            </div>
-            <div class="employee-details3">
-                <h3>Rate:</h3>
-                <input type="text" placeholder="Input Rate..." class="search-box">
+
+            <div class="employee-details6">
+                <h3>Lastname:</h3>
+                <input type="text" class="search-boxs" readonly>
             </div>
         </div>
 
-        <div class="details-container">
-            <div class="details-left">
+        <div class="detail-container">
+            <div class="detail-left">
                 <h3>Contact Number:</h3>
-                <input type="text" placeholder="Input Number..." class="search-box">
+                <input type="text" class="search-boxes" readonly>
 
                 <h3>Bank Name:</h3>
-                <input type="text" placeholder="Input Name..." class="search-box">
+                <input type="text" class="search-boxes" readonly>
 
                 <h3>Email Address:</h3>
-                <input type="text" placeholder="Input Your Email..." class="search-box">
+                <input type="text" class="search-boxes" readonly>
             </div>
-            <div class="details-right">
+            <div class="detail-right">
                 <h3>Position:</h3>
-                <select class="search-box">
+                <select class="search-boxes" disabled>
                     <option>Crew</option>
                     <option>Manager</option>
                 </select>
 
                 <h3>Bank Account:</h3>
-                <input type="text" placeholder="Input Account Number..." class="search-box">
+                <input type="text" class="search-boxes" readonly>
 
-                <h3>Joining Date:</h3>
-                <input type="date" placeholder="Input Date..." class="search-box">
+                <div class="inline-inputs">
+                    <div class="pay-type-container">
+                        <h3>Pay Type:</h3>
+                        <input type="text" class="search-boxes pay-type-input" readonly>
+                    </div>
+                    <div class="rate-container">
+                        <h3>Rate:</h3>
+                        <input type="text" class="search-boxes rate-input" readonly>
+                    </div>
+                </div>
             </div>
         </div>
 
         <div class="button-container">
-            <button class="back-btn" id="save-employee">Save</button>
-            <button class="back-btn" id="close-view-modal">Back</button>
+            <button class="save_btn" id="add-employee">Save</button>
+            <button class="back-btn" id="cancel-add">Back</button>
         </div>
     </div>
+
 
 
     <!-- Confirmation Modal -->
@@ -365,66 +373,6 @@ while ($row = $position_result->fetch_assoc()) {
         <div class="button-container">
             <button class="back-btn" id="add-employee">Add</button>
             <button class="back-btn" id="cancel-add">Cancel</button>
-        </div>
-    </div>
-
-    <!-- view-info Modal -->
-    <div class="modal2-info-backdrop" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 99;"></div>
-    <div class="modal2-info" style="display: none;">
-        <div class="profile-container2">
-            <div class="employee-details4">
-                <h3>First Name:</h3>
-                <input type="text" class="search-boxs" readonly>
-            </div>
-
-            <div class="employee-details5">
-                <h3>Middle Name:</h3>
-                <input type="text" class="search-boxs" readonly>
-            </div>
-
-            <div class="employee-details6">
-                <h3>Lastname:</h3>
-                <input type="text" placeholder="Input Rate..." class="search-boxs" readonly>
-            </div>
-        </div>
-
-        <div class="detail-container">
-            <div class="detail-left">
-                <h3>Contact Number:</h3>
-                <input type="text" class="search-boxes" readonly>
-
-                <h3>Bank Name:</h3>
-                <input type="text" class="search-boxes" readonly>
-
-                <h3>Email Address:</h3>
-                <input type="text" class="search-boxes" readonly>
-            </div>
-            <div class="detail-right">
-                <h3>Position:</h3>
-                <select class="search-boxes" disabled>
-                    <option>Crew</option>
-                    <option>Manager</option>
-                </select>
-
-                <h3>Bank Account:</h3>
-                <input type="text" class="search-boxes" readonly>
-
-                <div class="inline-inputs">
-                    <div class="pay-type-container">
-                        <h3>Pay Type:</h3>
-                        <input type="text" class="search-boxes pay-type-input" readonly>
-                    </div>
-                    <div class="rate-container">
-                        <h3>Rate:</h3>
-                        <input type="text" class="search-boxes rate-input" readonly>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="button-container">
-            <button class="save_btn" id="add-employee">Save</button>
-            <button class="back-btn" id="cancel-add">Back</button>
         </div>
     </div>
 
