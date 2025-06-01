@@ -17,72 +17,86 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $_SESSION['email'] = $row['email'];
         $_SESSION['account_id'] = $row['emp_id'];
         $acc_id = $row['emp_id'];
-        date_default_timezone_set('Asia/Manila'); // or your relevant timezone
 
-        $current_date = (new DateTime())->format('Y-m-d');
+        date_default_timezone_set('Asia/Manila'); // Set correct timezone
+        $now = new DateTime();
+        $nowFormatted = $now->format('Y-m-d H:i:s');
+        error_log("Login detected at $nowFormatted");
+
+        // Determine $today and $tomorrow correctly based on time (for night shift span)
+        $hour = (int)$now->format('H');
+        $today = ($hour < 6) ? (new DateTime('yesterday'))->format('Y-m-d') : $now->format('Y-m-d');
+        $tomorrow = (new DateTime($today . ' +1 day'))->format('Y-m-d');
+        $current_date = $now->format('Y-m-d');
 
         // Get shift info
         $shift_check_query = mysqli_query($conn, "SELECT shift FROM tbl_emp_info WHERE emp_id = '$acc_id'");
         if ($shift_check_query && $shift_check_query->num_rows > 0) {
             $shift_fetch = $shift_check_query->fetch_assoc();
             $shift = $shift_fetch['shift'];
+            error_log("Shift: $shift");
 
-            $now = new DateTime();
-
-            $check_attendance = mysqli_query($conn, "SELECT attendance_today FROM tbl_attendance WHERE emp_id = '$acc_id' AND attendance_date = '$current_date'");
+            // Check if attendance record exists
+            $check_attendance = mysqli_query($conn, "SELECT * FROM tbl_attendance WHERE emp_id = '$acc_id' AND attendance_date = '$current_date'");
             $attendance_data = mysqli_fetch_assoc($check_attendance);
 
-            
+            // Insert record if it doesn't exist
+            if (!$attendance_data) {
+                mysqli_query($conn, "INSERT INTO tbl_attendance (emp_id, attendance_date) VALUES ('$acc_id', '$current_date')");
+                $attendance_data = ['attendance_today' => null];
+                error_log("Inserted new attendance record for $current_date");
+            }
+
+            // Skip if already marked
             if (!empty($attendance_data['attendance_today'])) {
-                return;
-            }
+                error_log("Already marked: " . $attendance_data['attendance_today']);
+            } else {
+                $status = null;
 
-            $status = null;
+                if ($shift === "Night") {
+                    $present_start = new DateTime("$today 18:45:00");
+                    $present_end = new DateTime("$today 19:15:00");
+                    $late_end = new DateTime("$tomorrow 03:00:00");
 
-            $today = (new DateTime())->format('Y-m-d');
+                    if ($now < $present_start) {
+                        error_log("Too early to log night shift attendance.");
+                    } elseif ($now >= $present_start && $now <= $present_end) {
+                        $status = 'Present';
+                    } elseif ($now > $present_end && $now <= $late_end) {
+                        $status = 'Late';
+                    } else {
+                        $status = 'Absent';
+                    }
+                } elseif ($shift === "Morning") {
+                    $present_start = new DateTime("$today 06:45:00");
+                    $present_end = new DateTime("$today 07:15:00");
+                    $late_end = new DateTime("$today 15:00:00");
 
-            $tomorrow = (new DateTime('tomorrow'))->format('Y-m-d');
-
-            if ($shift === "Night") {
-                $present_start = new DateTime("$today 18:45:00");
-                $present_end = new DateTime("$today 19:15:00");
-                $late_end = new DateTime("$tomorrow 03:00:00");
-                $absent_after = new DateTime("$tomorrow 03:00:01");
-
-                if ($now < $present_start) {
-                    // too early
-                } elseif ($now >= $present_start && $now <= $present_end) {
-                    $status = 'Present';
-                } elseif ($now > $present_end && $now <= $late_end) {
-                    $status = 'Late';
-                } elseif ($now > $late_end) {
-                    $status = 'Absent';
+                    if ($now < $present_start) {
+                        error_log("Too early to log morning shift attendance.");
+                    } elseif ($now >= $present_start && $now <= $present_end) {
+                        $status = 'Present';
+                    } elseif ($now > $present_end && $now <= $late_end) {
+                        $status = 'Late';
+                    } else {
+                        $status = 'Absent';
+                    }
                 }
-            }elseif ($shift === "Morning") {
-                $present_start = new DateTime("$today 06:45:00");
-                $present_end = new DateTime("$today 07:15:00");
-                $late_end = new DateTime("$today 15:00:00");
-                $absent_after = new DateTime("$today 15:00:01");
 
-                if ($now < $present_start) {
-                    // too early, maybe do nothing
-                } elseif ($now >= $present_start && $now <= $present_end) {
-                    $status = 'Present';
-                } elseif ($now > $present_end && $now <= $late_end) {
-                    $status = 'Late';
-                } elseif ($now > $absent_after) {
-                    $status = 'Absent';
+                if ($status) {
+                    $query = "UPDATE tbl_attendance 
+                              SET attendance_today = '$status', 
+                                  attendance_date = '$current_date', 
+                                  present_days = present_days + 1
+                              WHERE emp_id = '$acc_id'";
+                    if (mysqli_query($conn, $query)) {
+                        error_log("Attendance updated to $status for emp_id $acc_id");
+                    } else {
+                        error_log("Failed to update attendance: " . mysqli_error($conn));
+                    }
+                } else {
+                    error_log("Status was not set due to unmatched time range.");
                 }
-            }
-            if ($status) {
-                $current_date = date('Y-m-d');
-                $query = "UPDATE tbl_attendance 
-                        SET attendance_today = '$status', 
-                            attendance_date = '$current_date', 
-                            present_days = present_days + 1
-                        WHERE emp_id = '$acc_id'";
-                
-                mysqli_query($conn, $query);
             }
         }
 
@@ -98,5 +112,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $error = "Invalid Employee/Admin Email or Password.";
     }
 }
+
 $conn->close();
 ?>
