@@ -20,12 +20,12 @@ include './database/session.php';
 <body>
     <?php include 'sidenav.php'; ?>
     <div class="main-content">
-        <h1>Welcome Employee!</h1>
+        <h1 style="margin-top: 70px; margin-left:-800px;">Welcome Employee!</h1>
         <p class="section-header">Dashboard</p>
         <hr />
 
         <div class="card-container">
-            <div class="card card-blue">
+            <div class="card card-blue" style="margin-left:-50px;">
                 <h3>📅 Upcoming Salary Date</h3>
                 <hr />
                 <div class="highlight">November 16, 2024</div>
@@ -34,17 +34,33 @@ include './database/session.php';
                 <h3>💰 Salary Report</h3>
                 <hr />
                 <div class="highlight">₱ 15,000</div>
-                <div style="font-size: 14px; margin-left: 165px;">Last Salary ₱ 10,000</div>
+                <div style="font-size: 14px; margin-left: 115px; margin-top:10px;">Last Salary ₱ 10,000</div>
             </div>
             <div class="card">
-            <h3><i class="fas fa-check-circle" style="margin-right: 8px; color: green;"></i>Remaining Leaves</h3>
-                <hr />
-                <div style="font-size: 30px;font-weight: bold; text-align:center; margin-top:30px;">5</div>
-            </div>
+    <h3><i class="fas fa-check-circle" style="margin-right: 8px; color: green;"></i>Remaining Leaves</h3>
+    <hr />
+    <div style="font-size: 30px;font-weight: bold; text-align:center; margin-top:30px;">
+        <?php
+        // Fetch employee ID from session
+        $emp_id = $_SESSION['emp_id']; // Adjust this key if it's different in your session
+
+        // Fetch remaining leaves from tbl_leave
+        $leaveQuery = "SELECT remaining_leave FROM tbl_leave WHERE emp_id = '$emp_id' ORDER BY leave_id DESC LIMIT 1";
+        $leaveResult = mysqli_query($conn, $leaveQuery);
+
+        if ($leaveResult && mysqli_num_rows($leaveResult) > 0) {
+            $leaveRow = mysqli_fetch_assoc($leaveResult);
+            echo $leaveRow['remaining_leave'];
+        } else {
+            echo "0"; // fallback if no leave record
+        }
+        ?>
+    </div>
+</div>
         </div>
 
         <!-- Calendar and Attendance beside each other -->
-        <div class="card-row">
+        <div class="card-row" style="margin-left: -10px;">
             <div class="card half-width">
                 <h3>Attendance & Leaves</h3>
                 <hr />
@@ -71,7 +87,8 @@ include './database/session.php';
                 </button>
             </div>
 
-            <div class="calendar-box">
+            <div class="calendar-box" >
+                <div class="calendar-title">Calendar</div>
                 <div class="calendar-controls">
                     <button id="prev-month">◀</button>
                     <select id="month-select"></select>

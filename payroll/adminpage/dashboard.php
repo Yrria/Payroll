@@ -2,6 +2,119 @@
 session_start();
 include '../assets/databse/connection.php';
 include './database/session.php';
+
+
+$records_per_page = 1; // Number of records to display per page
+$current_page = isset($_GET['page']) ? $_GET['page'] : 1; // Get current page number, default to 1
+
+// Calculate the limit clause for SQL query
+$start_from = ($current_page - 1) * $records_per_page;
+
+// Initialize variables
+$sql = "SELECT * FROM tbl_leave WHERE status = 'Pending'";
+
+// Check if search query is provided
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['approve_btn'])) {
+    $leave_id = $conn->real_escape_string($_POST['approve_leave_id']);
+
+    // Update leave status to Approved
+    $update_sql = "UPDATE tbl_leave SET status = 'Approved' WHERE leave_id = '$leave_id'";
+    if ($conn->query($update_sql)) {
+        header("Location: leave_approved.php");
+        exit();
+    } else {
+        echo "<script>alert('Failed to approve leave request.');</script>";
+    }
+}
+
+if (isset($_GET['query']) && !empty($_GET['query'])) {
+    $search_query = $_GET['query'];
+    // Modify SQL query to include search filter
+    $sql .= " AND (
+        emp_id LIKE '%$search_query%' 
+        OR leave_id LIKE '%$search_query%' 
+        OR subject LIKE '%$search_query%' 
+        OR date_applied LIKE '%$search_query%' 
+        OR start_date LIKE '%$search_query%' 
+        OR end_date LIKE '%$search_query%' 
+        OR status LIKE '%$search_query%' 
+        OR leave_type LIKE '%$search_query%' 
+        OR message LIKE '%$search_query%' 
+        OR rejection_reason LIKE '%$search_query%' 
+        OR remaining_leave LIKE '%$search_query%' 
+        OR no_of_leave LIKE '%$search_query%' 
+        OR total_leaves LIKE '%$search_query%' 
+        OR emp_id IN (
+            SELECT emp_id FROM tbl_emp_acc
+            WHERE firstname LIKE '%$search_query%' 
+               OR middlename LIKE '%$search_query%' 
+               OR lastname LIKE '%$search_query%'
+        )
+    )";
+}
+
+$sql .= " LIMIT $start_from, $records_per_page";
+
+$result = $conn->query($sql);
+
+// Count total number of records
+$total_records_query = "SELECT COUNT(*) FROM tbl_leave WHERE status = 'Pending'";
+if (!empty($search_query)) {
+    $total_records_query .= " AND ( ... same search conditions ... )";
+}
+
+if (isset($_GET['query']) && !empty($_GET['query'])) {
+    $total_records_query .= " AND (
+        emp_id LIKE '%$search_query%' 
+        OR leave_id LIKE '%$search_query%' 
+        OR subject LIKE '%$search_query%' 
+        OR date_applied LIKE '%$search_query%' 
+        OR start_date LIKE '%$search_query%' 
+        OR end_date LIKE '%$search_query%' 
+        OR status LIKE '%$search_query%' 
+        OR leave_type LIKE '%$search_query%' 
+        OR message LIKE '%$search_query%' 
+        OR rejection_reason LIKE '%$search_query%' 
+        OR remaining_leave LIKE '%$search_query%' 
+        OR no_of_leave LIKE '%$search_query%' 
+        OR total_leaves LIKE '%$search_query%' 
+        OR emp_id IN (
+            SELECT emp_id FROM tbl_emp_acc
+            WHERE firstname LIKE '%$search_query%' 
+               OR middlename LIKE '%$search_query%' 
+               OR lastname LIKE '%$search_query%'
+        )
+    )";
+}
+
+$total_records_result = $conn->query($total_records_query);
+$total_records_row = $total_records_result->fetch_row();
+$total_records = $total_records_row[0];
+
+$total_pages = ceil($total_records / $records_per_page);
+
+// preserve query in pagination links
+$qp = !empty($_GET['query']) ? '&query=' . urlencode($_GET['query']) : '';
+
+
+
+// Count active employees
+$activeEmpQuery = "SELECT COUNT(*) AS total_active FROM tbl_emp_acc WHERE status = 'Active'";
+$activeEmpResult = $conn->query($activeEmpQuery);
+$activeEmpCount = 0;
+if ($activeEmpResult && $row = $activeEmpResult->fetch_assoc()) {
+    $activeEmpCount = $row['total_active'];
+}
+
+// Count pending leaves
+$pendingLeavesQuery = "SELECT COUNT(*) AS total_pending FROM tbl_leave WHERE status = 'Pending'";
+$pendingLeavesResult = $conn->query($pendingLeavesQuery);
+$pendingLeaveCount = 0;
+if ($pendingLeavesResult && $row = $pendingLeavesResult->fetch_assoc()) {
+    $pendingLeaveCount = $row['total_pending'];
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -35,7 +148,7 @@ include './database/session.php';
                             <div class="info">
                                 <p>Active Employees</p>
                                 <hr>
-                                <h2>14</h2>
+                                <h2><?php echo $activeEmpCount; ?></h2>
                             </div>
                         </div>
 
@@ -43,7 +156,7 @@ include './database/session.php';
                             <div class="info">
                                 <p>Pending Leaves</p>
                                 <hr>
-                                <h2>14</h2>
+                                <h2><?php echo $pendingLeaveCount; ?></h2>
                             </div>
                         </div>
 
@@ -100,39 +213,16 @@ include './database/session.php';
                             </div>
                         </div>
 
-                        <div class="calendar">
-                            <h3>Calendar</h3>
-                            <div class="calendar-content">
-                                <div class="calendar-header">
-                                    <select id="monthSelect"></select>
-                                    <select id="yearSelect"></select>
-                                </div>
-                                <div class="calendar">
-                                    <div class="calendar-content">
-                                        <div class="calendar-days">
-                                            <div>Sun</div>
-                                            <div>Mon</div>
-                                            <div>Tue</div>
-                                            <div>Wed</div>
-                                            <div>Thu</div>
-                                            <div>Fri</div>
-                                            <div>Sat</div>
-                                        </div>
-                                        <div class="calendar-dates" id="dates"></div>
-                                    </div>
-                                </div>
-                                <div class="calendar-dates" id="dates"></div>
+                        <div class="calendar-box">
+                            <div class="calendar-title">Calendar</div>
+                            <div class="calendar-controls">
+                                <button id="prev-month">◀</button>
+                                <select id="month-select"></select>
+                                <select id="year-select"></select>
+                                <button id="next-month">▶</button>
                             </div>
-
-                            <!-- Modal for Adding Reminders -->
-                            <div id="reminderModal" class="modal">
-                                <div class="modal-content">
-                                    <span class="close" id="closeModal">&times;</span>
-                                    <span id="selectedDate"></span>
-                                    <textarea id="noteInput" placeholder="Add a reminder..."></textarea>
-                                    <button id="addNoteButton"><span>Post</span></button>
-                                    <ul id="notesList"></ul>
-                                </div>
+                            <div class="calendar" id="calendar-grid">
+                                <!-- Calendar grid will be injected here -->
                             </div>
                         </div>
 
@@ -145,62 +235,59 @@ include './database/session.php';
                             <h3>Leave Requests</h3>
 
                             <!-- View All Button placed above the Action column -->
-                            <button id="view-all-btn" class="view-all-btn">View All</button>
+                            <button id="view-all-btn" class="view-all-btn"><a href="leave_pending.php">View All</a></button>
 
                             <table id="leave-table">
                                 <thead>
                                     <tr>
-                                        <th>#</th>
-                                        <th>Employee</th>
+                                        <th>Employee ID</th>
+                                        <th>Full Name</th>
+                                        <th>Subject</th>
+                                        <th>Date Applied</th>
                                         <th>Leave Type</th>
-                                        <th>Leave From</th>
-                                        <th>Leave To</th>
-                                        <th>Days</th>
                                         <th>Status</th>
-                                        <th>Action</th>
+
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <tr class="pending-leave">
-                                        <td>423491</td>
-                                        <td>Ravi</td>
-                                        <td>Sick Leave</td>
-                                        <td>12/03/2024</td>
-                                        <td>15/03/2024</td>
-                                        <td>3</td>
-                                        <td>Pending</td>
-                                        <td>
-                                            <button class="approve">Approve</button>
-                                            <button class="reject">Reject</button>
-                                        </td>
-                                    </tr>
-                                    <!-- Hidden rows that will appear when View All is clicked -->
-                                    <tr class="pending-leave" style="display:none;">
-                                        <td>423492</td>
-                                        <td>John</td>
-                                        <td>Vacation Leave</td>
-                                        <td>16/03/2024</td>
-                                        <td>20/03/2024</td>
-                                        <td>4</td>
-                                        <td>Pending</td>
-                                        <td>
-                                            <button class="approve">Approve</button>
-                                            <button class="reject">Reject</button>
-                                        </td>
-                                    </tr>
-                                    <tr class="pending-leave" style="display:none;">
-                                        <td>423493</td>
-                                        <td>Jane</td>
-                                        <td>Casual Leave</td>
-                                        <td>18/03/2024</td>
-                                        <td>20/03/2024</td>
-                                        <td>2</td>
-                                        <td>Pending</td>
-                                        <td>
-                                            <button class="approve">Approve</button>
-                                            <button class="reject">Reject</button>
-                                        </td>
-                                    </tr>
+                                <tbody id="showdata">
+                                    <?php if ($result && $result->num_rows > 0): ?>
+                                        <?php while ($row = $result->fetch_assoc()):
+                                            // pull names
+                                            $e_res = $conn->query(
+                                                "SELECT lastname, firstname, middlename
+                      FROM tbl_emp_acc
+                      WHERE emp_id = '{$conn->real_escape_string($row['emp_id'])}'
+                      LIMIT 1"
+                                            );
+                                            $last = $first = $middle = '';
+                                            if ($e_res && $e_res->num_rows) {
+                                                $e = $e_res->fetch_assoc();
+                                                $last = $e['lastname'];
+                                                $first = $e['firstname'];
+                                                $middle = $e['middlename'];
+                                            }
+                                            $_SESSION['fullname'] = trim("$first $middle $last"); // First, Middle, Last
+                                        ?>
+                                            <tr data-start-date="<?php echo htmlspecialchars($row['start_date']); ?>"
+                                                data-end-date="<?php echo htmlspecialchars($row['end_date']); ?>">
+
+                                                <td><?php echo htmlspecialchars($row['emp_id']); ?></td>
+                                                <td><?php echo htmlspecialchars("$first $middle $last"); ?></td> <!-- Full Name in one cell -->
+                                                <td><?php echo htmlspecialchars($row['subject']); ?></td>
+                                                <td><?php echo htmlspecialchars($row['date_applied']); ?></td>
+                                                <td><?php echo htmlspecialchars($row['leave_type']); ?></td>
+                                                <td class="td-text" style="<?php echo ($row['status'] === 'Pending') ? 'color: red;' : ''; ?>">
+                                                    <?php echo htmlspecialchars($row['status']); ?>
+                                                </td>
+
+
+                                            </tr>
+                                        <?php endwhile; ?>
+                                    <?php else: ?>
+                                        <tr>
+                                            <td colspan="8" style="text-align:center;">No records found.</td>
+                                        </tr>
+                                    <?php endif; ?>
                                 </tbody>
                             </table>
                         </div>
@@ -345,232 +432,105 @@ include './database/session.php';
                     });
                 </script>
                 <script>
-                    const monthNames = [
-                        "January", "February", "March", "April", "May", "June",
-                        "July", "August", "September", "October", "November", "December"
+                    const calendarGrid = document.getElementById("calendar-grid");
+                    const monthSelect = document.getElementById("month-select");
+                    const yearSelect = document.getElementById("year-select");
+
+                    const prevMonthBtn = document.getElementById("prev-month");
+                    const nextMonthBtn = document.getElementById("next-month");
+
+                    const months = [
+                        "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
                     ];
 
-                    const notesList = document.getElementById('notesList');
-                    const noteInput = document.getElementById('noteInput');
-                    const addNoteButton = document.getElementById('addNoteButton');
-                    const datesContainer = document.getElementById('dates');
-                    const monthSelect = document.getElementById('monthSelect');
-                    const yearSelect = document.getElementById('yearSelect');
-                    const reminderModal = document.getElementById('reminderModal');
-                    const selectedDateElement = document.getElementById('selectedDate');
-                    const closeModal = document.getElementById('closeModal');
+                    const today = new Date();
+                    let currentMonth = today.getMonth();
+                    let currentYear = today.getFullYear();
 
-                    let currentYear = new Date().getFullYear();
-                    let currentMonth = new Date().getMonth(); // Start with current month
-                    let clickedDate = null;
+                    function populateSelectors() {
+                        monthSelect.innerHTML = "";
+                        yearSelect.innerHTML = "";
+                        months.forEach((m, i) => {
+                            let opt = new Option(m, i);
+                            if (i === currentMonth) opt.selected = true;
+                            monthSelect.add(opt);
+                        });
 
-                    function populateYearSelect() {
-                        for (let year = 2020; year <= 2030; year++) { // Adjust the range of years as needed
-                            const option = document.createElement('option');
-                            option.value = year;
-                            option.innerText = year;
-                            if (year === currentYear) {
-                                option.selected = true;
-                            }
-                            yearSelect.appendChild(option);
+                        for (let y = currentYear - 10; y <= currentYear + 10; y++) {
+                            let opt = new Option(y, y);
+                            if (y === currentYear) opt.selected = true;
+                            yearSelect.add(opt);
                         }
                     }
 
-                    function populateMonthSelect() {
-                        monthNames.forEach((month, index) => {
-                            const option = document.createElement('option');
-                            option.value = index;
-                            option.innerText = month;
-                            if (index === currentMonth) {
-                                option.selected = true;
-                            }
-                            monthSelect.appendChild(option);
-                        });
-                    }
+                    function renderCalendar(month, year) {
+                        calendarGrid.innerHTML = "";
 
-                    function generateCalendar(month, year) {
-                        datesContainer.innerHTML = "";
-                        const daysInMonth = new Date(year, month + 1, 0).getDate();
+                        const days = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
+                        days.forEach(day => {
+                            const el = document.createElement("div");
+                            el.textContent = day;
+                            el.style.fontWeight = "bold";
+                            calendarGrid.appendChild(el);
+                        });
+
                         const firstDay = new Date(year, month, 1).getDay();
+                        const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-                        // Fill empty divs for days before the first day of the month
                         for (let i = 0; i < firstDay; i++) {
-                            const emptyDiv = document.createElement('div');
-                            datesContainer.appendChild(emptyDiv);
+                            calendarGrid.appendChild(document.createElement("div"));
                         }
 
-                        // Fill in the actual days
                         for (let day = 1; day <= daysInMonth; day++) {
-                            const dateDiv = document.createElement('div');
-                            dateDiv.className = 'date';
-                            dateDiv.innerText = day;
+                            const el = document.createElement("div");
+                            el.textContent = day;
 
-                            // Highlight today's date
-                            if (day === new Date().getDate() && month === new Date().getMonth() && year === new Date().getFullYear()) {
-                                dateDiv.classList.add('today');
+                            if (
+                                day === today.getDate() &&
+                                month === today.getMonth() &&
+                                year === today.getFullYear()
+                            ) {
+                                el.classList.add("today");
                             }
 
-                            // Weekend styling
-                            const dateObj = new Date(year, month, day);
-                            const dayOfWeek = dateObj.getDay();
-                            if (dayOfWeek === 0 || dayOfWeek === 6) { // Sunday or Saturday
-                                dateDiv.classList.add('weekend');
-                            }
-
-                            // Example: Highlighting holidays (you can adjust the conditions for holidays)
-                            if ((month === 10 && day === 14) || (month === 1 && day === 23)) { // Add conditions for holidays
-                                dateDiv.classList.add('holiday');
-                            }
-
-                            // Make the date clickable
-                            dateDiv.addEventListener('click', function() {
-                                clickedDate = day; // Store the clicked date
-                                selectedDateElement.innerText = `${day} ${monthNames[month]} ${year}`; // Show selected date in modal
-                                reminderModal.style.display = "block"; // Show the modal
-                            });
-
-                            datesContainer.appendChild(dateDiv);
+                            calendarGrid.appendChild(el);
                         }
                     }
 
-                    function addNote() {
-                        const noteText = noteInput.value.trim();
-                        if (noteText) {
-                            const listItem = document.createElement('li');
-                            listItem.innerText = `${selectedDateElement.innerText}: ${noteText}`;
-                            notesList.appendChild(listItem);
-                            noteInput.value = ""; // Clear the input
-                        }
-                    }
-
-                    addNoteButton.addEventListener('click', addNote);
-
-                    closeModal.addEventListener('click', function() {
-                        reminderModal.style.display = "none"; // Hide the modal
-                    });
-
-                    window.addEventListener('click', function(event) {
-                        if (event.target === reminderModal) {
-                            reminderModal.style.display = "none"; // Hide modal if click outside
-                        }
-                    });
-
-                    monthSelect.addEventListener('change', function() {
+                    function updateCalendar() {
                         currentMonth = parseInt(monthSelect.value);
                         currentYear = parseInt(yearSelect.value);
-                        generateCalendar(currentMonth, currentYear);
-                    });
-
-                    yearSelect.addEventListener('change', function() {
-                        currentYear = parseInt(yearSelect.value);
-                        currentMonth = parseInt(monthSelect.value);
-                        generateCalendar(currentMonth, currentYear);
-                    });
-
-                    // Populate dropdowns and generate the initial calendar
-                    populateMonthSelect();
-                    populateYearSelect();
-                    generateCalendar(currentMonth, currentYear);
-
-
-
-
-                    const eventsContainer = document.querySelector(".Event"); // Container for events
-
-                    function addReminderToEvents(date, reminder) {
-                        // Format the date for the event display
-                        const eventDate = new Date(date);
-                        const day = eventDate.getDate();
-                        const month = monthNames[eventDate.getMonth()].slice(0, 3); // Get abbreviated month
-                        const weekday = eventDate.toLocaleDateString("en-US", {
-                            weekday: "long"
-                        });
-
-                        // Create the event item
-                        const eventItem = document.createElement("div");
-                        eventItem.classList.add("event-item");
-
-                        eventItem.innerHTML = `
-        <div class="event-details">
-            <span class="event-title">${reminder}</span>
-            <span class="event-type">Personal Reminder</span>
-            <span class="event-day">${weekday}</span>
-        </div>
-        <div class="event-date">
-            ${day}<span>${month}</span>
-        </div>
-    `;
-
-                        // Append the event to the events section
-                        eventsContainer.appendChild(eventItem);
+                        renderCalendar(currentMonth, currentYear);
                     }
 
-                    function addNote() {
-                        const noteText = noteInput.value.trim();
-                        if (noteText) {
-                            // Get the selected date
-                            const [day, monthName, year] = selectedDateElement.innerText.split(" ");
-                            const monthIndex = monthNames.indexOf(monthName);
-                            const fullDate = `${year}-${monthIndex + 1}-${day}`;
+                    monthSelect.addEventListener("change", updateCalendar);
+                    yearSelect.addEventListener("change", updateCalendar);
 
-                            // Add the note to the notes list
-                            const listItem = document.createElement("li");
-                            listItem.innerText = `${selectedDateElement.innerText}: ${noteText}`;
-                            notesList.appendChild(listItem);
-
-                            // Add the note to the "Upcoming Holidays and Event" section
-                            addReminderToEvents(fullDate, noteText);
-
-                            noteInput.value = ""; // Clear the input
+                    prevMonthBtn.addEventListener("click", () => {
+                        currentMonth--;
+                        if (currentMonth < 0) {
+                            currentMonth = 11;
+                            currentYear--;
                         }
-                    }
-
-                    // Select all approve and reject buttons
-                    const approveButtons = document.querySelectorAll('.approve');
-                    const rejectButtons = document.querySelectorAll('.reject');
-
-                    // Function to handle update status
-                    function updateStatus(button, status) {
-                        const row = button.closest('tr'); // Get the closest row to the button clicked
-                        const statusCell = row.querySelector('td:nth-child(7)'); // Target the status cell (7th column)
-
-                        // Update status
-                        statusCell.textContent = status;
-                        statusCell.style.color = status === 'Approved' ? '#4CAF50' : '#f44336';
-
-                        // Hide approve/reject buttons after action
-                        row.querySelector('.approve')?.classList.add('hidden');
-                        row.querySelector('.reject')?.classList.add('hidden');
-
-                        // Optionally add a class to center the remaining button
-                        row.querySelector(status === 'Approved' ? '.approve' : '.reject')?.classList.add('single-button');
-                    }
-
-                    // Approve Button in Main Table
-                    approveButtons.forEach((button) => {
-                        button.addEventListener('click', () => {
-                            updateStatus(button, 'Approved');
-                        });
+                        monthSelect.value = currentMonth;
+                        yearSelect.value = currentYear;
+                        updateCalendar();
                     });
 
-                    // Reject Button in Main Table
-                    rejectButtons.forEach((button) => {
-                        button.addEventListener('click', () => {
-                            updateStatus(button, 'Rejected');
-                        });
+                    nextMonthBtn.addEventListener("click", () => {
+                        currentMonth++;
+                        if (currentMonth > 11) {
+                            currentMonth = 0;
+                            currentYear++;
+                        }
+                        monthSelect.value = currentMonth;
+                        yearSelect.value = currentYear;
+                        updateCalendar();
                     });
 
-                    // Handle View All Button Click
-                    document.getElementById('view-all-btn').addEventListener('click', function() {
-                        // Reveal all hidden rows
-                        const hiddenRows = document.querySelectorAll('.pending-leave[style="display:none;"]');
-                        hiddenRows.forEach(function(row) {
-                            row.style.display = 'table-row'; // Reveal hidden rows
-                        });
-
-                        // Hide the "View All" button after it's clicked
-                        this.style.display = 'none';
-                    });
+                    populateSelectors();
+                    renderCalendar(currentMonth, currentYear);
                 </script>
                 <!-- SCRIPT -->
                 <script src="./javascript/main.js"></script>

@@ -1,13 +1,5 @@
 /* Add the CSS styles from your code */
 
-.toggle-arrow {
-    position: fixed;
-    top: 20px;
-    left: 15px;
-    cursor: pointer;
-    z-index: 1000;
-    font-size: 24px;
-}
 
 .content {
     display: grid;
@@ -199,89 +191,71 @@
 }
 
 
+
+
+
+
+
+
 /* Calendar Styles */
-.calendar {
+.calendar-title {
+    text-align: center;
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 12px;
+    color: #333;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+  .calendar-box {
     grid-column: 3;
     grid-row: 2;
-    background-color: #fcfcfc;
-    padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    max-width: 100%;
-    margin: 0;
-    overflow: hidden;
-    height: 430px; 
-    margin-right: 10px;
+    border-radius: 10px;
+    background-color: #ffffff;
+    padding: 30px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
     text-align: center;
-}
-
-.calendar-content {
-    width: 100%;
-}
-
-.calendar-header {
+    flex: 1;
+    min-width: 280px;
+    max-width: 360px;
+  }
+  
+  .calendar-controls {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 10px 0;
-}
-
-.calendar-header select {
-    margin: 0 5px;
-}
-
-.calendar-days {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px 0;
-    color: #333;
-    font-weight: bold;
-}
-
-.calendar-days div {
-    flex: 1;
-    text-align: center;
-    margin: 0 5px; 
-}
-
-/* Optional: For additional styling */
-.calendar-days div:first-child {
-    margin-left: 0;
-}
-
-.calendar-days div:last-child {
-    margin-right: 0;
-}
-
-/* Grid for displaying calendar dates with gaps */
-.calendar-dates {
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .calendar-controls select,
+  .calendar-controls button {
+    padding: 5px 10px;
+    font-size: 14px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: white;
+  }
+  
+  .calendar {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 10px;
-}
-
-.calendar-dates div {
-    padding: 10px;
+    gap: 5px;
     text-align: center;
-    border-radius: 5px;
+    font-size: 14px;
+  }
+  
+  .calendar div {
+    padding: 10px;
+    border-radius: 50%;
     transition: background-color 0.3s;
-    cursor: pointer;
-    background-color: transparent;
-}
+  }
+  
+  .calendar div.today {
+    background-color: #e0f7fa;
+    color: #000;
+    font-weight: bold;
+  }
 
-/* Functionality for selected/reminder dates */
-.calendar-dates .reminder {
-    background-color: #ffffff;
-    color: white;
-}
-
-.calendar-dates .today {
-    color: rgb(147, 223, 247);
-}
-
-.calendar-dates .weekend {
-    color: #f17373;
-}
 
 /* Modal Styles */
 .modal {
@@ -407,16 +381,21 @@
     transition: all 0.5s ease;
 }
 
+#view-all-btn a {
+    color: white;
+    text-decoration: none;
+    display: block;
+}
 #view-all-btn:hover {
     background-color: #1f8af5;
     box-shadow: 0 0 8px rgb(98, 184, 235);
 }
 
 .leave-requests {
-    background-color: #c4c7c9;
+    background-color: #ffffff;
     padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    box-shadow: 1px 0px 5px rgba(0, 0, 0, 0.3);
     text-align: center;
     display: flex;
     flex-direction: column;
@@ -454,72 +433,6 @@ table th, table td {
     border: none;
     cursor: pointer;
     border-radius: 3px;
-}
-
-/* Add transition effect for buttons */
-.approve{
-    width: 100px;
-    height: 40px;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0;
-    transition: all 0.5s ease;
-    font-size: 14px;
-    margin-right: 10px;
-}
-
-.reject {
-    width: 100px;
-    height: 40px;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0;
-    transition: all 0.5s ease;
-    font-size: 14px;
-}
-
-/* Center the action column buttons */
-td:last-child {
-    text-align: center;
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 40px;
-}
-
-/* Dissolve effect for hidden buttons */
-.hidden {
-    opacity: 0;
-    transform: scale(0.5);
-    pointer-events: none;
-    position: absolute;
-}
-
-/* Center the remaining button */
-.single-button {
-    width: 100px;
-    height: 40px;
-    margin: 0;
-    position: static;
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-/* Hover effects */
-.approve:hover {
-    background-color: #4ef549;
-    box-shadow: 0 0 8px rgb(65, 238, 30);
-}
-
-.reject:hover {
-    background-color: #ff0000;
-    box-shadow: 0 0 8px rgb(238, 53, 53);
 }
 
 /* Center the Action column heading */

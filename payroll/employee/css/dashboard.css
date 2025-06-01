@@ -22,7 +22,7 @@ body {
   .section-header {
     font-size: 24px;
     font-weight: bold;
-    margin-left: -1px;
+    margin-right: 1000px;
   }
   
   .card-container {
@@ -44,6 +44,7 @@ body {
   .card-blue {
     background-color: #7eb4eb;
     color: white;
+    margin-right: 50px;
   }
   
   .card h3 {
@@ -96,7 +97,18 @@ body {
     color: white;
   }
   
+/* Calendar Styles */
+.calendar-title {
+    text-align: center;
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 12px;
+    color: #333;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+}
   .calendar-box {
+    grid-column: 3;
+    grid-row: 2;
     border-radius: 10px;
     background-color: #ffffff;
     padding: 30px;
@@ -143,9 +155,9 @@ body {
     color: #000;
     font-weight: bold;
   }
-  
   .holiday-section {
     margin-top: 20px;
+    margin-right: 10px;
   }
   
   .holiday-card {
@@ -167,20 +179,21 @@ body {
     padding: 20px 10px;
     margin-top: -30px;
   }
-  
-  .card.half-width {
-    flex: 1;
-    min-width: 660px;
-    max-width: 100%;
-    height: 280px;
-    margin-top: 25px;
-  }
-  
-  .holiday-container {
+
+    .holiday-container {
     background: #ffffff;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.05);
+    width: 1010px;
+  }
+  
+  .card.half-width {
+    flex: 1;
+    min-width: 600px;
+    max-width: 100%;
+    height: 280px;
+    margin-top: 25px;
   }
   
   .card-row {
