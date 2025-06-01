@@ -23,9 +23,9 @@ include './database/session.php';
             <div class="head-title">
                 <h1>Report</h1>
                 <div class="breadcrumb">
-                    <h5><a href="./dashboard.php">Dashboard </a></h5>
+                    <h5><a href="./dashboard.php">Dashboard</a></h5>
                     <span> > </span>
-                    <h5><a href="./report_yearwise.php">Report-Yearwise </a></h5>
+                    <h5><a href="./report_yearwise.php">Report-Yearwise</a></h5>
                 </div>
                 <hr>
             </div>
@@ -34,11 +34,13 @@ include './database/session.php';
                     <div class="selection_div">
                         <p class="label">Year Wise Report</p>
                         <div class="search-bar">
-                            <button class="search-btn">Search</button>
-                            <input type="text" placeholder="Search employee..." />
+                            <form method="GET" action="">
+                                <input type="text" id="searchInput" placeholder="Search employee..." value="<?php echo isset($_GET['query']) ? htmlspecialchars($_GET['query']) : ''; ?>" />
+                            </form>
                         </div>
                     </div>
                 </div>
+
                 <div class="content">
                     <div class="table-container">
                         <table>
@@ -54,88 +56,66 @@ include './database/session.php';
                                 </tr>
                             </thead>
                             <tbody id="showdata">
-                                <tr>
-                                    <td>Emp 000</td>
-                                    <td>Willy Wonka</td>
-                                    <td>160h</td>
-                                    <td>1820h</td>
-                                    <td>₱500</td>
-                                    <td>₱13,242</td>
-                                    <td class="td-text">
-                                        <div class="action-buttons">
-                                            <button class="view-btn" onclick="openModal()">View Info</button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Emp 000</td>
-                                    <td>Willy Wonka</td>
-                                    <td>160h</td>
-                                    <td>1820h</td>
-                                    <td>₱500</td>
-                                    <td>₱13,242</td>
-                                    <td class="td-text">
-                                        <div class="action-buttons">
-                                            <button class="view-btn" onclick="openModal()">View Info</button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Emp 000</td>
-                                    <td>Willy Wonka</td>
-                                    <td>160h</td>
-                                    <td>1820h</td>
-                                    <td>₱500</td>
-                                    <td>₱13,242</td>
-                                    <td class="td-text">
-                                        <div class="action-buttons">
-                                            <button class="view-btn" onclick="openModal()">View Info</button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Emp 000</td>
-                                    <td>Willy Wonka</td>
-                                    <td>160h</td>
-                                    <td>1820h</td>
-                                    <td>₱500</td>
-                                    <td>₱13,242</td>
-                                    <td class="td-text">
-                                        <div class="action-buttons">
-                                            <button class="view-btn" onclick="openModal()">View Info</button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Emp 000</td>
-                                    <td>Willy Wonka</td>
-                                    <td>160h</td>
-                                    <td>1820h</td>
-                                    <td>₱500</td>
-                                    <td>₱13,242</td>
-                                    <td class="td-text">
-                                        <div class="action-buttons">
-                                            <button class="view-btn" onclick="openModal()">View Info</button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Emp 000</td>
-                                    <td>Willy Wonka</td>
-                                    <td>160h</td>
-                                    <td>1820h</td>
-                                    <td>₱500</td>
-                                    <td>₱13,242</td>
-                                    <td class="td-text">
-                                        <div class="action-buttons">
-                                            <button class="view-btn" onclick="openModal()">View Info</button>
-                                        </div>
-                                    </td>
-                                </tr>
+                                <?php
+                                // Search logic
+                                $search_query = isset($_GET['query']) ? $_GET['query'] : '';
+                                $search_query_escaped = $conn->real_escape_string($search_query);
+
+                                $sql = "
+    SELECT e.emp_id, e.lastname, e.firstname, e.middlename, i.rate,
+        COALESCE(SUM(a.hours_overtime), 0) AS total_overtime,
+        COALESCE(SUM(a.hours_present), 0) AS total_worked,
+        COALESCE(SUM(a.present_days), 0) AS total_present_days,
+        COALESCE(SUM(d.pagibig_deduction + d.philhealth_deduction + d.sss_deduction + d.other_deduction), 0) AS total_deductions
+    FROM tbl_emp_acc e
+    LEFT JOIN tbl_emp_info i ON e.emp_id = i.emp_id
+    LEFT JOIN tbl_attendance a ON e.emp_id = a.emp_id
+    LEFT JOIN tbl_deduction d ON e.emp_id = d.emp_id
+";
+
+                                if (!empty($search_query_escaped)) {
+                                    $sql .= "
+        WHERE e.emp_id LIKE '%$search_query_escaped%'
+        OR e.firstname LIKE '%$search_query_escaped%'
+        OR e.lastname LIKE '%$search_query_escaped%'
+        OR e.middlename LIKE '%$search_query_escaped%'
+    ";
+                                }
+
+                                $sql .= " GROUP BY e.emp_id";
+
+                                $result = $conn->query($sql);
+
+                                if ($result && $result->num_rows > 0) {
+                                    while ($row = $result->fetch_assoc()) {
+                                        $empId = $row['emp_id'];
+                                        $empName = $row['lastname'] . ', ' . $row['firstname'] . ' ' . $row['middlename'];
+                                        $overtimeHours = $row['total_overtime'] . 'h';
+                                        $workedHours = $row['total_worked'] . 'h';
+                                        $totalDeductions = '₱' . number_format($row['total_deductions'], 2);
+                                        $totalWage = '₱' . number_format($row['rate'] * $row['total_present_days'], 2);
+
+                                        echo "<tr>
+            <td>{$empId}</td>
+            <td>{$empName}</td>
+            <td>{$overtimeHours}</td>
+            <td>{$workedHours}</td>
+            <td>{$totalDeductions}</td>
+            <td>{$totalWage}</td>
+            <td class='td-text'>
+                <div class='action-buttons'>
+                    <button class='view-btn' onclick='openModal(\"{$empId}\")'>View Info</button>
+                </div>
+            </td>
+        </tr>";
+                                    }
+                                } else {
+                                    echo "<tr><td colspan='7' style='text-align:center;'>No data found.</td></tr>";
+                                }
+                                ?>
                             </tbody>
                         </table>
                         <br>
-                        <!-- Pagination -->
                         <div class="pagination">
                             <p>Showing 1 / 100 Results</p>
                             <div>
@@ -147,6 +127,7 @@ include './database/session.php';
                     </div>
                 </div>
 
+                <!-- MODAL -->
                 <div id="infoModal" class="modal">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -155,26 +136,15 @@ include './database/session.php';
                         </div>
                         <span class="close-btn" onclick="closeModal()">&times;</span>
                         <hr>
-                        <!-- Employee Information -->
                         <div class="employee-info">
-                            <span>Employee Name: Willy Wonka</span>
+                            <span>Employee Name: </span> <!-- leave empty to fill dynamically -->
                         </div>
                         <div class="employee-stats">
-                            <div class="stat">
-                                <span>Total Worked Hours: 1820h</span>
-                            </div>
-                            <div class="stat">
-                                <span>Total Deductions: ₱500</span>
-                            </div>
-                            <div class="stat">
-                                <span>Total Overtime Hours: 160h</span>
-                            </div>
-                            <div class="stat">
-                                <span>Total Wage: ₱13,242</span>
-                            </div>
+                            <div class="stat"><span class="worked-hours">Total Worked Hours: 0h</span></div>
+                            <div class="stat"><span class="total-deductions">Total Deductions: ₱0</span></div>
+                            <div class="stat"><span class="overtime-hours">Total Overtime Hours: 0h</span></div>
+                            <div class="stat"><span class="total-wage">Total Wage: ₱0</span></div>
                         </div>
-
-                        <!-- Table -->
                         <table>
                             <thead>
                                 <tr>
@@ -270,7 +240,6 @@ include './database/session.php';
                                     <td>₱70</td>
                                     <td>₱1,600</td>
                                 </tr>
-                                <!-- Total Row -->
                                 <tr class="total-row">
                                     <td>Total</td>
                                     <td>1,030</td>
@@ -290,28 +259,89 @@ include './database/session.php';
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- SCRIPT -->
+            </div> <!-- .main-content -->
+        </div> <!-- #mainContent -->
+    </div> <!-- .container -->
+
     <script>
-        // Modal functionality
-        function openModal() {
-            document.getElementById('infoModal').style.display = 'block';
+        function openModal(empId) {
+            fetch('fetch_employee_info.php?emp_id=' + encodeURIComponent(empId))
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Update employee info
+                        document.querySelector('.employee-info span').textContent = `Employee Name: ${data.fullname}`;
+                        document.querySelector('.worked-hours').textContent = `Total Worked Hours: ${data.total_worked_hours}h`;
+                        document.querySelector('.overtime-hours').textContent = `Total Overtime Hours: ${data.total_overtime_hours}h`;
+                        document.querySelector('.total-deductions').textContent = `Total Deductions: ₱${Number(data.total_deductions).toFixed(2)}`;
+                        document.querySelector('.total-wage').textContent = `Total Wage: ₱${Number(data.total_wage).toFixed(2)}`;
+
+                        // Update year in modal header
+                        document.querySelector('.modal-header .year').textContent = data.year;
+
+                        // Update monthly data table
+                        const tbody = document.querySelector('#infoModal tbody');
+                        let tableHTML = '';
+
+                        // Add monthly rows
+                        data.monthly_data.forEach(month => {
+                            tableHTML += `
+                        <tr>
+                            <td>${month.month}</td>
+                            <td>${month.worked_hours}</td>
+                            <td>${month.overtime_hours}</td>
+                            <td>₱${Number(month.deductions).toFixed(2)}</td>
+                            <td>₱${Number(month.wage).toFixed(2)}</td>
+                        </tr>
+                    `;
+                        });
+
+                        // Add total row
+                        tableHTML += `
+                    <tr class="total-row">
+                        <td><strong>Total</strong></td>
+                        <td><strong>${data.total_worked_hours}</strong></td>
+                        <td><strong>${data.total_overtime_hours}</strong></td>
+                        <td><strong>₱${Number(data.total_deductions).toFixed(2)}</strong></td>
+                        <td><strong>₱${Number(data.total_wage).toFixed(2)}</strong></td>
+                    </tr>
+                `;
+
+                        tbody.innerHTML = tableHTML;
+
+                        // Show modal
+                        document.getElementById('infoModal').style.display = 'block';
+                    } else {
+                        alert(data.message || 'Employee info not found.');
+                    }
+                })
+                .catch(err => {
+                    console.error('Fetch error:', err);
+                    alert('Failed to fetch employee info.');
+                });
         }
 
         function closeModal() {
             document.getElementById('infoModal').style.display = 'none';
         }
 
-        // Close modal when clicking outside
         window.onclick = function(event) {
             const modal = document.getElementById('infoModal');
             if (event.target === modal) {
                 modal.style.display = 'none';
             }
         };
+
+        document.getElementById('searchInput').addEventListener('keyup', function() {
+            const query = this.value;
+
+            fetch('search_yearwise.php?query=' + encodeURIComponent(query))
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('showdata').innerHTML = data;
+                });
+        });
     </script>
 </body>
 
