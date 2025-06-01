@@ -1,3 +1,4 @@
+
 <?php
 session_start();
 include '../assets/databse/connection.php';
@@ -14,10 +15,29 @@ $sql = "SELECT * FROM tbl_leave WHERE status = 'Pending'";
 
 // Check if search query is provided
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['decline_leave_id'])) {
+  $leave_id = $conn->real_escape_string($_POST['decline_leave_id']);
+  $reason = isset($_POST['rejection_reason']) ? trim($_POST['rejection_reason']) : '';
+
+  if (empty($reason)) {
+    echo "<script>alert('Please provide a reason for declining the leave request.'); window.history.back();</script>";
+    exit();
+  }
+
+  $reason = $conn->real_escape_string($reason);
+  $update_sql = "UPDATE tbl_leave SET status = 'Declined', rejection_reason = '$reason' WHERE leave_id = '$leave_id'";
+
+  if ($conn->query($update_sql)) {
+    header("Location: leave_declined.php");
+    exit();
+  } else {
+    echo "<script>alert('Failed to decline leave request.');</script>";
+  }
+}
+
+// Approve logic
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['approve_btn'])) {
   $leave_id = $conn->real_escape_string($_POST['approve_leave_id']);
-
-  // Update leave status to Approved
   $update_sql = "UPDATE tbl_leave SET status = 'Approved' WHERE leave_id = '$leave_id'";
   if ($conn->query($update_sql)) {
     header("Location: leave_approved.php");
@@ -26,6 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['approve_btn'])) {
     echo "<script>alert('Failed to approve leave request.');</script>";
   }
 }
+
 
 if (isset($_GET['query']) && !empty($_GET['query'])) {
   $search_query = $_GET['query'];
@@ -98,12 +119,49 @@ $qp = !empty($_GET['query']) ? '&query=' . urlencode($_GET['query']) : '';
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <link rel="shortcut icon" href="../assets/logowhite-.png" type="image/svg+xml">
-  <link rel="stylesheet" href="./css/main.css">
-  <link rel="stylesheet" href="./css/leave.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <link rel="shortcut icon" href="../assets/logowhite-.png" type="image/svg+xml" />
+  <link rel="stylesheet" href="./css/main.css" />
+  <link rel="stylesheet" href="./css/leave.css" />
   <title>Leave - Pending</title>
+  <style>
+    /* Basic modal styling, adjust or replace with your CSS */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 999;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-content {
+      background-color: #fefefe;
+      margin: 10% auto;
+      padding: 20px;
+      border-radius: 10px;
+      width: 50%;
+      position: relative;
+    }
+
+    .close {
+      color: #aaa;
+      font-size: 28px;
+      font-weight: bold;
+      position: absolute;
+      right: 15px;
+      top: 10px;
+      cursor: pointer;
+    }
+
+    .close:hover {
+      color: black;
+    }
+  </style>
 </head>
 
 <body>
@@ -118,13 +176,12 @@ $qp = !empty($_GET['query']) ? '&query=' . urlencode($_GET['query']) : '';
           <span> &gt; </span>
           <h5><a href="./leave_pending.php">Leave-Pending</a></h5>
         </div>
-        <hr>
+        <hr />
       </div>
 
       <div class="main-content">
         <div class="sub-content">
           <div class="content">
-
             <!-- Title and search-bar -->
             <div class="search">
               <h3>Pending</h3>
@@ -137,7 +194,7 @@ $qp = !empty($_GET['query']) ? '&query=' . urlencode($_GET['query']) : '';
               <thead>
                 <tr>
                   <th>Employee ID</th>
-                  <th>Full Name</th> <!-- Changed column to Full Name -->
+                  <th>Full Name</th>
                   <th>Subject</th>
                   <th>Date Applied</th>
                   <th>Leave Type</th>
@@ -169,7 +226,7 @@ $qp = !empty($_GET['query']) ? '&query=' . urlencode($_GET['query']) : '';
                       data-end-date="<?php echo htmlspecialchars($row['end_date']); ?>">
 
                       <td><?php echo htmlspecialchars($row['emp_id']); ?></td>
-                      <td><?php echo htmlspecialchars("$first $middle $last"); ?></td> <!-- Full Name in one cell -->
+                      <td><?php echo htmlspecialchars("$first $middle $last"); ?></td>
                       <td><?php echo htmlspecialchars($row['subject']); ?></td>
                       <td><?php echo htmlspecialchars($row['date_applied']); ?></td>
                       <td><?php echo htmlspecialchars($row['leave_type']); ?></td>
@@ -179,16 +236,18 @@ $qp = !empty($_GET['query']) ? '&query=' . urlencode($_GET['query']) : '';
                       </td>
 
                       <td class="td-text">
-                        <div class="action-buttons">
-                          <button class="view-btn">View Info</button>
+                        <div class="action-buttons" style="display:flex; gap: 5px;">
+                          <button class="view-btn btn-view-info">View Info</button>
+
                           <form method="post"
-                            onsubmit="return confirm('Are you sure you want to approve this leave request?');">
+                            onsubmit="return confirm('Are you sure you want to approve this leave request?');"
+                            style="margin: 0;">
                             <input type="hidden" name="approve_leave_id"
-                              value="<?php echo htmlspecialchars($row['leave_id']); ?>">
-                            <button type="submit" name="approve_btn" class="view-btn">Approve</button>
+                              value="<?php echo htmlspecialchars($row['leave_id']); ?>" />
+                            <button type="submit" name="approve_btn" class="view-btn btn-approve">Approve</button>
                           </form>
 
-                          <button class="view-btn">Decline</button>
+                          <button class="view-btn btn-decline">Decline</button>
                         </div>
                       </td>
                     </tr>
@@ -200,7 +259,7 @@ $qp = !empty($_GET['query']) ? '&query=' . urlencode($_GET['query']) : '';
                 <?php endif; ?>
               </tbody>
             </table>
-            <br>
+            <br />
             <!-- Pagination -->
             <div
               style="display: flex; justify-content: space-between; align-items: center; padding-right: 1.5%; padding-left: 1.5%;">
@@ -227,177 +286,159 @@ $qp = !empty($_GET['query']) ? '&query=' . urlencode($_GET['query']) : '';
     </div>
   </div>
 
-  <!-- modals & scripts unchanged -->
-  <script src="./javascript/main.js"></script>
+  <!-- View Info Modal -->
+  <div id="infoModal" class="modal">
+    <div class="modal-content">
+      <span class="close close-info">&times;</span>
+      <h2>Leave Information</h2>
+      <hr />
+      <div class="modal-details">
+        <p><strong>Employee ID:</strong> <span id="modalEmpId"></span></p>
+        <p><strong>Full Name:</strong> <span id="modalFullName"></span></p>
+        <p><strong>Subject:</strong> <span id="modalSubject"></span></p>
+        <p><strong>Date Applied:</strong> <span id="modalDateApplied"></span></p>
+        <p><strong>Leave Type:</strong> <span id="modalLeaveType"></span></p>
+        <p><strong>Start Date:</strong> <span id="modalStartDate"></span></p>
+        <p><strong>End Date:</strong> <span id="modalEndDate"></span></p>
+        <p><strong>Message:</strong> <span id="modalMessage"></span></p>
+      </div>
+      <div style="display: flex; justify-content: flex-end; margin-top: 20px;">
+        <button class="close-info"
+          style="padding: 8px 16px; background-color: black; color: white; border: none; border-radius: 4px; cursor: pointer;">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Decline Reason Modal -->
+  <div id="declineModal" class="modal">
+    <div class="modal-content">
+      <span class="close close-decline">&times;</span>
+      <h2>Decline Leave Request</h2>
+      <hr />
+
+      <!-- ✅ Added form here -->
+      <form method="post" id="declineForm">
+        <!-- ✅ Hidden input for leave_id -->
+        <input type="hidden" name="decline_leave_id" id="declineLeaveId" />
+
+        <div class="modal-details" style="margin-bottom: 100px;">
+          <label for="declineReason"><strong>Reason for Declining:</strong></label><br />
+          <textarea id="declineReason" name="rejection_reason" rows="4" cols="50"
+            placeholder="Enter reason here..."></textarea>
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 10px;">
+          <button type="button" id="cancelDecline"
+            style="padding: 8px 16px; background-color: #5483B3; color: white; border: none; border-radius: 4px; cursor: pointer;">
+            Cancel
+          </button>
+          <button type="submit" id="submitDecline" name="decline_btn"
+            style="padding: 8px 16px; background-color: black; color: white; border: none; border-radius: 4px; cursor: pointer;">
+            Submit
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <script>
+    // Modal references
+    const infoModal = document.getElementById("infoModal");
+    const declineModal = document.getElementById("declineModal");
+
+    // Close buttons for info modal
+    document.querySelectorAll(".close-info").forEach(el => {
+      el.addEventListener("click", () => {
+        infoModal.style.display = "none";
+      });
+    });
+
+    // Close buttons for decline modal
+    document.querySelectorAll(".close-decline, #cancelDecline").forEach(el => {
+      el.addEventListener("click", () => {
+        declineModal.style.display = "none";
+      });
+    });
+
+    // Close modals if clicked outside modal content
+    window.addEventListener("click", (event) => {
+      if (event.target == infoModal) {
+        infoModal.style.display = "none";
+      }
+      if (event.target == declineModal) {
+        declineModal.style.display = "none";
+      }
+    });
+
+    // View Info buttons
+    document.querySelectorAll(".btn-view-info").forEach((btn) => {
+      btn.addEventListener("click", function () {
+        const row = this.closest("tr");
+        const empId = row.cells[0].textContent.trim();
+        const fullName = row.cells[1].textContent.trim();
+        const subject = row.cells[2].textContent.trim();
+        const dateApplied = row.cells[3].textContent.trim();
+        const leaveType = row.cells[4].textContent.trim();
+        const message = row.cells[5].textContent.trim();
+        const startDate = row.getAttribute("data-start-date") || "N/A";
+        const endDate = row.getAttribute("data-end-date") || "N/A";
+
+        document.getElementById("modalEmpId").textContent = empId;
+        document.getElementById("modalFullName").textContent = fullName;
+        document.getElementById("modalSubject").textContent = subject;
+        document.getElementById("modalDateApplied").textContent = dateApplied;
+        document.getElementById("modalLeaveType").textContent = leaveType;
+        document.getElementById("modalMessage").textContent = message;
+        document.getElementById("modalStartDate").textContent = startDate;
+        document.getElementById("modalEndDate").textContent = endDate;
+
+        infoModal.style.display = "block";
+      });
+    });
+
+    // Decline buttons
+    document.querySelectorAll(".btn-decline").forEach(btn => {
+      btn.addEventListener("click", () => {
+        declineModal.style.display = "block";
+      });
+    });
+
+    document.querySelectorAll(".btn-decline").forEach(btn => {
+      btn.addEventListener("click", function () {
+        const row = this.closest("tr");
+        const leaveId = row.querySelector("input[name='approve_leave_id']").value;
+        document.getElementById("declineLeaveId").value = leaveId;
+        declineModal.style.display = "block";
+      });
+    });
+
+    document.getElementById("submitDecline").addEventListener("click", function (e) {
+  const reasonField = document.getElementById("declineReason");
+  if (reasonField.value.trim() === "") {
+    alert("Please provide a reason for declining the leave request.");
+    e.preventDefault();
+  }
+});
+
+
+
+    // Search filter
+    const searchInput = document.getElementById("search_emp_input");
+    searchInput.addEventListener("input", () => {
+      const filter = searchInput.value.toLowerCase();
+      const rows = document.querySelectorAll("#showdata tr");
+      rows.forEach(row => {
+        const fullName = row.cells[1].textContent.toLowerCase();
+        if (fullName.includes(filter)) {
+          row.style.display = "";
+        } else {
+          row.style.display = "none";
+        }
+      });
+    });
+  </script>
 </body>
 
 </html>
-
-<!-- Decline Reason Modal -->
-<div id="declineModal" class="modal">
-  <div class="modal-content">
-    <h2>Decline Leave Request</h2>
-    <hr>
-    <div class="modal-details" style="margin-bottom: 100px;">
-      <label for="declineReason"><strong>Reason for Decline</strong></label>
-      <textarea id="declineReason" placeholder="Enter reason..."
-        style="width: 100%; padding: 5px; margin-top: 5px; border: 1px solid #ccc; border-radius: 10px; resize: none; height: 100px;"></textarea>
-    </div>
-    <div style="display: flex; justify-content: flex-end; gap: 10px;">
-      <button id="submitDecline"
-        style="padding: 8px 16px; background-color: #5483B3; color: white; border: none; border-radius: 4px; cursor: pointer;">Okay</button>
-      <button class="close-decline"
-        style="padding: 8px 16px; background-color: black; color: white; border: none; border-radius: 4px; cursor: pointer;">Cancel</button>
-    </div>
-  </div>
-</div>
-
-
-
-<!-- Approve Modal -->
-<div id="approveModal" class="modal">
-  <div class="modal-content">
-    <h2>Approve Leave Request</h2>
-    <hr>
-    <p>Are you sure you want to approve this leave request?</p>
-    <div style="display: flex; justify-content: flex-end; gap: 10px;">
-      <button id="confirmApprove"
-        style="padding: 8px 16px; background-color: #5483B3; color: white; border: none; border-radius: 4px; cursor: pointer;">Okay</button>
-      <button class="close-approve"
-        style="padding: 8px 16px; background-color: black; color: white; border: none; border-radius: 4px; cursor: pointer;">Cancel</button>
-    </div>
-  </div>
-</div>
-
-
-
-<script>
-  // Get modal elements
-  const modal = document.getElementById("infoModal");
-  const viewButtons = document.querySelectorAll(".view-btn");
-  const closeModalButtons = document.querySelectorAll(".close, .close-modal-btn");
-
-  // Show modal on "View Info" button click
-  viewButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-      modal.style.display = "block";
-    });
-  });
-
-  // Hide modal on close button click
-  closeModalButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-      modal.style.display = "none";
-    });
-  });
-
-  // Close modal when clicking outside the modal content
-  window.addEventListener("click", (event) => {
-    if (event.target === modal) {
-      modal.style.display = "none";
-    }
-  });
-
-  // FOR Search
-  document.getElementById('search_emp_input').addEventListener('keyup', function () {
-    let query = this.value;
-    let status = 'Pending'; // This will be for the pending page.
-
-    const xhr = new XMLHttpRequest();
-    xhr.open("GET", "search_leave.php?query=" + encodeURIComponent(query) + "&status=" + encodeURIComponent(status), true);
-    xhr.onreadystatechange = function () {
-      if (xhr.readyState === 4 && xhr.status === 200) {
-        document.getElementById('showdata').innerHTML = xhr.responseText;
-      }
-    };
-    xhr.send();
-  });
-
-  const declineModal = document.getElementById("declineModal");
-  const declineButtons = document.querySelectorAll(".action-buttons .view-btn:nth-child(3)"); // Assuming 3rd button is Decline
-  const closeDeclineBtns = document.querySelectorAll(".close-decline");
-
-  // Show decline modal on click
-  declineButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-      declineModal.style.display = "block";
-    });
-  });
-
-  // Hide modal when Cancel or outside click
-  closeDeclineBtns.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      declineModal.style.display = "none";
-    });
-  });
-
-  window.addEventListener("click", (event) => {
-    if (event.target === declineModal) {
-      declineModal.style.display = "none";
-    }
-  });
-
-  // Submit action (adjust this part to save to DB or backend)
-  document.getElementById("submitDecline").addEventListener("click", () => {
-    const reason = document.getElementById("declineReason").value.trim();
-    if (reason === "") {
-      alert("Please enter a reason for decline.");
-      return;
-    }
-
-    // TODO: Send the reason to the server using AJAX or a form submission
-    console.log("Submitted decline reason:", reason);
-
-    declineModal.style.display = "none";
-  });
-
-  document.getElementById('showdata').addEventListener('click', function (e) {
-    if (e.target && e.target.classList.contains('view-btn') && e.target.textContent === "Decline") {
-      declineModal.style.display = "block";
-    }
-  });
-
-
-  // Reference modals
-  const infoModal = document.getElementById("infoModal");
-  const approveModal = document.getElementById("approveModal");
-
-  // View Info logic
-  document.querySelectorAll("#showdata .action-buttons .view-btn:nth-child(1)").forEach((btn) => {
-    btn.addEventListener("click", function () {
-      const row = this.closest("tr");
-      document.getElementById("modalEmpId").textContent = row.cells[0].textContent;
-      document.getElementById("modalFullName").textContent = row.cells[1].textContent;
-      document.getElementById("modalSubject").textContent = row.cells[2].textContent;
-      document.getElementById("modalDateApplied").textContent = row.cells[3].textContent;
-      document.getElementById("modalLeaveType").textContent = row.cells[4].textContent;
-      document.getElementById("modalMessage").textContent = row.cells[5].textContent;
-      // Add these if you fetch Start/End dates too:
-      document.getElementById("modalStartDate").textContent = row.getAttribute("data-start-date") || "N/A";
-      document.getElementById("modalEndDate").textContent = row.getAttribute("data-end-date") || "N/A";
-
-      infoModal.style.display = "block";
-    });
-  });
-
-  // Approve logic
-  document.querySelectorAll("#showdata .action-buttons .view-btn:nth-child(2)").forEach((btn) => {
-    btn.addEventListener("click", function () {
-      approveModal.style.display = "block";
-      // You can store the leave_id in a hidden input or JS variable if needed
-    });
-  });
-
-  // Close buttons for modals
-  document.querySelectorAll(".close-info").forEach((el) => {
-    el.addEventListener("click", () => infoModal.style.display = "none");
-  });
-  document.querySelectorAll(".close-approve").forEach((el) => {
-    el.addEventListener("click", () => approveModal.style.display = "none");
-  });
-  window.addEventListener("click", (event) => {
-    if (event.target === infoModal) infoModal.style.display = "none";
-    if (event.target === approveModal) approveModal.style.display = "none";
-  });
-
-</script>

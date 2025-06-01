@@ -39,12 +39,12 @@ if (isset($_GET['query']) && !empty($_GET['query'])) {
     )";
 }
 
-$sql .= " LIMIT $start_from, $records_per_page";
+$sql .= " ORDER BY date_applied ASC LIMIT $start_from, $records_per_page";
 
 $result = $conn->query($sql);
 
 // Count total number of records
-$total_records_query = "SELECT COUNT(*) FROM tbl_leave WHERE status = 'Pending'";
+$total_records_query = "SELECT COUNT(*) FROM tbl_leave WHERE status = 'Declined'";
 
 if (isset($_GET['query']) && !empty($_GET['query'])) {
   $total_records_query .= " AND (
