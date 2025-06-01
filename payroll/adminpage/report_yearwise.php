@@ -270,47 +270,11 @@ include './database/session.php';
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        // Update employee info
                         document.querySelector('.employee-info span').textContent = `Employee Name: ${data.fullname}`;
                         document.querySelector('.worked-hours').textContent = `Total Worked Hours: ${data.total_worked_hours}h`;
                         document.querySelector('.overtime-hours').textContent = `Total Overtime Hours: ${data.total_overtime_hours}h`;
                         document.querySelector('.total-deductions').textContent = `Total Deductions: ₱${Number(data.total_deductions).toFixed(2)}`;
                         document.querySelector('.total-wage').textContent = `Total Wage: ₱${Number(data.total_wage).toFixed(2)}`;
-
-                        // Update year in modal header
-                        document.querySelector('.modal-header .year').textContent = data.year;
-
-                        // Update monthly data table
-                        const tbody = document.querySelector('#infoModal tbody');
-                        let tableHTML = '';
-
-                        // Add monthly rows
-                        data.monthly_data.forEach(month => {
-                            tableHTML += `
-                        <tr>
-                            <td>${month.month}</td>
-                            <td>${month.worked_hours}</td>
-                            <td>${month.overtime_hours}</td>
-                            <td>₱${Number(month.deductions).toFixed(2)}</td>
-                            <td>₱${Number(month.wage).toFixed(2)}</td>
-                        </tr>
-                    `;
-                        });
-
-                        // Add total row
-                        tableHTML += `
-                    <tr class="total-row">
-                        <td><strong>Total</strong></td>
-                        <td><strong>${data.total_worked_hours}</strong></td>
-                        <td><strong>${data.total_overtime_hours}</strong></td>
-                        <td><strong>₱${Number(data.total_deductions).toFixed(2)}</strong></td>
-                        <td><strong>₱${Number(data.total_wage).toFixed(2)}</strong></td>
-                    </tr>
-                `;
-
-                        tbody.innerHTML = tableHTML;
-
-                        // Show modal
                         document.getElementById('infoModal').style.display = 'block';
                     } else {
                         alert(data.message || 'Employee info not found.');
@@ -320,6 +284,7 @@ include './database/session.php';
                     console.error('Fetch error:', err);
                     alert('Failed to fetch employee info.');
                 });
+                
         }
 
         function closeModal() {
