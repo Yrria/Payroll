@@ -3,7 +3,7 @@ session_start();
 include '../assets/databse/connection.php';
 include './database/session.php';
 
-$records_per_page = 7; // Number of records to display per page
+$records_per_page = 5; // Number of records to display per page
 $current_page = isset($_GET['page']) ? $_GET['page'] : 1; // Get current page number, default to 1
 
 // Calculate the limit clause for SQL query

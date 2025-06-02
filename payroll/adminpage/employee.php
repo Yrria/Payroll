@@ -3,7 +3,7 @@ session_start();
 include '../assets/databse/connection.php';
 include './database/session.php';
 
-$records_per_page = 7;
+$records_per_page = 5;
 $current_page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
 $start_from = ($current_page - 1) * $records_per_page;
 
