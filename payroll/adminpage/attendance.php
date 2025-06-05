@@ -9,42 +9,18 @@ $current_page = isset($_GET['page']) ? $_GET['page'] : 1; // Get current page nu
 // Calculate the limit clause for SQL query
 $start_from = ($current_page - 1) * $records_per_page;
 
-// Initialize variables
-$sql = "SELECT * FROM tbl_attendance ";
-
-// Check if search query is provided
-if (isset($_GET['query']) && !empty($_GET['query'])) {
-    $search_query = $_GET['query'];
-    // Modify SQL query to include search filter
-    $sql .= "WHERE emp_id LIKE '%$search_query%' 
-            OR emp_id LIKE '%$search_query%' 
-            OR attendance_id LIKE '%$search_query%' 
-            OR emp_name LIKE '%$search_query%'
-            OR emp_shift LIKE '%$search_query%'
-            OR position_name LIKE '%$search_query%'";
-}
-
-$sql .= "LIMIT $start_from, $records_per_page";
+// Base SQL without search filter
+$sql = "SELECT * FROM tbl_attendance LIMIT $start_from, $records_per_page";
 
 $result = $conn->query($sql);
 
-// Count total number of records
+// Count total number of records (no search filter)
 $total_records_query = "SELECT COUNT(*) FROM tbl_attendance";
-if (isset($_GET['query']) && !empty($_GET['query'])) {
-    $total_records_query .= "WHERE emp_id LIKE '%$search_query%' 
-            OR emp_id LIKE '%$search_query%' 
-            OR attendance_id LIKE '%$search_query%' 
-            OR emp_name LIKE '%$search_query%'
-            OR emp_shift LIKE '%$search_query%'
-            OR position_name LIKE '%$search_query%'";
-}
-
 $total_records_result = mysqli_query($conn, $total_records_query);
 $total_records_row = mysqli_fetch_array($total_records_result);
 $total_records = $total_records_row[0];
 
 $total_pages = ceil($total_records / $records_per_page);
-
 ?>
 
 <!DOCTYPE html>
@@ -59,6 +35,80 @@ $total_pages = ceil($total_records / $records_per_page);
     <link rel="stylesheet" href="./css/payroll.css">
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
     <title>Attendance</title>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const monthInput = document.querySelector(".month-dropdown .dropdown-input");
+            const yearInput = document.querySelector(".year-dropdown .dropdown-input");
+            const cutoffInput = document.querySelector(".cutoff-dropdown .dropdown-input");
+            const monthContent = document.getElementById("month-options");
+            const yearContent = document.getElementById("year-options");
+
+            const now = new Date();
+            const day = now.getDate();
+            const month = now.getMonth(); // 0-based
+            const year = now.getFullYear();
+
+            const months = [
+                "January", "February", "March", "April", "May", "June",
+                "July", "August", "September", "October", "November", "December"
+            ];
+
+            // Populate month dropdown
+            months.forEach((monthName, index) => {
+                const div = document.createElement("div");
+                div.className = "dropdown-item";
+                div.dataset.value = String(index + 1).padStart(2, "0");
+                div.style.fontSize = "14px";
+                div.textContent = monthName;
+                monthContent.appendChild(div);
+            });
+
+            // Populate year dropdown from current year down to 1900
+            for (let y = year; y >= 1900; y--) {
+                const div = document.createElement("div");
+                div.className = "dropdown-item";
+                div.dataset.value = y;
+                div.style.fontSize = "14px";
+                div.textContent = y;
+                yearContent.appendChild(div);
+            }
+
+
+            // Set default Month
+            const monthVal = String(month + 1).padStart(2, '0');
+            monthInput.value = months[month];
+            monthInput.setAttribute("data-value", monthVal);
+
+            // Set default Year
+            yearInput.value = year;
+            yearInput.setAttribute("data-value", year);
+
+            // Set default Cutoff
+            let cutoff = (day >= 11 && day <= 25) ? "S" : "F";
+            cutoffInput.value = cutoff === "F" ? "First Cutoff" : "Second Cutoff";
+            cutoffInput.setAttribute("data-value", cutoff);
+
+            // Handle dropdown selections
+            document.querySelectorAll(".dropdown-item").forEach(item => {
+                item.addEventListener("click", function() {
+                    const dropdown = this.closest(".dropdown");
+                    const input = dropdown.querySelector(".dropdown-input");
+                    const text = this.textContent.trim();
+                    const value = this.dataset.value || "";
+
+                    if (text.includes("Select")) {
+                        input.value = "";
+                        input.removeAttribute("data-value");
+                        input.setAttribute("placeholder", text);
+                    } else {
+                        input.value = text;
+                        input.setAttribute("data-value", value);
+                    }
+                });
+            });
+        });
+    </script>
 </head>
 
 <body>
@@ -77,65 +127,37 @@ $total_pages = ceil($total_records / $records_per_page);
 
             <div class="main-content">
                 <div class="sub-content">
-                    <!-- Separate Container for Choose File and Import Button
-                    <div class="file-import-container">
-                        <input type="text" placeholder="No File chosen..." class="search-box">
-                        <label for="file-upload" class="file-upload">
-                            Choose File
-                            <input type="file" id="file-upload" class="file-input">
-                        </label>
-
-                        <button class="import-btn">
-                            <span class="plus-icon">+</span> Import
-                        </button>
-                    </div> -->
-
                     <!-- Records Section -->
                     <div class="leave-requests">
                         <div class="selection_div">
-                            <p style="margin: 0;font-weight: 500;">Records</p>
-                            <div style="display: flex;align-items: center;width:60%;justify-content:right;margin-right:-4%;">
+                            <p style="margin: 0; font-weight: 500;">Records</p>
+                            <div style="display: flex; align-items: center; width: 60%; justify-content: right; margin-right: -4%;">
+                                <!-- Month Dropdown -->
                                 <div class="dropdown month-dropdown" style="margin-left: 20%;">
                                     <div class="dropdown-wrapper">
-                                        <input type="text" class="dropdown-input" style="width:75%;" readonly placeholder="Select Month" />
+                                        <input type="text" class="dropdown-input" readonly placeholder="Select Month" style="width:75%;" />
                                         <div class="dropdown-indicator">&#9662;</div>
-                                        <div class="dropdown-content">
-                                            <div class="dropdown-item clear-selection" data-value="" style="opacity: 0.5;">Select Month</div>
-                                            <div class="dropdown-item" data-value="01" style="font-size: 14px;">January</div>
-                                            <div class="dropdown-item" data-value="02" style="font-size: 14px;">February</div>
-                                            <div class="dropdown-item" data-value="03" style="font-size: 14px;">March</div>
-                                            <div class="dropdown-item" data-value="04" style="font-size: 14px;">April</div>
-                                            <div class="dropdown-item" data-value="05" style="font-size: 14px;">May</div>
-                                            <div class="dropdown-item" data-value="06" style="font-size: 14px;">June</div>
-                                            <div class="dropdown-item" data-value="07" style="font-size: 14px;">July</div>
-                                            <div class="dropdown-item" data-value="08" style="font-size: 14px;">August</div>
-                                            <div class="dropdown-item" data-value="09" style="font-size: 14px;">September</div>
-                                            <div class="dropdown-item" data-value="10" style="font-size: 14px;">October</div>
-                                            <div class="dropdown-item" data-value="11" style="font-size: 14px;">November</div>
-                                            <div class="dropdown-item" data-value="12" style="font-size: 14px;">December</div>
+                                        <div class="dropdown-content" id="month-options">
                                         </div>
                                     </div>
                                 </div>
+
+                                <!-- Year Dropdown -->
                                 <div class="dropdown year-dropdown" style="width:25%;">
                                     <div class="dropdown-wrapper">
-                                        <input type="text" class="dropdown-input" style="width:75%;" readonly placeholder="Select Year" />
+                                        <input type="text" class="dropdown-input" readonly placeholder="Select Year" style="width:75%;" />
                                         <div class="dropdown-indicator" style="right:47px;">&#9662;</div>
-                                        <div class="dropdown-content">
-                                            <div class="dropdown-item clear-selection" data-value="" style="opacity: 0.5;">Select Year</div>
-                                            <div class="dropdown-item" data-value="2024" style="font-size: 14px;">2024</div>
-                                            <div class="dropdown-item" data-value="2023" style="font-size: 14px;">2023</div>
-                                            <div class="dropdown-item" data-value="2022" style="font-size: 14px;">2022</div>
-                                            <div class="dropdown-item" data-value="2021" style="font-size: 14px;">2021</div>
-                                            <div class="dropdown-item" data-value="2020" style="font-size: 14px;">2020</div>
+                                        <div class="dropdown-content" id="year-options">
                                         </div>
                                     </div>
                                 </div>
+
+                                <!-- Cutoff Dropdown -->
                                 <div class="dropdown cutoff-dropdown">
                                     <div class="dropdown-wrapper">
                                         <input type="text" class="dropdown-input" readonly placeholder="Select Cutoff" />
                                         <div class="dropdown-indicator">&#9662;</div>
                                         <div class="dropdown-content">
-                                            <div class="dropdown-item clear-selection" data-value="" style="opacity: 0.5;">Select Cutoff</div>
                                             <div class="dropdown-item" data-value="F" style="font-size: 14px;">First Cutoff</div>
                                             <div class="dropdown-item" data-value="S" style="font-size: 14px;">Second Cutoff</div>
                                         </div>
@@ -349,73 +371,6 @@ $total_pages = ceil($total_records / $records_per_page);
 
         // Initial display
         updateResultsDisplay();
-    </script>
-    <script>
-        $(document).ready(function() {
-            function fetchPayroll() {
-                var name = $("#search_emp_input").val();
-                var month = $(".month-dropdown .dropdown-input").val();
-                var year = $(".year-dropdown .dropdown-input").val();
-                var cutoff = $(".cutoff-dropdown .dropdown-input").val();
-
-                console.log("Sending Data:", {
-                    name,
-                    month,
-                    year,
-                    cutoff
-                }); // Debugging
-
-                $.ajax({
-                    method: "POST",
-                    url: "search_payroll.php",
-                    data: {
-                        name: name,
-                        month: month,
-                        year: year,
-                        cutoff: cutoff
-                    },
-                    success: function(response) {
-                        console.log("Response:", response); // Debugging output
-                        $("#showdata").html(response);
-                    },
-                    error: function(xhr, status, error) {
-                        console.error("AJAX Error:", error);
-                    }
-                });
-            }
-
-            $("#search_emp_input").on("keyup", fetchPayroll);
-
-            var cutoffMap = {
-                "First Cutoff": "1",
-                "Second Cutoff": "2"
-            };
-
-            $(".dropdown-item").on("click", function() {
-                var dropdownType = $(this).closest(".dropdown").hasClass("month-dropdown") ?
-                    "month" :
-                    $(this).closest(".dropdown").hasClass("year-dropdown") ?
-                    "year" :
-                    "cutoff";
-
-                var selectedValue = $(this).data("value"); // Get the actual data-value
-
-                // Convert cutoff text to numeric value
-                if (dropdownType === "cutoff" && selectedValue !== "") {
-                    selectedValue = cutoffMap[$(this).text().trim()] || "";
-                }
-
-                // If "Clear Selection" is clicked, reset the input field
-                if (selectedValue === "") {
-                    $("." + dropdownType + "-dropdown .dropdown-input").val("").attr("placeholder", "Select " + dropdownType.charAt(0).toUpperCase() + dropdownType.slice(1));
-                } else {
-                    $("." + dropdownType + "-dropdown .dropdown-input").val($(this).text());
-                }
-
-                fetchPayroll(); // Update the payroll list based on the new selection
-            });
-
-        });
     </script>
     <script src="./javascript/main.js"></script>
     <script src="./javascript/payroll.js"></script>
