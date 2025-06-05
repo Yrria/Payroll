@@ -148,7 +148,7 @@ $qp = !empty($_GET['query']) ? '&query=' . urlencode($_GET['query']) : '';
                       $middle = $e['middlename'];
                     }
                     $_SESSION['fullname'] = trim("$first $middle $last"); // First, Middle, Last
-                  ?>
+                    ?>
                     <tr>
                       <td><?php echo htmlspecialchars($row['emp_id']); ?></td>
                       <td><?php echo htmlspecialchars("$first $middle $last"); ?></td> <!-- Full Name in one cell -->
@@ -158,15 +158,18 @@ $qp = !empty($_GET['query']) ? '&query=' . urlencode($_GET['query']) : '';
                       <td><?php echo htmlspecialchars($row['message']); ?></td>
                       <td class="td-text 
                         <?php
-                        if ($row['status'] === 'Approved') echo 'status-approved';
-                        elseif ($row['status'] === 'Declined') echo 'status-declined';
-                        elseif ($row['status'] === 'Pending') echo 'status-pending';
+                        if ($row['status'] === 'Approved')
+                          echo 'status-approved';
+                        elseif ($row['status'] === 'Declined')
+                          echo 'status-declined';
+                        elseif ($row['status'] === 'Pending')
+                          echo 'status-pending';
                         ?>">
                         <?php echo htmlspecialchars($row['status']); ?>
                       </td>
                       <td class="td-text">
-                        <div class="action-buttons">
-                          <button class="view-btn">View Info</button>
+                        <div class="action-buttons" style="display:flex; gap: 5px;">
+                          <button class="view-btn btn-view-info">View Info</button>
                         </div>
                       </td>
                     </tr>
@@ -180,15 +183,22 @@ $qp = !empty($_GET['query']) ? '&query=' . urlencode($_GET['query']) : '';
             </table>
             <br>
             <!-- Pagination -->
-            <div style="display: flex; justify-content: space-between; align-items: center; padding-right: 1.5%; padding-left: 1.5%;">
+            <div
+              style="display: flex; justify-content: space-between; align-items: center; padding-right: 1.5%; padding-left: 1.5%;">
               <p style="margin: 0;">Page <?= $current_page ?> out of <?= $total_pages ?></p>
               <div class="pagination" id="content">
-                <?php if ($current_page > 1) : ?>
-                  <a href="?page=<?= ($current_page - 1); ?>&query=<?php echo isset($_GET['query']) ? $_GET['query'] : ''; ?>" class="prev" style="border-radius:4px;background-color:#368DB8;color:white;margin-bottom:13px; padding: 10px;">&laquo; Previous</a>
+                <?php if ($current_page > 1): ?>
+                  <a href="?page=<?= ($current_page - 1); ?>&query=<?php echo isset($_GET['query']) ? $_GET['query'] : ''; ?>"
+                    class="prev"
+                    style="border-radius:4px;background-color:#368DB8;color:white;margin-bottom:13px; padding: 10px;">&laquo;
+                    Previous</a>
                 <?php endif; ?>
 
-                <?php if ($current_page < $total_pages) : ?>
-                  <a href="?page=<?= ($current_page + 1); ?>&query=<?php echo isset($_GET['query']) ? $_GET['query'] : ''; ?>" class="next" style="border-radius:4px;background-color:#368DB8;color:white;margin-bottom:13px; padding: 10px;">Next &raquo;</a>
+                <?php if ($current_page < $total_pages): ?>
+                  <a href="?page=<?= ($current_page + 1); ?>&query=<?php echo isset($_GET['query']) ? $_GET['query'] : ''; ?>"
+                    class="next"
+                    style="border-radius:4px;background-color:#368DB8;color:white;margin-bottom:13px; padding: 10px;">Next
+                    &raquo;</a>
                 <?php endif; ?>
               </div>
             </div>
@@ -203,48 +213,26 @@ $qp = !empty($_GET['query']) ? '&query=' . urlencode($_GET['query']) : '';
 
 </html>
 
-<!-- Modal -->
+<!-- View Info Modal -->
 <div id="infoModal" class="modal">
   <div class="modal-content">
-    <h2>Leave Info</h2>
-    <hr>
+    <span class="close close-info"></span>
+    <h2>Leave Information</h2>
+    <hr />
     <div class="modal-details">
-      <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-        <div style="width: 48%;">
-          <label><strong>Leave Subject</strong></label>
-          <input type="text" value="Leave for Medical Concerns" readonly
-            style="width: 100%; padding: 5px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px;" />
-        </div>
-        <div style="width: 48%;">
-          <label><strong>Status</strong></label>
-          <input type="text" value="Approved" readonly
-            style="width: 100%; padding: 5px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px;" />
-        </div>
-      </div>
-      <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-        <div style="width: 48%;">
-          <label><strong>Leave Date (MM/DD/YYYY)</strong></label>
-          <input type="text" value="01/06/2024" readonly
-            style="width: 100%; padding: 5px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px;" />
-        </div>
-        <div style="width: 48%;">
-          <label><strong>Leave Type</strong></label>
-          <input type="text" value="Medical Leave" readonly
-            style="width: 100%; padding: 5px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px;" />
-        </div>
-      </div>
-      <div style="margin-bottom: 10px;">
-        <label><strong>Message</strong></label>
-        <textarea readonly
-          style="width: 100%; padding: 5px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; resize: none; height: 80px;">I won't be able to come to work due to my medical concerns.
-        </textarea>
-      </div>
+      <p><strong>Employee ID:</strong> <span id="modalEmpId"></span></p>
+      <p><strong>Full Name:</strong> <span id="modalFullName"></span></p>
+      <p><strong>Subject:</strong> <span id="modalSubject"></span></p>
+      <p><strong>Date Applied:</strong> <span id="modalDateApplied"></span></p>
+      <p><strong>Leave Type:</strong> <span id="modalLeaveType"></span></p>
+      <p><strong>Start Date:</strong> <span id="modalStartDate"></span></p>
+      <p><strong>End Date:</strong> <span id="modalEndDate"></span></p>
+      <p><strong>Message:</strong> <span id="modalMessage"></span></p>
     </div>
-    <!-- Back button -->
     <div style="display: flex; justify-content: flex-end; margin-top: 20px;">
-      <button class="close"
-        style="padding: 8px 12px; background-color: black; color: white; border: none; border-radius: 4px; cursor: pointer;">
-        Back
+      <button class="close-info"
+        style="padding: 8px 16px; background-color: black; color: white; border: none; border-radius: 4px; cursor: pointer;">
+        Close
       </button>
     </div>
   </div>
@@ -254,9 +242,16 @@ $qp = !empty($_GET['query']) ? '&query=' . urlencode($_GET['query']) : '';
 
 <script>
   // Get modal elements
-  const modal = document.getElementById("infoModal");
+  const infoModal = document.getElementById("infoModal");
   const viewButtons = document.querySelectorAll(".view-btn");
-  const closeModalButtons = document.querySelectorAll(".close, .close-modal-btn");
+  const closeModalButtons = document.querySelectorAll(".close, .close-info");
+
+  // Close buttons for info modal
+  document.querySelectorAll(".close-info").forEach(el => {
+    el.addEventListener("click", () => {
+      infoModal.style.display = "none";
+    });
+  });
 
   // Show modal on "View Info" button click
   viewButtons.forEach((button) => {
@@ -279,14 +274,40 @@ $qp = !empty($_GET['query']) ? '&query=' . urlencode($_GET['query']) : '';
     }
   });
 
+  // View Info buttons
+  document.querySelectorAll(".btn-view-info").forEach((btn) => {
+    btn.addEventListener("click", function () {
+      const row = this.closest("tr");
+      const empId = row.cells[0].textContent.trim();
+      const fullName = row.cells[1].textContent.trim();
+      const subject = row.cells[2].textContent.trim();
+      const dateApplied = row.cells[3].textContent.trim();
+      const leaveType = row.cells[4].textContent.trim();
+      const message = row.cells[5].textContent.trim();
+      const startDate = row.getAttribute("data-start-date") || "N/A";
+      const endDate = row.getAttribute("data-end-date") || "N/A";
+
+      document.getElementById("modalEmpId").textContent = empId;
+      document.getElementById("modalFullName").textContent = fullName;
+      document.getElementById("modalSubject").textContent = subject;
+      document.getElementById("modalDateApplied").textContent = dateApplied;
+      document.getElementById("modalLeaveType").textContent = leaveType;
+      document.getElementById("modalMessage").textContent = message;
+      document.getElementById("modalStartDate").textContent = startDate;
+      document.getElementById("modalEndDate").textContent = endDate;
+
+      infoModal.style.display = "block";
+    });
+  });
+
   // FOR Search
-  document.getElementById('search_emp_input').addEventListener('keyup', function() {
+  document.getElementById('search_emp_input').addEventListener('keyup', function () {
     let query = this.value;
     let status = 'Approved'; // This will be for the approved page.
 
     const xhr = new XMLHttpRequest();
     xhr.open("GET", "search_leave.php?query=" + encodeURIComponent(query) + "&status=" + encodeURIComponent(status), true);
-    xhr.onreadystatechange = function() {
+    xhr.onreadystatechange = function () {
       if (xhr.readyState === 4 && xhr.status === 200) {
         document.getElementById('showdata').innerHTML = xhr.responseText;
       }

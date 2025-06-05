@@ -271,7 +271,6 @@ $qp = !empty($_GET['query']) ? '&query=' . urlencode($_GET['query']) : '';
                     style="border-radius:4px;background-color:#368DB8;color:white;margin-bottom:13px; padding: 10px;">&laquo;
                     Previous</a>
                 <?php endif; ?>
-
                 <?php if ($current_page < $total_pages): ?>
                   <a href="?page=<?= ($current_page + 1); ?>&query=<?php echo isset($_GET['query']) ? $_GET['query'] : ''; ?>"
                     class="next"
@@ -289,7 +288,7 @@ $qp = !empty($_GET['query']) ? '&query=' . urlencode($_GET['query']) : '';
   <!-- View Info Modal -->
   <div id="infoModal" class="modal">
     <div class="modal-content">
-      <span class="close close-info">&times;</span>
+      <span class="close close-info"></span>
       <h2>Leave Information</h2>
       <hr />
       <div class="modal-details">
