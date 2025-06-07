@@ -293,6 +293,71 @@ if ($pendingLeavesResult && $row = $pendingLeavesResult->fetch_assoc()) {
                         </div>
                     </div>
                 </div>
+                <?php
+                $positionCounts = [];
+                $positionLabels = [];
+
+                // Get employee distribution from tbl_emp_info (assuming it has a `position` column)
+                $query = "SELECT position, COUNT(*) AS count FROM tbl_emp_info GROUP BY position";
+                $result = mysqli_query($conn, $query);
+
+                if ($result) {
+                    while ($row = mysqli_fetch_assoc($result)) {
+                        $positionLabels[] = $row['position'];
+                        $positionCounts[] = $row['count'];
+                    }
+                }
+
+                // Convert to JSON for JavaScript
+                $positionLabelsJSON = json_encode($positionLabels);
+                $positionCountsJSON = json_encode($positionCounts);
+                ?>
+                <?php
+                // Initialize arrays to hold month names and amounts
+                $months = [];
+                $paidData = [];
+                $unpaidData = [];
+
+                // Initialize months to ensure full set
+                for ($i = 1; $i <= 12; $i++) {
+                    $monthName = date('F', mktime(0, 0, 0, $i, 1));
+                    $months[$i] = $monthName;
+                    $paidData[$i] = 0;
+                    $unpaidData[$i] = 0;
+                }
+
+                // Fetch salaries grouped by month and status
+                $query = "SELECT month, status, SUM(basic_pay + holiday_pay + ot_pay) AS total 
+          FROM tbl_salary 
+          GROUP BY month, status";
+                $result = mysqli_query($conn, $query);
+
+                if ($result) {
+                    while ($row = mysqli_fetch_assoc($result)) {
+                        $month = (int)$row['month'];
+                        $status = strtolower($row['status']);
+                        $total = (float)$row['total'];
+
+                        if ($status == 'paid') {
+                            $paidData[$month] = $total;
+                        } elseif ($status == 'unpaid') {
+                            $unpaidData[$month] = $total;
+                        }
+                    }
+                }
+
+                // Use only up to the current month
+                $currentMonth = (int)date('n');
+                $finalMonths = array_slice($months, 0, $currentMonth, true);
+                $finalPaid = array_slice($paidData, 0, $currentMonth, true);
+                $finalUnpaid = array_slice($unpaidData, 0, $currentMonth, true);
+
+                // Convert to JSON
+                $monthsJSON = json_encode(array_values($finalMonths));
+                $paidJSON = json_encode(array_values($finalPaid));
+                $unpaidJSON = json_encode(array_values($finalUnpaid));
+                ?>
+
 
                 <!-- SCRIPT -->
                 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -352,7 +417,8 @@ if ($pendingLeavesResult && $row = $pendingLeavesResult->fetch_assoc()) {
                             }
                         },
                     });
-
+                </script>
+                <script>
                     // Salary Distribution Chart (Line Chart)
                     const ctxSalary = document.getElementById('salaryChart').getContext('2d');
                     const salaryChart = new Chart(ctxSalary, {
@@ -401,15 +467,19 @@ if ($pendingLeavesResult && $row = $pendingLeavesResult->fetch_assoc()) {
                     });
 
                     // Employee Distribution by Position Chart (Pie Chart)
+
+                    const positionLabels = <?php echo $positionLabelsJSON; ?>;
+                    const positionData = <?php echo $positionCountsJSON; ?>;
+
                     const ctxEmployee = document.getElementById('positionChart').getContext('2d');
                     const employeeChart = new Chart(ctxEmployee, {
-                        type: 'pie', // Pie chart for distribution
+                        type: 'pie',
                         data: {
-                            labels: ['Manager', 'Crew Member', 'Executive'],
+                            labels: positionLabels,
                             datasets: [{
                                 label: 'Employee Distribution',
-                                data: [25, 50, 15], // Example data
-                                backgroundColor: ['#4caf50', '#2196f3', '#ff9800'],
+                                data: positionData,
+                                backgroundColor: ['#4caf50', '#2196f3', '#ff9800', '#9c27b0', '#e91e63'], // Add more colors if needed
                                 borderColor: '#fff',
                                 borderWidth: 2,
                             }],

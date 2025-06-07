@@ -416,25 +416,6 @@ table th, table td {
     text-align: left;
 }
 
-.approve {
-    background-color: #4CAF50;
-    color: white;
-    padding: 5px 10px;
-    border: none;
-    cursor: pointer;
-    border-radius: 3px;
-    margin-right: 10px;
-}
-
-.reject {
-    background-color: #e96359;
-    color: white;
-    padding: 5px 10px;
-    border: none;
-    cursor: pointer;
-    border-radius: 3px;
-}
-
 /* Center the Action column heading */
 th:nth-child(8) {
     text-align: center;
