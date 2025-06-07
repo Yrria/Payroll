@@ -229,44 +229,45 @@ while ($row = $position_result->fetch_assoc()) {
 
     <!-- view-info Modal -->
     <div class="modal2-info-backdrop" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 99;"></div>
-
     <div class="modal2-info" style="display: none;">
         <div class="profile-container2">
             <div class="employee-details4">
-                <h3>First Name:</h3>
+                <h3>Employee ID:</h3>
                 <input type="text" class="search-boxs" readonly>
             </div>
 
             <div class="employee-details5">
-                <h3>Middle Name:</h3>
+                <h3>Employee Name:</h3>
                 <input type="text" class="search-boxs" readonly>
             </div>
 
             <div class="employee-details6">
-                <h3>Lastname:</h3>
+                <h3>Position</h3>
                 <input type="text" class="search-boxs" readonly>
             </div>
         </div>
 
         <div class="detail-container">
             <div class="detail-left">
-                <h3>Contact Number:</h3>
+                <br>
+                <h3>Shift</h3>
                 <input type="text" class="search-boxes" readonly>
 
-                <h3>Bank Name:</h3>
+                <h3>Gender</h3>
                 <input type="text" class="search-boxes" readonly>
 
                 <h3>Email Address:</h3>
                 <input type="text" class="search-boxes" readonly>
             </div>
             <div class="detail-right">
+                <br>
                 <h3>Position:</h3>
                 <select class="search-boxes" disabled>
                     <option>Crew</option>
                     <option>Manager</option>
                 </select>
 
-                <h3>Bank Account:</h3>
+                <h3>Address</h3>
                 <input type="text" class="search-boxes" readonly>
 
                 <div class="inline-inputs">
@@ -322,49 +323,56 @@ while ($row = $position_result->fetch_assoc()) {
         <div class="profile-container2">
             <div class="employee-details4">
                 <h3>First Name:</h3>
-                <input type="text" placeholder="Input ID..." class="search-boxs">
+                <input type="text" placeholder="Enter Firstname" class="search-boxs" required>
             </div>
 
             <div class="employee-details5">
                 <h3>Middle Name:</h3>
-                <input type="text" placeholder="Input Pay Type..." class="search-boxs">
+                <input type="text" placeholder="Enter Middlename" class="search-boxs" required>
             </div>
 
             <div class="employee-details6">
                 <h3>Lastname:</h3>
-                <input type="text" placeholder="Input Rate..." class="search-boxs">
+                <input type="text" placeholder="Enter Lastname" class="search-boxs" required>
             </div>
         </div>
         <div class="detail-container">
             <div class="detail-left">
                 <h3>Contact Number:</h3>
-                <input type="text" placeholder="Input Number..." class="search-boxes">
+                <input type="text" placeholder="Input Number..." class="search-boxes" required>
 
-                <h3>Bank Name:</h3>
-                <input type="text" placeholder="Input Name..." class="search-boxes">
+                <h3>Shift:</h3>
+                <select class="search-boxes">
+                    <option>Morning</option>
+                    <option>Night</option>
+                </select>
 
                 <h3>Email Address:</h3>
-                <input type="text" placeholder="Input Your Email..." class="search-boxes">
+                <input type="text" placeholder="Input Your Email..." class="search-boxes" required>
             </div>
             <div class="detail-right">
                 <h3>Position:</h3>
 
                 <select class="search-boxes">
                     <option>Crew</option>
+                    <option>Serving Crew</option>
                     <option>Manager</option>
                 </select>
 
-                <h3>Bank Account:</h3>
-                <input type="text" placeholder="Input Account Number..." class="search-boxes">
+                <h3>Gender:</h3>
+                <select class="search-boxes">
+                    <option>Male</option>
+                    <option>Female</option>
+                </select>
 
                 <div class="inline-inputs">
                     <div class="pay-type-container">
                         <h3>Pay Type:</h3>
-                        <input type="text" placeholder="Input Pay Type..." class="search-boxes pay-type-input">
+                        <input type="text" placeholder="Input Pay Type..." class="search-boxes pay-type-input" required>
                     </div>
                     <div class="rate-container">
                         <h3>Rate:</h3>
-                        <input type="text" placeholder="Input Rate..." class="search-boxes rate-input">
+                        <input type="text" placeholder="Input Rate..." class="search-boxes rate-input" required>
                     </div>
                 </div>
             </div>
@@ -531,6 +539,8 @@ while ($row = $position_result->fetch_assoc()) {
             successModal2.style.display = 'none'; // Close success modal
         });
     </script>
+
+    <!-- LIVE SEARCH -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function() {

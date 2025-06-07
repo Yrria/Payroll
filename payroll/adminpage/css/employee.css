@@ -86,6 +86,28 @@ input.department-count-box {
 }
 
 
+/* Style for the search button */
+.search-btn {
+    padding: 10px 15px;
+    background-color: #20242C;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 5px;
+    transition: all 0.5s ease;
+    margin-left: 10px;
+    margin-bottom: 10px;
+}
+
+.search-btn:hover {
+    background-color: #000000;
+    color: #ffffff;
+    box-shadow: 0 0 8px rgb(98, 184, 235);
+}
+
+
+
 /* Style for the search box */
 .search-box {
     padding: 10px;
