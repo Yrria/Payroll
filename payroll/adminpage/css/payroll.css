@@ -358,13 +358,14 @@ table {
     background-color: #33996d;
     transition: all 0.1s ease-in-out; /* Smooth animation */
 }
-#search_emp_input{
+#search_emp_input {
     width: 300px;
     padding: 6px 5px;
     border-radius: 4px;
     border: 1px solid #aaaaaa6c;
     box-sizing: border-box;
 }
+
 
 /* toast css */
 

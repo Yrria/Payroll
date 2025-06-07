@@ -137,6 +137,7 @@ if (isset($_POST['gen_payslip'])) {
 
 <body>
     <?php include 'sidenav.php'; ?>
+    <audio id="notifySound" src="../assets/sound/Error.mp3" preload="auto"></audio>
     <div class="container">
         <div id="mainContent" class="main">
             <div class="head-title">
@@ -188,7 +189,7 @@ if (isset($_POST['gen_payslip'])) {
                     <div class="income_div">
                         <span>Income</span><br>
                         <span>Rate per Day:</span><input class="income_inputs" type="text" value="<?php echo $rate_pday?>" name="num_days" id="daily_rate" oninput="benefits_deduction()"><br>
-                        <span>No. Of Days:</span><input class="income_inputs" value="<?php echo $present_days?>" type="text" name="days_input" id="days_input"><span>Rate Wage:</span><input class="income_inputs" readonly value="<?php echo $computed_present_holiday ?>" type="text" name="" id=""><br>
+                        <span>No. Of Days:</span><input class="income_inputs" value="<?php echo $present_days?>" type="text" readonly name="days_input" id="days_input"><span>Rate Wage:</span><input class="income_inputs" readonly value="<?php echo $computed_present_holiday ?>" type="text" name="" id=""><br>
                         <span>OT hr/Day:</span><input class="income_inputs" readonly value="<?php echo $hours_overtime?>" type="text" name="ot_pay" id=""><span>OT hr/Day:</span><input class="income_inputs" readonly value="<?php echo $computed_ot?>" type="text" name="" id=""><br>
                         <span>Holiday Pay (day):</span><input class="income_inputs" name="" type="text" readonly value="<?php echo $holiday_present?>" id=""><span>Holiday Pay:</span><input class="income_inputs" readonly value="<?php echo $computed_holiday?>"  type="text" name="holiday_pay" id=""><br>
                         <span>Net Income:</span><input class="income_inputs" type="text" readonly value="<?php echo $net_income?>" value="" name="netpay" id="netpay"><input class="income_inputs" type="text" readonly value="<?php echo $net_income?>" hidden name="grosspay" id="grosspay">
@@ -329,6 +330,10 @@ if (isset($_POST['gen_payslip'])) {
             const totalDeductions = parseFloat(document.getElementById('total_deductions').value) || 0;
 
             if (totalDeductions > netIncome) {
+                // Play notification sound
+                const sound = document.getElementById('notifySound');
+                if (sound) sound.play();
+                
                 alert("Total deductions exceed the net income. Cannot generate payslip.");
                 e.preventDefault(); // Stop form submission
             }

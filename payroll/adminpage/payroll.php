@@ -115,6 +115,7 @@ $total_pages = ceil($total_records / $records_per_page);
 <body>
     <?php include 'sidenav.php'; ?>
     <div id="toastBox"></div>
+    <audio id="notifySound" src="../assets/sound/Success.mp3" preload="auto"></audio>
     <div class="container">
         <div id="mainContent" class="main">
             <div class="head-title">
@@ -266,7 +267,35 @@ $total_pages = ceil($total_records / $records_per_page);
     <script src="./javascript/main.js"></script>
     <script src="./javascript/payroll.js"></script>
     <script>
-        
+        document.addEventListener("DOMContentLoaded", function () {
+            const now = new Date();
+
+            // Get current month (01 to 12)
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            // Get current year (e.g., 2025)
+            const year = now.getFullYear();
+            // Default cutoff is "F" (First Cutoff)
+            const cutoff = "F";
+
+            // Function to set default in a dropdown
+            function setDefault(dropdownClass, valueToSelect) {
+                const dropdown = document.querySelector(`.${dropdownClass}`);
+                const input = dropdown.querySelector(".dropdown-input");
+                const items = dropdown.querySelectorAll(".dropdown-item");
+
+                items.forEach(item => {
+                    if (item.dataset.value === valueToSelect) {
+                        input.value = item.textContent;
+                        input.setAttribute('data-selected', valueToSelect);
+                    }
+                });
+            }
+
+            // Set default values
+            setDefault("month-dropdown", month);
+            setDefault("year-dropdown", String(year));
+            setDefault("cutoff-dropdown", cutoff);
+        });
        $(document).ready(function () {
         
             fetchPayroll(); // Initial fetch when page loads
@@ -349,6 +378,10 @@ $total_pages = ceil($total_records / $records_per_page);
                 toast.classList.add('error');
             }
 
+            // Play notification sound
+            const sound = document.getElementById('notifySound');
+            if (sound) sound.play();
+
             setTimeout(() => {
                 toast.remove();
             }, 3000);
@@ -377,6 +410,9 @@ $total_pages = ceil($total_records / $records_per_page);
                 title: 'Listening...',
                 text: 'Please speak now',
                 icon: 'info',
+                showCancelButton: true,
+                confirmButtonText: 'Stop',
+                cancelButtonText: 'Cancel',
                 allowOutsideClick: false,
                 allowEscapeKey: false,
                 showConfirmButton: false,
