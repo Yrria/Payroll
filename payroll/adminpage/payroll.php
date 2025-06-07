@@ -155,10 +155,11 @@ $total_pages = ceil($total_records / $records_per_page);
                             </div>
                             <div class="dropdown year-dropdown" style="width:25%;">
                                 <div class="dropdown-wrapper">
-                                    <input type="text" class="dropdown-input" style="width:75%;" readonly placeholder="Select Year" />
+                                    <input type="text" class="dropdown-input" style="width:75%;" readonly placeholder="Select Year" value="" autocomplete="off" />
                                     <div class="dropdown-indicator" style="right:47px;">&#9662;</div>
                                     <div class="dropdown-content">
                                         <div class="dropdown-item clear-selection" data-value="" style="opacity: 0.5;">Select Year</div>
+                                        <div class="dropdown-item" data-value="2025" style="font-size: 14px;">2025</div>
                                         <div class="dropdown-item" data-value="2024" style="font-size: 14px;">2024</div>
                                         <div class="dropdown-item" data-value="2023" style="font-size: 14px;">2023</div>
                                         <div class="dropdown-item" data-value="2022" style="font-size: 14px;">2022</div>
@@ -182,12 +183,18 @@ $total_pages = ceil($total_records / $records_per_page);
                     </div>
                     <div class="payroll_contents">
                         <!-- Title and search-bar -->
-                        <div class="search">
-                            <button class="payall_btn">Pay All</button>
-                            <div class="search-bar">
-                                <input type="text" id="search_emp_input" class="search_emp_input" placeholder="Search employee..." />
-                            </div>
+                        <div class="search" style="display: flex; align-items: center; width: 320px;">
+                            <input type="text" id="search_emp_input" class="search_emp_input" placeholder="Search employee..." />
+                            <button id="voiceSearchBtn" title="Speak to search" style="
+                                margin-left: 5px;
+                                background: none;
+                                cursor: pointer;
+                                border: 0;
+                            ">
+                                <i class="bi bi-mic-fill" style="font-size: 1.35rem; color:#20242C;"></i>
+                            </button>
                         </div>
+
 
                         <!-- Leave Table -->
                         <table>
@@ -254,10 +261,26 @@ $total_pages = ceil($total_records / $records_per_page);
         </div>
     </div>
     <!-- SCRIPT -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
     <script src="./javascript/main.js"></script>
     <script src="./javascript/payroll.js"></script>
     <script>
+        
        $(document).ready(function () {
+        
+            fetchPayroll(); // Initial fetch when page loads
+
+            // Trigger fetch when any filter changes
+            $("#filter_cutoff, #filter_status, #sort_option, #filter_salary_type").on("change", function () {
+                fetchPayroll();
+            });
+
+            // ✅ Add the voice/keyboard input event trigger here:
+            $("#search_emp_input").on("input", function () {
+                fetchPayroll();
+            });
+
             function fetchPayroll() {
                 var name = $("#search_emp_input").val();
                 var month = $(".month-dropdown .dropdown-input").val();
@@ -336,6 +359,59 @@ $total_pages = ceil($total_records / $records_per_page);
             showToast(successMess);
             window.history.replaceState(null, null, window.location.pathname);
         }
+
+    // sweetalert sa voice search
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+
+    // Select the voice button and search input elements
+    const voiceBtn = document.getElementById('voiceSearchBtn');
+    const searchInput = document.getElementById('search_emp_input');
+
+    if (voiceBtn && searchInput) {
+        voiceBtn.addEventListener('click', () => {
+            recognition.start();
+            voiceBtn.innerHTML = `<i class="bi bi-mic-mute-fill" style="color: red;"></i>`;
+
+            Swal.fire({
+                title: 'Listening...',
+                text: 'Please speak now',
+                icon: 'info',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                showConfirmButton: false,
+                didOpen: () => Swal.showLoading()
+            });
+        });
+
+        recognition.onresult = function(event) {
+            const transcript = event.results[0][0].transcript;
+            searchInput.value = transcript;
+            searchInput.dispatchEvent(new Event('input')); // Trigger input event to fire search
+            recognition.stop();
+            voiceBtn.innerHTML = `<i class="bi bi-mic-fill"></i>`;
+            Swal.close();
+        };
+
+        recognition.onerror = function(event) {
+            console.error('Speech recognition error:', event.error);
+            recognition.stop();
+            voiceBtn.innerHTML = `<i class="bi bi-mic-fill"></i>`;
+            Swal.close();
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Voice recognition error: ' + event.error,
+                timer: 2000,
+                showConfirmButton: false,
+            });
+        };
+
+        recognition.onend = function () {
+            voiceBtn.innerHTML = `<i class="bi bi-mic-fill"></i>`;
+            Swal.close();
+        };
+    }
 
     </script>
 </body>

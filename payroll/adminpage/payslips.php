@@ -108,6 +108,7 @@ $total_pages = ceil($total_records / $records_per_page);
                                     <div class="dropdown-indicator" style="right:47px;">&#9662;</div>
                                     <div class="dropdown-content">
                                         <div class="dropdown-item clear-selection" data-value="" style="opacity: 0.5;">Select Year</div>
+                                        <div class="dropdown-item" data-value="2025" style="font-size: 14px;">2025</div>
                                         <div class="dropdown-item" data-value="2024" style="font-size: 14px;">2024</div>
                                         <div class="dropdown-item" data-value="2023" style="font-size: 14px;">2023</div>
                                         <div class="dropdown-item" data-value="2022" style="font-size: 14px;">2022</div>
@@ -131,11 +132,12 @@ $total_pages = ceil($total_records / $records_per_page);
                     </div>
                     <div class="payroll_contents">
                         <!-- Title and search-bar -->
-                        <div class="search">
-                            <div class="search-bar">
-                                <input type="text" class="search_emp_input" placeholder="Search employee..." />
-                                <button class="search-btn">Search</button>
-                            </div>
+                        <div class="search" style="display: flex; align-items: center; width: 320px;">
+                            <input type="text" id="search_emp_input" class="search_emp_input" placeholder="Search employee..." style="flex-grow:1;"/>
+                            <!-- Added voice search button -->
+                            <button id="voiceSearchBtn" type="button" style="margin-left: 5px; border:none; background:none; cursor:pointer;">
+                                <i class="bi bi-mic-fill" style="font-size: 1.35rem;"></i>
+                            </button>
                         </div>
 
                         <!-- Leave Table -->
@@ -205,9 +207,13 @@ $total_pages = ceil($total_records / $records_per_page);
     <!-- SCRIPT -->
     <script src="./javascript/main.js"></script>
     <script src="./javascript/payroll.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
     <script>
-       $(document).ready(function () {
-            function fetchPayroll() {
+        $(document).ready(function () {
+
+            // Function to fetch payroll based on search input
+           function fetchPayroll() {
                 var name = $("#search_emp_input").val();
                 var month = $(".month-dropdown .dropdown-input").val();
                 var year = $(".year-dropdown .dropdown-input").val();
@@ -217,7 +223,7 @@ $total_pages = ceil($total_records / $records_per_page);
 
                 $.ajax({
                     method: "POST",
-                    url: "search_payroll.php",
+                    url: "search_payslips.php",
                     data: { name: name, month: month, year: year, cutoff: cutoff },
                     success: function (response) {
                         console.log("Response:", response); // Debugging output
@@ -260,9 +266,71 @@ $total_pages = ceil($total_records / $records_per_page);
                 fetchPayroll(); // Update the payroll list based on the new selection
             });
 
+            // Check if browser supports SpeechRecognition API
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+            if (SpeechRecognition) {
+                const recognition = new SpeechRecognition();
+                recognition.lang = 'en-US';
+                recognition.interimResults = false;
+                recognition.maxAlternatives = 1;
+
+                const voiceBtn = document.getElementById('voiceSearchBtn');
+                const searchInput = document.getElementById('search_emp_input');
+
+                if (voiceBtn && searchInput) {
+                    voiceBtn.addEventListener('click', () => {
+                        try {
+                            recognition.start();
+                            voiceBtn.innerHTML = '<i class="bi bi-mic" style="font-size: 1.35rem; color: red;"></i>';
+
+                            Swal.fire({
+                                title: 'Listening...',
+                                text: 'Please speak now',
+                                icon: 'info',
+                                allowOutsideClick: false,
+                                allowEscapeKey: false,
+                                showConfirmButton: false,
+                                didOpen: () => Swal.showLoading()
+                            });
+                        } catch (e) {
+                            console.error('Recognition error:', e);
+                        }
+                    });
+
+                    recognition.addEventListener('result', (event) => {
+                        const transcript = event.results[0][0].transcript;
+                        searchInput.value = transcript;
+                        searchInput.dispatchEvent(new Event('input')); // Trigger payroll search
+                    });
+
+                    recognition.addEventListener('end', () => {
+                        voiceBtn.innerHTML = '<i class="bi bi-mic-fill" style="font-size: 1.35rem; color:#20242C;"></i>';
+                        Swal.close();
+                    });
+
+                    recognition.addEventListener('error', (event) => {
+                        console.error('Speech recognition error:', event.error);
+                        voiceBtn.innerHTML = '<i class="bi bi-mic-fill" style="font-size: 1.35rem; color:#20242C;"></i>';
+                        Swal.close();
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Voice recognition error: ' + event.error,
+                            timer: 2000,
+                            showConfirmButton: false,
+                        });
+                    });
+                }
+            } else {
+                console.warn('SpeechRecognition API not supported.');
+                const voiceBtn = document.getElementById('voiceSearchBtn');
+                if (voiceBtn) voiceBtn.disabled = true;
+            }
+
+
         });
-
-
     </script>
 </body>
 

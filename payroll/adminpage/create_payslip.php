@@ -18,7 +18,6 @@ if (isset($_GET['id'])) {
             e.phone_no,
             a.present_days,
             a.absent_days,
-            a.hours_present,
             a.hours_late,
             a.hours_overtime,
             a.holiday,
@@ -82,7 +81,7 @@ $month_now = $now->format('F');
 if (isset($_POST['gen_payslip'])) {
     $month = $month_now;
     $position_namee = $position_name;
-    $rate_pdayy = $_POST['num_days'] * 30 ;
+    $rate_pdayy = $_POST['num_days'] * 30;
     $overtime_pay = $_POST['ot_pay'];
     $holiday_pay = $_POST['holiday_pay'];
     $net_pay = $_POST['netpay'];
@@ -91,6 +90,16 @@ if (isset($_POST['gen_payslip'])) {
     $pagibig = $_POST['pagibig'];
     $total_other_deduction = $_POST['total_other_deduction'];
     $grosspay = $_POST['grosspay'];
+
+    // Convert strings to float
+    $net_pay_float = floatval($net_pay);
+    $all_deductions = floatval($sss) + floatval($philhealth) + floatval($pagibig) + floatval($total_other_deduction);
+
+    // Validation: if total deduction > net pay, stop generation
+    if ($all_deductions > $net_pay_float) {
+        echo "<script>alert('Error: Total deductions exceed net income. Payslip generation aborted.'); window.history.back();</script>";
+        exit();
+    }
 
     $net_pay_sql = "UPDATE tbl_salary 
     SET basic_pay = '$rate_pdayy',
@@ -104,13 +113,13 @@ if (isset($_POST['gen_payslip'])) {
         total_salary = '$net_pay'
     WHERE emp_id = '$emp_id' AND month = '$month'";
 
-
     $netpay_query = mysqli_query($conn, $net_pay_sql);
-
     $update_paid = mysqli_query($conn, "UPDATE tbl_salary SET status = 'Paid' WHERE emp_id = '$emp_id' AND month = '$month'");
+
     header("Location: payroll.php?status=success");
     exit();
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -222,8 +231,7 @@ if (isset($_POST['gen_payslip'])) {
                 </div>
                 <div class="res_can_pay_div">
                     <div class="res_can_div">
-                        <button class="payall_btn">Reset</button>
-                        <a href="./payroll.php"><button class="cancel_btn">Cancel</button></a>
+                        <button class="cancel_btn" type="button" onclick="history.back();">Cancel</button>
                     </div>
                     <div>
                         <button class="pay_btn" type="submit" name="gen_payslip">Generate Slip</button>
@@ -235,6 +243,7 @@ if (isset($_POST['gen_payslip'])) {
     <!-- SCRIPT -->
     <script src="./javascript/main.js"></script>
     <script src="./javascript/payroll.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         const daily_rate = parseFloat(document.getElementById('daily_rate').value) || 0;
 
@@ -307,12 +316,22 @@ if (isset($_POST['gen_payslip'])) {
             benefits_deduction(); // initial call
 
             // Add listeners to other deduction value fields
-            const deductionInputs = document.querySelectorAll('.deduction_inputs[type="text"]');
-            deductionInputs.forEach(input => {
-                input.addEventListener('input', () => {
-                    updateDeductions();
+                const deductionInputs = document.querySelectorAll('.deduction_inputs[type="text"]');
+                deductionInputs.forEach(input => {
+                    input.addEventListener('input', () => {
+                        updateDeductions();
+                    });
                 });
             });
+
+            document.querySelector('form').addEventListener('submit', function(e) {
+            const netIncome = parseFloat(document.getElementById('netpay').value) || 0;
+            const totalDeductions = parseFloat(document.getElementById('total_deductions').value) || 0;
+
+            if (totalDeductions > netIncome) {
+                alert("Total deductions exceed the net income. Cannot generate payslip.");
+                e.preventDefault(); // Stop form submission
+            }
         });
     </script>
 </body>

@@ -20,6 +20,7 @@ include './assets/databse/login.php';
 
 <body>
     <div class="login-container">
+        
         <div class="login-box">
         <a href="./index.php" class="title-tags"><span class="comp-name"><img src="./assets/expense.png" class="title-name" alt="ExPense"></span></a>
             <p>Welcome to [Company Name]'s Payroll System! Easily manage your payroll, access pay slips, and keep track of your payment 
@@ -47,16 +48,17 @@ include './assets/databse/login.php';
             </form>
         </div>
     </div>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/webcamjs/1.0.26/webcam.min.js"></script>
     <script>
+
         const togglePassword = document.getElementById('toggle-password');
         const passwordInput = document.getElementById('password');
 
         togglePassword.addEventListener('click', function() {
             const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
             passwordInput.setAttribute('type', type);
-            this.classList.toggle('fa-eye-slash');
-        });
+                this.classList.toggle('fa-eye-slash');
+            });
     </script>
 </body>
 
