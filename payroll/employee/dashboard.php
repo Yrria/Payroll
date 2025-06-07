@@ -2,6 +2,52 @@
 session_start();
 include '../assets/databse/connection.php';
 include './database/session.php';
+
+
+$emp_id = $_SESSION['emp_id'];
+
+// Get latest salary record for the employee
+$salaryQuery = "SELECT * FROM tbl_salary WHERE emp_id = '$emp_id' ORDER BY salary_id DESC LIMIT 2";
+$salaryResult = mysqli_query($conn, $salaryQuery);
+
+$latestSalary = 0;
+$lastSalary = 0;
+$upcomingDate = date("F d, Y", strtotime('+1 month')); // Placeholder
+
+if ($salaryResult && mysqli_num_rows($salaryResult) > 0) {
+    $salaryRecords = [];
+    while ($row = mysqli_fetch_assoc($salaryResult)) {
+        $salaryRecords[] = $row;
+    }
+
+    $latestSalary = $salaryRecords[0]['total_salary'];
+    if (count($salaryRecords) > 1) {
+        $lastSalary = $salaryRecords[1]['total_salary'];
+    }
+
+    // Build upcoming date based on next cutoff logic
+    $upcomingDate = date("F d, Y", strtotime("first day of next month"));
+}
+
+
+$totalLeaves = 10; // Assume annual allowance (can also be fetched per employee if dynamic)
+$leavesTaken = 0;
+$pendingLeaves = 0;
+$leavesAbsent = 0; // Optional: based on separate logic or absence logs
+
+// Fetch total approved leaves
+$approvedQuery = "SELECT SUM(no_of_leave) AS total_taken FROM tbl_leave WHERE emp_id = '$emp_id' AND status = 'Approved'";
+$approvedResult = mysqli_query($conn, $approvedQuery);
+if ($approvedResult && $row = mysqli_fetch_assoc($approvedResult)) {
+    $leavesTaken = $row['total_taken'] ?? 0;
+}
+
+// Fetch total pending leaves
+$pendingQuery = "SELECT SUM(no_of_leave) AS pending FROM tbl_leave WHERE emp_id = '$emp_id' AND status = 'Pending'";
+$pendingResult = mysqli_query($conn, $pendingQuery);
+if ($pendingResult && $row = mysqli_fetch_assoc($pendingResult)) {
+    $pendingLeaves = $row['pending'] ?? 0;
+}
 ?>
 
 <!DOCTYPE html>
@@ -20,43 +66,52 @@ include './database/session.php';
 <body>
     <?php include 'sidenav.php'; ?>
     <div class="main-content">
-        <h1 style="margin-top: 70px; margin-left:-800px;">Welcome Employee!</h1>
-        <p class="section-header">Dashboard</p>
-        <hr />
+<div class="head-title" style="margin: 20px 40px 10px -10px;">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <h1 style="margin-top: 50px; margin-right: 730px;  font-size: 28px;">Welcome Employee!</h1>
+            <p style="font-size: 14px; color: #666; margin-left: -1px;">Dashboard</p>
+        </div>
+    </div>
+    <hr style="margin-top: 10px;">
+</div>
+
 
         <div class="card-container">
             <div class="card card-blue" style="margin-left:-50px;">
                 <h3>📅 Upcoming Salary Date</h3>
                 <hr />
-                <div class="highlight">November 16, 2024</div>
+                <div class="highlight"><?php echo $upcomingDate; ?></div>
             </div>
             <div class="card card-blue">
                 <h3>💰 Salary Report</h3>
                 <hr />
-                <div class="highlight">₱ 15,000</div>
-                <div style="font-size: 14px; margin-left: 115px; margin-top:10px;">Last Salary ₱ 10,000</div>
+                <div class="highlight">₱ <?php echo number_format($latestSalary, 0); ?></div>
+                <div style="font-size: 14px; margin-left: 115px; margin-top:10px;">
+                    Last Salary ₱ <?php echo number_format($lastSalary, 0); ?>
+                </div>
             </div>
             <div class="card">
-    <h3><i class="fas fa-check-circle" style="margin-right: 8px; color: green;"></i>Remaining Leaves</h3>
-    <hr />
-    <div style="font-size: 30px;font-weight: bold; text-align:center; margin-top:30px;">
-        <?php
-        // Fetch employee ID from session
-        $emp_id = $_SESSION['emp_id']; // Adjust this key if it's different in your session
+                <h3><i class="fas fa-check-circle" style="margin-right: 8px; color: green;"></i>Remaining Leaves</h3>
+                <hr />
+                <div style="font-size: 30px;font-weight: bold; text-align:center; margin-top:30px;">
+                    <?php
+                    // Fetch employee ID from session
+                    $emp_id = $_SESSION['emp_id']; // Adjust this key if it's different in your session
 
-        // Fetch remaining leaves from tbl_leave
-        $leaveQuery = "SELECT remaining_leave FROM tbl_leave WHERE emp_id = '$emp_id' ORDER BY leave_id DESC LIMIT 1";
-        $leaveResult = mysqli_query($conn, $leaveQuery);
+                    // Fetch remaining leaves from tbl_leave
+                    $leaveQuery = "SELECT remaining_leave FROM tbl_leave WHERE emp_id = '$emp_id' ORDER BY leave_id DESC LIMIT 1";
+                    $leaveResult = mysqli_query($conn, $leaveQuery);
 
-        if ($leaveResult && mysqli_num_rows($leaveResult) > 0) {
-            $leaveRow = mysqli_fetch_assoc($leaveResult);
-            echo $leaveRow['remaining_leave'];
-        } else {
-            echo "0"; // fallback if no leave record
-        }
-        ?>
-    </div>
-</div>
+                    if ($leaveResult && mysqli_num_rows($leaveResult) > 0) {
+                        $leaveRow = mysqli_fetch_assoc($leaveResult);
+                        echo $leaveRow['remaining_leave'];
+                    } else {
+                        echo "0"; // fallback if no leave record
+                    }
+                    ?>
+                </div>
+            </div>
         </div>
 
         <!-- Calendar and Attendance beside each other -->
@@ -66,19 +121,19 @@ include './database/session.php';
                 <hr />
                 <div class="stats-container">
                     <div class="stats-box">
-                        <div class="highlight">10</div>
+                        <div class="highlight"><?php echo $totalLeaves; ?></div>
                         <div>Total Leaves</div>
                     </div>
                     <div class="stats-box">
-                        <div class="highlight">3</div>
+                        <div class="highlight"><?php echo $leavesTaken; ?></div>
                         <div>Leaves Taken</div>
                     </div>
                     <div class="stats-box">
-                        <div class="highlight">1</div>
+                        <div class="highlight"><?php echo $leavesAbsent; ?></div>
                         <div>Leaves Absent</div>
                     </div>
                     <div class="stats-box">
-                        <div class="highlight">1</div>
+                        <div class="highlight"><?php echo $pendingLeaves; ?></div>
                         <div>Pending Approval</div>
                     </div>
                 </div>
@@ -87,7 +142,7 @@ include './database/session.php';
                 </button>
             </div>
 
-            <div class="calendar-box" >
+            <div class="calendar-box">
                 <div class="calendar-title">Calendar</div>
                 <div class="calendar-controls">
                     <button id="prev-month">◀</button>
