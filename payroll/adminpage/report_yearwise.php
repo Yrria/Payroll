@@ -75,10 +75,12 @@ include './database/session.php';
 
                                 if (!empty($search_query_escaped)) {
                                     $sql .= "
-        WHERE e.emp_id LIKE '%$search_query_escaped%'
+    WHERE (
+        e.emp_id LIKE '%$search_query_escaped%'
         OR e.firstname LIKE '%$search_query_escaped%'
         OR e.lastname LIKE '%$search_query_escaped%'
         OR e.middlename LIKE '%$search_query_escaped%'
+    )
     ";
                                 }
 
@@ -88,10 +90,10 @@ include './database/session.php';
 
                                 if ($result && $result->num_rows > 0) {
                                     while ($row = $result->fetch_assoc()) {
-                                        $empId = $row['emp_id'];
-                                        $empName = $row['lastname'] . ', ' . $row['firstname'] . ' ' . $row['middlename'];
-                                        $overtimeHours = $row['total_overtime'] . 'h';
-                                        $workedHours = $row['total_worked'] . 'h';
+                                        $empId = htmlspecialchars($row['emp_id']);
+                                        $empName = htmlspecialchars($row['lastname'] . ', ' . $row['firstname'] . ' ' . $row['middlename']);
+                                        $overtimeHours = number_format((float)$row['total_overtime'], 2) . 'h';
+                                        $workedHours = number_format((float)$row['total_worked'], 2) . 'h';
                                         $totalDeductions = '₱' . number_format($row['total_deductions'], 2);
                                         $totalWage = '₱' . number_format($row['rate'] * $row['total_present_days'], 2);
 
@@ -114,6 +116,7 @@ include './database/session.php';
                                 }
                                 ?>
                             </tbody>
+
                         </table>
                         <br>
                         <div class="pagination">
@@ -132,7 +135,7 @@ include './database/session.php';
                     <div class="modal-content">
                         <div class="modal-header">
                             <h2 class="title">ANNUAL SUMMARY REPORT</h2>
-                            <h2 class="year">2024</h2>
+                            <h2 class="year" id="year"></h2> <!-- added id="year" -->
                         </div>
                         <span class="close-btn" onclick="closeModal()">&times;</span>
                         <hr>
@@ -155,98 +158,8 @@ include './database/session.php';
                                     <th>Total Wage</th>
                                 </tr>
                             </thead>
-                            <tbody id="showdata">
-                                <tr>
-                                    <td>January</td>
-                                    <td>150</td>
-                                    <td>20</td>
-                                    <td>₱50</td>
-                                    <td>₱1,200</td>
-                                </tr>
-                                <tr>
-                                    <td>February</td>
-                                    <td>140</td>
-                                    <td>15</td>
-                                    <td>₱40</td>
-                                    <td>₱1,100</td>
-                                </tr>
-                                <tr>
-                                    <td>March</td>
-                                    <td>160</td>
-                                    <td>25</td>
-                                    <td>₱60</td>
-                                    <td>₱1,400</td>
-                                </tr>
-                                <tr>
-                                    <td>April</td>
-                                    <td>155</td>
-                                    <td>30</td>
-                                    <td>₱55</td>
-                                    <td>₱1,300</td>
-                                </tr>
-                                <tr>
-                                    <td>May</td>
-                                    <td>170</td>
-                                    <td>35</td>
-                                    <td>₱65</td>
-                                    <td>₱1,500</td>
-                                </tr>
-                                <tr>
-                                    <td>June</td>
-                                    <td>175</td>
-                                    <td>40</td>
-                                    <td>₱70</td>
-                                    <td>₱1,600</td>
-                                </tr>
-                                <tr>
-                                    <td>July</td>
-                                    <td>150</td>
-                                    <td>20</td>
-                                    <td>₱50</td>
-                                    <td>₱1,200</td>
-                                </tr>
-                                <tr>
-                                    <td>August</td>
-                                    <td>140</td>
-                                    <td>15</td>
-                                    <td>₱40</td>
-                                    <td>₱1,100</td>
-                                </tr>
-                                <tr>
-                                    <td>September</td>
-                                    <td>160</td>
-                                    <td>25</td>
-                                    <td>₱60</td>
-                                    <td>₱1,400</td>
-                                </tr>
-                                <tr>
-                                    <td>October</td>
-                                    <td>155</td>
-                                    <td>30</td>
-                                    <td>₱55</td>
-                                    <td>₱1,300</td>
-                                </tr>
-                                <tr>
-                                    <td>November</td>
-                                    <td>170</td>
-                                    <td>35</td>
-                                    <td>₱65</td>
-                                    <td>₱1,500</td>
-                                </tr>
-                                <tr>
-                                    <td>December</td>
-                                    <td>175</td>
-                                    <td>40</td>
-                                    <td>₱70</td>
-                                    <td>₱1,600</td>
-                                </tr>
-                                <tr class="total-row">
-                                    <td>Total</td>
-                                    <td>1,030</td>
-                                    <td>165</td>
-                                    <td>₱375</td>
-                                    <td>₱8,100</td>
-                                </tr>
+                            <tbody id="monthlyDataBody">
+                                <!-- monthly rows will be injected here -->
                             </tbody>
                         </table>
                         <div class="modal-footer">
@@ -275,6 +188,56 @@ include './database/session.php';
                         document.querySelector('.overtime-hours').textContent = `Total Overtime Hours: ${data.total_overtime_hours}h`;
                         document.querySelector('.total-deductions').textContent = `Total Deductions: ₱${Number(data.total_deductions).toFixed(2)}`;
                         document.querySelector('.total-wage').textContent = `Total Wage: ₱${Number(data.total_wage).toFixed(2)}`;
+
+                        const tbody = document.getElementById('monthlyDataBody');
+                        if (!tbody) {
+                            console.error('Table body element not found!');
+                            return;
+                        }
+                        tbody.innerHTML = '';
+
+                        if (!Array.isArray(data.monthly_data)) {
+                            data.monthly_data = [];
+                        }
+
+                        let totalWorked = 0;
+                        let totalOvertime = 0;
+                        let totalDeductions = 0;
+                        let totalWage = 0;
+
+                        data.monthly_data.forEach(month => {
+                            const worked = Number(month.worked_hours) || 0;
+                            const overtime = Number(month.overtime_hours) || 0;
+                            const deductions = Number(month.deductions) || 0;
+                            const wage = Number(month.total_wage) || 0;
+
+                            totalWorked += worked;
+                            totalOvertime += overtime;
+                            totalDeductions += deductions;
+                            totalWage += wage;
+
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                        <td>${month.month} ${month.year}</td>
+                        <td>${worked}</td>
+                        <td>${overtime}</td>
+                        <td>₱${deductions.toFixed(2)}</td>
+                        <td>₱${wage.toFixed(2)}</td>
+                    `;
+                            tbody.appendChild(row);
+                        });
+
+                        const totalRow = document.createElement('tr');
+                        totalRow.classList.add('total-row');
+                        totalRow.innerHTML = `
+                    <td>Total</td>
+                    <td>${totalWorked}</td>
+                    <td>${totalOvertime}</td>
+                    <td>₱${totalDeductions.toFixed(2)}</td>
+                    <td>₱${totalWage.toFixed(2)}</td>
+                `;
+                        tbody.appendChild(totalRow);
+
                         document.getElementById('infoModal').style.display = 'block';
                     } else {
                         alert(data.message || 'Employee info not found.');
@@ -284,7 +247,6 @@ include './database/session.php';
                     console.error('Fetch error:', err);
                     alert('Failed to fetch employee info.');
                 });
-                
         }
 
         function closeModal() {
@@ -306,6 +268,12 @@ include './database/session.php';
                 .then(data => {
                     document.getElementById('showdata').innerHTML = data;
                 });
+        });
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const yearElement = document.getElementById("year");
+            const currentYear = new Date().getFullYear();
+            yearElement.textContent = currentYear;
         });
     </script>
 </body>

@@ -3,33 +3,45 @@ session_start();
 include '../assets/databse/connection.php';
 include './database/session.php';
 
-// Fetch payment data from the database
-$query = "SELECT month, cutoff, total FROM tbl_payment ORDER BY FIELD(month, 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December')";
+// Fixed query - extract month from date string and convert to month name
+$query = "
+    SELECT 
+        MONTHNAME(STR_TO_DATE(month, '%Y-%m-%d')) as month,
+        MONTH(STR_TO_DATE(month, '%Y-%m-%d')) as month_num,
+        SUM(CASE WHEN cutoff = 'First Cutoff' THEN total_salary ELSE 0 END) as first_cutoff,
+        SUM(CASE WHEN cutoff = 'Second Cutoff' THEN total_salary ELSE 0 END) as second_cutoff,
+        SUM(total_salary) as total
+    FROM tbl_salary 
+    GROUP BY MONTH(STR_TO_DATE(month, '%Y-%m-%d'))
+    ORDER BY MONTH(STR_TO_DATE(month, '%Y-%m-%d'))
+";
 $result = mysqli_query($conn, $query);
 
 // Get total results count
-$total_query = "SELECT COUNT(*) AS total_results FROM tbl_payment";
+$total_query = "SELECT COUNT(DISTINCT MONTH(STR_TO_DATE(month, '%Y-%m-%d'))) AS total_results FROM tbl_salary";
 $total_result = mysqli_query($conn, $total_query);
 $total_row = mysqli_fetch_assoc($total_result);
 $total_results = $total_row['total_results'];
 
-// Fetch employee payment details
+// Fixed employee payment details query
 $view_query = "
     SELECT 
         e.emp_id,
         CONCAT(e.lastname, ', ', e.firstname, ' ', e.middlename) AS name,
         i.position,
-        p.cutoff AS cutoff1,
-        p.cutoff AS cutoff2,
-        p.total
+        s.cutoff,
+        s.total_salary as total,
+        MONTHNAME(STR_TO_DATE(s.month, '%Y-%m-%d')) as month,
+        MONTH(STR_TO_DATE(s.month, '%Y-%m-%d')) as month_num
     FROM tbl_emp_acc e
     JOIN tbl_emp_info i ON e.emp_id = i.emp_id
-    JOIN tbl_payment p ON e.emp_id = p.emp_id
+    JOIN tbl_salary s ON e.emp_id = s.emp_id
+    ORDER BY MONTH(STR_TO_DATE(s.month, '%Y-%m-%d')), s.cutoff
 ";
 $view_result = mysqli_query($conn, $view_query);
 
-// Fetch total payment from tbl_payment
-$total_modal_query = "SELECT SUM(total) AS total_payment FROM tbl_payment";
+// Fetch total payment from tbl_salary
+$total_modal_query = "SELECT SUM(total_salary) AS total_payment FROM tbl_salary";
 $total_modal_result = mysqli_query($conn, $total_modal_query);
 $total_modal_row = mysqli_fetch_assoc($total_modal_result);
 $total_modal_payment = $total_modal_row['total_payment'] ? number_format($total_modal_row['total_payment'], 2) : "0.00";
@@ -85,46 +97,46 @@ $total_modal_payment = $total_modal_row['total_payment'] ? number_format($total_
                                 <div class="dropdown-indicator">&#9662;</div>
                                 <div class="dropdown-content">
                                     <div class="dropdown-item clear-selection" data-value="" style="opacity: 0.5;">Select Month</div>
-                                    <div class="dropdown-item" data-value="01" style="font-size: 14px;">January</div>
-                                    <div class="dropdown-item" data-value="02" style="font-size: 14px;">February</div>
-                                    <div class="dropdown-item" data-value="03" style="font-size: 14px;">March</div>
-                                    <div class="dropdown-item" data-value="04" style="font-size: 14px;">April</div>
-                                    <div class="dropdown-item" data-value="05" style="font-size: 14px;">May</div>
-                                    <div class="dropdown-item" data-value="06" style="font-size: 14px;">June</div>
-                                    <div class="dropdown-item" data-value="07" style="font-size: 14px;">July</div>
-                                    <div class="dropdown-item" data-value="08" style="font-size: 14px;">August</div>
-                                    <div class="dropdown-item" data-value="09" style="font-size: 14px;">September</div>
+                                    <div class="dropdown-item" data-value="1" style="font-size: 14px;">January</div>
+                                    <div class="dropdown-item" data-value="2" style="font-size: 14px;">February</div>
+                                    <div class="dropdown-item" data-value="3" style="font-size: 14px;">March</div>
+                                    <div class="dropdown-item" data-value="4" style="font-size: 14px;">April</div>
+                                    <div class="dropdown-item" data-value="5" style="font-size: 14px;">May</div>
+                                    <div class="dropdown-item" data-value="6" style="font-size: 14px;">June</div>
+                                    <div class="dropdown-item" data-value="7" style="font-size: 14px;">July</div>
+                                    <div class="dropdown-item" data-value="8" style="font-size: 14px;">August</div>
+                                    <div class="dropdown-item" data-value="9" style="font-size: 14px;">September</div>
                                     <div class="dropdown-item" data-value="10" style="font-size: 14px;">October</div>
                                     <div class="dropdown-item" data-value="11" style="font-size: 14px;">November</div>
                                     <div class="dropdown-item" data-value="12" style="font-size: 14px;">December</div>
                                 </div>
                             </div>
-                            <div class="dropdown-wrapper">
+                            <!-- <div class="dropdown-wrapper">
                                 <input type="text" class="dropdown-input" style="width:75%;" readonly placeholder="Select Cutoff" />
                                 <div class="dropdown-indicator">&#9662;</div>
                                 <div class="dropdown-content">
                                     <div class="dropdown-item clear-selection" data-value="" style="opacity: 0.5;">Select CutOff</div>
-                                    <div class="dropdown-item" data-value="01" style="font-size: 14px;">CutOff1</div>
-                                    <div class="dropdown-item" data-value="02" style="font-size: 14px;">CutOff2</div>
+                                    <div class="dropdown-item" data-value="First Cutoff" style="font-size: 14px;">First Cutoff</div>
+                                    <div class="dropdown-item" data-value="Second Cutoff" style="font-size: 14px;">Second Cutoff</div>
                                 </div>
-                            </div>
+                            </div> -->
                             <p class="total_payment">Total Payment: <span>&#8369;
                                     <?php
-                                    $total_query = "SELECT SUM(total) AS total_payment FROM tbl_payment";
-                                    $total_result = mysqli_query($conn, $total_query);
-                                    $total_row = mysqli_fetch_assoc($total_result);
-                                    echo number_format($total_row['total_payment'], 2);
+                                    $total_query_display = "SELECT SUM(total_salary) AS total_payment FROM tbl_salary";
+                                    $total_result_display = mysqli_query($conn, $total_query_display);
+                                    $total_row_display = mysqli_fetch_assoc($total_result_display);
+                                    echo number_format($total_row_display['total_payment'], 2);
                                     ?>
                                 </span></p>
                         </div>
                     </div>
                     <div class="content">
                         <table>
-                            <thead >
-                                <tr >
+                            <thead>
+                                <tr>
                                     <th>Month</th>
-                                    <th>Cut off 1</th>
-                                    <th>Cut off 2</th>
+                                    <th>First Cutoff</th>
+                                    <th>Second Cutoff</th>
                                     <th>Total</th>
                                     <th>View Details</th>
                                 </tr>
@@ -134,14 +146,14 @@ $total_modal_payment = $total_modal_row['total_payment'] ? number_format($total_
                                 if (mysqli_num_rows($result) > 0) {
                                     while ($row = mysqli_fetch_assoc($result)) {
                                 ?>
-                                        <tr data-month="<?php echo strtolower($row['month']); ?>">
+                                        <tr data-month="<?php echo strtolower($row['month']); ?>" data-month-num="<?php echo $row['month_num']; ?>">
                                             <td><?php echo $row['month']; ?></td>
-                                            <td>₱<?php echo number_format($row['cutoff'], 2); ?></td>
-                                            <td>₱<?php echo number_format($row['cutoff'], 2); ?></td>
+                                            <td>₱<?php echo number_format($row['first_cutoff'], 2); ?></td>
+                                            <td>₱<?php echo number_format($row['second_cutoff'], 2); ?></td>
                                             <td>₱<?php echo number_format($row['total'], 2); ?></td>
                                             <td class="td-text">
                                                 <div class="action-buttons">
-                                                    <button class="view-btn" onclick="openModal()">View Info</button>
+                                                    <button class="view-btn" onclick="openModal('<?php echo $row['month_num']; ?>')">View Info</button>
                                                 </div>
                                             </td>
                                         </tr>
@@ -177,7 +189,7 @@ $total_modal_payment = $total_modal_row['total_payment'] ? number_format($total_
                 <div class="modal-header">
                     <div class="search-container">
                         <input type="text" class="search-box" placeholder="Search Employee...">
-                        <button class="search-btn">Search</button>
+                        <!-- <button class="search-btn">Search</button> -->
                     </div>
                     <p class="results-count">Showing All Results</p>
                     <p class="total-payment">Total Payment: <span>₱<?php echo $total_modal_payment; ?></span></p>
@@ -188,31 +200,22 @@ $total_modal_payment = $total_modal_row['total_payment'] ? number_format($total_
                             <th>Employee ID</th>
                             <th>Name</th>
                             <th>Position</th>
-                            <th>Shift</th>
-                            <th>Cut off 1</th>
-                            <th>Cut off 2</th>
+                            <th>Month</th>
+                            <th>Cutoff</th>
                             <th>Total</th>
                         </tr>
                     </thead>
-                    <tbody id="showdata">
+                    <tbody id="modalTableBody">
                         <?php
                         if (mysqli_num_rows($view_result) > 0) {
                             while ($row = mysqli_fetch_assoc($view_result)) {
-                                if (!empty($row['m_name'])) {
-                                    $fullname = $row['l_name'] . " , " . $row['f_name'] . " , " . $row['m_name'] . ".";
-                                    $_SESSION['fullname'] = $fullname;
-                                } else {
-                                    $fullname = $row['l_name'] . " , " . $row['f_name'];
-                                    $_SESSION['fullname'] = $fullname;
-                                }
                         ?>
-                                <tr>
+                                <tr data-month-num="<?php echo $row['month_num']; ?>">
                                     <td><?php echo $row['emp_id']; ?></td>
-                                    <td><?php echo htmlspecialchars($fullname); ?></td>
+                                    <td><?php echo htmlspecialchars($row['name']); ?></td>
                                     <td><?php echo $row['position']; ?></td>
-                                    <td><?php echo $row['emp_shift']; ?></td>
-                                    <td>₱<?php echo number_format($row['cutoff1'], 2); ?></td>
-                                    <td>₱<?php echo number_format($row['cutoff2'], 2); ?></td>
+                                    <td><?php echo $row['month']; ?></td>
+                                    <td><?php echo $row['cutoff']; ?></td>
                                     <td>₱<?php echo number_format($row['total'], 2); ?></td>
                                 </tr>
                             <?php
@@ -220,7 +223,7 @@ $total_modal_payment = $total_modal_row['total_payment'] ? number_format($total_
                         } else {
                             ?>
                             <tr>
-                                <td colspan="7" style="text-align: center; font-weight: bold;">No Records Found</td>
+                                <td colspan="6" style="text-align: center; font-weight: bold;">No Records Found</td>
                             </tr>
                         <?php } ?>
                     </tbody>
@@ -238,6 +241,22 @@ $total_modal_payment = $total_modal_row['total_payment'] ? number_format($total_
 
         <!-- SCRIPT -->
         <script>
+            // Updated month mapping for filtering - now using numeric values
+            const monthMapping = {
+                'january': '1',
+                'february': '2',
+                'march': '3',
+                'april': '4',
+                'may': '5',
+                'june': '6',
+                'july': '7',
+                'august': '8',
+                'september': '9',
+                'october': '10',
+                'november': '11',
+                'december': '12'
+            };
+
             document.querySelectorAll('.dropdown-wrapper').forEach(wrapper => {
                 const input = wrapper.querySelector('.dropdown-input');
                 const content = wrapper.querySelector('.dropdown-content');
@@ -249,7 +268,8 @@ $total_modal_payment = $total_modal_row['total_payment'] ? number_format($total_
 
                 items.forEach(item => {
                     item.addEventListener('click', () => {
-                        const selectedMonth = item.textContent.trim().toLowerCase();
+                        const selectedText = item.textContent.trim();
+                        const selectedMonth = selectedText.toLowerCase();
                         const tableRows = document.querySelectorAll('table tbody tr');
                         let visibleCount = 0;
 
@@ -268,18 +288,20 @@ $total_modal_payment = $total_modal_row['total_payment'] ? number_format($total_
                             let noRow = document.getElementById('noRecordsFound');
                             if (noRow) noRow.remove(); // Remove "No Records Found" if it exists
 
-                            // Reset any other states like pagination if needed here
                             return; // Do not proceed further if "Select Month" is clicked
                         }
 
-                        input.value = item.textContent.trim();
+                        input.value = selectedText;
                         input.setAttribute('data-value', item.getAttribute('data-value'));
                         content.classList.remove('show');
 
+                        // Get the month number for filtering
+                        const monthNum = monthMapping[selectedMonth];
+
                         // Filter rows based on the selected month
                         tableRows.forEach(row => {
-                            const rowMonth = row.getAttribute('data-month');
-                            if (!selectedMonth || rowMonth === selectedMonth) {
+                            const rowMonthNum = row.getAttribute('data-month-num');
+                            if (!monthNum || rowMonthNum === monthNum) {
                                 row.style.display = ''; // Show matching rows
                                 visibleCount++;
                             } else {
@@ -332,7 +354,7 @@ $total_modal_payment = $total_modal_row['total_payment'] ? number_format($total_
                     if (!noRecordsRow) {
                         noRecordsRow = document.createElement('tr');
                         noRecordsRow.id = 'noRecordsRow';
-                        noRecordsRow.innerHTML = `<td colspan="7" style="text-align: center; font-weight: bold;">No Records Found</td>`;
+                        noRecordsRow.innerHTML = `<td colspan="6" style="text-align: center; font-weight: bold;">No Records Found</td>`;
                         document.querySelector('#infoModal tbody').appendChild(noRecordsRow);
                     }
                 } else if (noRecordsRow) {
@@ -340,13 +362,37 @@ $total_modal_payment = $total_modal_row['total_payment'] ? number_format($total_
                 }
             });
 
-            // Modal functionality
-            function openModal() {
-                document.getElementById('infoModal').style.display = 'block';
+            // Modal functionality - updated to filter by month
+            function openModal(monthNum = null) {
+                const modal = document.getElementById('infoModal');
+                const modalRows = document.querySelectorAll('#modalTableBody tr');
+
+                // Filter modal rows by month if monthNum is provided
+                if (monthNum) {
+                    modalRows.forEach(row => {
+                        const rowMonthNum = row.getAttribute('data-month-num');
+                        if (rowMonthNum === monthNum) {
+                            row.style.display = '';
+                        } else {
+                            row.style.display = 'none';
+                        }
+                    });
+                } else {
+                    // Show all rows if no specific month
+                    modalRows.forEach(row => {
+                        row.style.display = '';
+                    });
+                }
+
+                modal.style.display = 'block';
             }
 
             function closeModal() {
                 document.getElementById('infoModal').style.display = 'none';
+                // Reset modal rows visibility
+                document.querySelectorAll('#modalTableBody tr').forEach(row => {
+                    row.style.display = '';
+                });
             }
 
             // Close modal when clicking outside of it
@@ -361,38 +407,6 @@ $total_modal_payment = $total_modal_row['total_payment'] ? number_format($total_
             const totalResults = <?php echo $total_results; ?>;
             const resultsPerPage = 10;
             let totalPages = Math.max(1, Math.ceil(totalResults / resultsPerPage));
-
-            function updatePagination() {
-                const paginationText = document.getElementById('pagination-text');
-
-                if (totalResults === 1) {
-                    paginationText.textContent = `Showing 1 / 1 Results`;
-                    document.getElementById('prevPage').disabled = true;
-                    document.getElementById('nextPage').disabled = true;
-                    document.getElementById('currentPage').value = 1;
-                } else {
-                    paginationText.textContent = `Showing ${Math.min((currentPage - 1) * resultsPerPage + 1, totalResults)} / ${totalResults} Results`;
-                    document.getElementById('prevPage').disabled = currentPage === 1;
-                    document.getElementById('nextPage').disabled = currentPage === totalPages;
-                    document.getElementById('currentPage').value = currentPage;
-                }
-            }
-
-            document.getElementById('prevPage').addEventListener('click', function() {
-                if (currentPage > 1 && totalResults > 1) {
-                    currentPage--;
-                    updatePagination();
-                }
-            });
-
-            document.getElementById('nextPage').addEventListener('click', function() {
-                if (currentPage < totalPages && totalResults > 1) {
-                    currentPage++;
-                    updatePagination();
-                }
-            });
-
-            updatePagination();
 
             function updatePagination() {
                 const paginationText = document.getElementById('pagination-text');
@@ -414,6 +428,10 @@ $total_modal_payment = $total_modal_row['total_payment'] ? number_format($total_
 
                 paginationText.textContent = `Showing ${startIndex + 1} - ${startIndex + visibleCount} of ${totalResults} Results`;
                 document.getElementById('currentPage').value = currentPage;
+
+                // Update pagination buttons
+                document.getElementById('prevPage').disabled = currentPage === 1;
+                document.getElementById('nextPage').disabled = currentPage === totalPages;
             }
 
             document.getElementById('prevPage').addEventListener('click', () => {
@@ -462,7 +480,7 @@ $total_modal_payment = $total_modal_row['total_payment'] ? number_format($total_
                     if (!noRecordsRow) {
                         noRecordsRow = document.createElement('tr');
                         noRecordsRow.id = 'noRecordsRow';
-                        noRecordsRow.innerHTML = `<td colspan="7" style="text-align: center; font-weight: bold;">No Records Found</td>`;
+                        noRecordsRow.innerHTML = `<td colspan="6" style="text-align: center; font-weight: bold;">No Records Found</td>`;
                         document.querySelector('#infoModal tbody').appendChild(noRecordsRow);
                     }
                 } else if (noRecordsRow) {

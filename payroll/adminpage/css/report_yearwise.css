@@ -112,7 +112,7 @@ table th,
 table td {
     min-height: 250px;
     border: 1px solid #ddd;
-    padding: 10px;  
+    padding: 10px;
     overflow: hidden;
     /* Ensures overflow is hidden */
     text-overflow: ellipsis;
@@ -280,7 +280,7 @@ td {
 th,
 td {
     padding: 8px;
-    
+
 }
 
 .modal-footer {
@@ -396,7 +396,7 @@ table td {
     padding: 8px 12px;
     border: 1px solid #ddd;
     font-size: 14px;
-    
+
 }
 
 table th {
@@ -410,14 +410,14 @@ table tr:nth-child(even) {
 
 /* Total Row with black background */
 .total-row {
-    background-color: black;
-    color: white;
+    background-color: black !important;
+    color: white !important;
     font-weight: bold;
+    pointer-events: none;
+    /* disables any mouse interaction including hover */
 }
 
-.total-row:hover {
-    background-color: black;
-}
+
 
 /* Adjusting the HR for spacing */
 hr {
