@@ -117,6 +117,13 @@ if ($pendingLeavesResult && $row = $pendingLeavesResult->fetch_assoc()) {
 
 ?>
 
+
+
+
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -125,387 +132,8 @@ if ($pendingLeavesResult && $row = $pendingLeavesResult->fetch_assoc()) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="../assets/logowhite-.png" type="image/svg+xml">
     <link rel="stylesheet" href="./css/main.css">
-    <script src="https://kit.fontawesome.com/3b07bc6295.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="./css/dashboard.css">
     <title>Dashboard</title>
-    <style>
-        /* Add the CSS styles from your code */
-
-
-        .content {
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* Responsive stacking for smaller screens */
-        @media (max-width: 768px) {
-            .content {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .card {
-            background-color: #ffff;
-            padding: 10px;
-            border-radius: 5px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            margin-top: -200px;
-            height: 100px;
-            width: 200px;
-            margin-right: 100px;
-        }
-
-        /* Payroll Report Styles */
-        .payroll-report {
-            background-color: #ffff;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
-            margin-top: -210px;
-            width: 720px;
-        }
-
-        /* Salary Distribution Styles */
-        .salary-distribution {
-            background-color: #ffff;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
-            margin-top: 20px;
-            width: 720px;
-        }
-
-        /* Upcoming and Holiday Event Styles */
-        .Event{
-            background: #ffffff;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            padding: 16px;
-            max-width: 400px;
-            margin: 20px auto;
-        }
-
-        .Event-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .Event-header h3 {
-            margin: 0;
-            color: #333333;
-            font-size: 18px;
-            font-weight: bold;
-        }
-
-        .view-all {
-            color: #007bff;
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: bold;
-            margin-top: 70px;
-        }
-
-        .event-item {
-            border-top: 1px solid #e0e0e0;
-            padding: 12px 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .event-item:first-child {
-            border-top: none;
-        }
-
-        .event-details {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .event-title {
-            color: #00a7e1;
-            font-weight: bold;
-            font-size: 14px;
-            margin-bottom: 4px;
-        }
-
-        .event-type {
-            color: #666666;
-            font-size: 12px;
-        }
-
-        .event-day {
-            color: #333333;
-            font-size: 12px;
-            margin-top: 4px;
-        }
-
-        .event-date {
-            background: #e0e0e0;
-            color: #333333;
-            border-radius: 50%;
-            width: 48px;
-            height: 48px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 14px;
-            font-weight: bold;
-            text-align: center;
-            flex-shrink: 0;
-        }
-
-        .event-date span {
-            display: block;
-            font-size: 10px;
-            color: #888888;
-        }
-
-
-
-
-
-
-
-
-        /* Calendar Styles */
-        .calendar-title {
-            text-align: center;
-            font-size: 22px;
-            font-weight: bold;
-            margin-bottom: 12px;
-            color: #333;
-            text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
-        }
-        .calendar-box {
-            grid-column: 3;
-            grid-row: 2;
-            border-radius: 10px;
-            background-color: #ffffff;
-            padding: 30px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-            text-align: center;
-            flex: 1;
-            min-width: 280px;
-            max-width: 400px;
-            margin-top: 80px;
-            margin-left: 90px;
-        }
-        
-        .calendar-controls {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .calendar-controls select,
-        .calendar-controls button {
-            padding: 5px 10px;
-            font-size: 14px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            background-color: white;
-        }
-        
-        .calendar {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 5px;
-            text-align: center;
-            font-size: 14px;
-        }
-        
-        .calendar div {
-            padding: 10px;
-            border-radius: 50%;
-            transition: background-color 0.3s;
-        }
-        
-        .calendar div.today {
-            background-color: #e0f7fa;
-            color: #000;
-            font-weight: bold;
-        }
-
-
-        /* Modal Styles */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.6); 
-        }
-
-        .modal-content {
-            background-color: #ffffff;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 90%;
-            max-width: 500px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            border-radius: 10px;
-            margin-top: 150px;
-            margin-left: 450px;
-        }
-
-        #addNoteButton {
-            align-self: center;
-            border: none; 
-            border-radius: 5px; 
-            background-color: #4CAF50;
-            color: white;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            margin-right: 900px;
-        }
-
-        #addNoteButton:hover {
-            background-color: #45a049;
-        }
-
-        #selectedDate {
-            font-size: 1.5em;
-            margin-bottom: 10px;
-        }
-
-        #noteInput {
-            margin-bottom: 10px;
-            resize: none;
-        }
-
-        #notesList {
-            overflow-y: auto;
-            max-height: 200px;
-            margin: 10px 0;
-            padding: 0;
-        }
-
-        .close {
-            color: #aaa;
-            font-size: 28px;
-            cursor: pointer;
-        }
-
-        .close:hover,
-        .close:focus {
-            color: black;
-        }
-
-        /* Notes Styles */
-        .notes {
-            background-color: #fff;
-            padding: 20px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .notes textarea {
-            width: 100%;
-            height: 60px;
-            margin-bottom: 10px;
-        }
-
-        .notes ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .notes li {
-            margin-top: 10px;
-            padding: 5px;
-            background-color: #e7f3fe;
-            border-left: 4px solid #2196F3;
-        }
-
-        /* Employee Distribution */
-        .employee-distribution {
-            background-color: #ffff;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
-            margin-top: 10px;
-            height: 500px;
-            width: 400px;
-            margin-left: 20px;
-        }
-
-        /* Leave Requests Table */
-        #view-all-btn {
-            position: absolute;
-            right: 20px;
-            top: 20px;
-            padding: 8px 16px;
-            cursor: pointer;
-            border: none;
-            border-radius: 4px;
-            font-size: 14px;
-            background-color: #4b6bfa;
-            color: white;
-            transition: all 0.5s ease;
-        }
-
-        #view-all-btn a {
-            color: white;
-            text-decoration: none;
-            display: block;
-        }
-        #view-all-btn:hover {
-            background-color: #1f8af5;
-            box-shadow: 0 0 8px rgb(98, 184, 235);
-        }
-
-        .leave-requests {
-            background-color: #ffffff;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 1px 0px 5px rgba(0, 0, 0, 0.3);
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            align-items: stretch;
-            margin: 10px;
-            position: relative;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        table th, table td {
-            padding: 10px;
-            border: 2px solid #ddd;
-            text-align: left;
-        }
-
-        /* Center the Action column heading */
-        th:nth-child(8) {
-            text-align: center;
-        }
-
-        .indicator_div{
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            justify-content: center;
-        }
-
-
-    </style>
 </head>
 
 <body>
@@ -523,131 +151,147 @@ if ($pendingLeavesResult && $row = $pendingLeavesResult->fetch_assoc()) {
                 <div class="sub-content">
                     <div class="content">
                         <!-- Separate boxes for statistics -->
-                        <div style="display: flex; justify-content: space-evenly; flex-direction: row;">
-                            <div class="indicator_div">
-                                <div class="card active-employees">
-                                    <div class="info">
-                                        <div style="display: flex; flex-direction: row; align-items: center; justify-content: space-between; width: 180px;">
-                                            <i class="fa-solid fa-users" style="font-size: 1.5rem;"></i>
-                                            <p>Active Employees</p>
-                                        </div>
-                                        <hr>
-                                        <h2 style="margin: 0;"><?php echo $activeEmpCount; ?></h2>
-                                    </div>
-                                </div>
-
-                                <div class="card pending-leaves">
-                                    <div class="info">
-                                        <div style="display: flex; flex-direction: row; align-items: center; justify-content: space-between; width: 180px;">
-                                            <i class="fa-solid fa-spinner" style="font-size: 1.5rem;"></i>
-                                            <p>Pending Leaves</p>
-                                        </div>
-                                        <hr>
-                                        <h2 style="margin: 0;"><?php echo $pendingLeaveCount; ?></h2>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- calendar -->
-                            <div class="calendar-box">
-                                <div class="calendar-title">Calendar</div>
-                                <div class="calendar-controls">
-                                    <button id="prev-month">◀</button>
-                                    <select id="month-select"></select>
-                                    <select id="year-select"></select>
-                                    <button id="next-month">▶</button>
-                                </div>
-                                <div class="calendar" id="calendar-grid">
-                                    <!-- Calendar grid will be injected here -->
-                                </div>
+                        <div class="card active-employees" style="margin-top: 20px; font-size:20px;">
+                            <div class="info">
+                                <p>Active Employees</p>
+                                <hr>
+                                <h2><?php echo $activeEmpCount; ?></h2>
                             </div>
                         </div>
 
-                        <div style="display: flex; flex-direction: row;">
-                            <div style="display: flex; flex-direction: column;">
-                                <div class="payroll-report">
-                                    <h3>Payroll Report</h3>
-                                    <canvas id="payrollChart"></canvas>
-                                </div>
-                                <div class="salary-distribution">
-                                    <h3>Salary Distribution</h3>
-                                    <canvas id="salaryChart"></canvas>
-                                </div>
-                            </div>
-                            <div class="card employee-distribution">
-                                <h3>Employee Distribution by Position</h3>
-                                <canvas id="positionChart"></canvas>
+                        <div class="card pending-leaves" style="margin-top: 20px; font-size:20px;">
+                            <div class="info">
+                                <p>Pending Leaves</p>
+                                <hr>
+                                <h2><?php echo $pendingLeaveCount; ?></h2>
                             </div>
                         </div>
-                        
-                        <div style="display: flex; flex-direction: row;">
-                            
-                            <div class="leave-requests">
-                                <h3>Leave Requests</h3>
 
-                                <!-- View All Button placed above the Action column -->
-                                <button id="view-all-btn" class="view-all-btn"><a href="leave_pending.php">View All</a></button>
+                        <div class="payroll-report">
+                            <h3>Payroll Report</h3>
+                            <canvas id="payrollChart"></canvas>
+                        </div>
 
-                                <table id="leave-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Employee ID</th>
-                                            <th>Full Name</th>
-                                            <th>Subject</th>
-                                            <th>Date Applied</th>
-                                            <th>Leave Type</th>
-                                            <th>Status</th>
+                        <div class="salary-distribution">
+                            <h3>Salary Distribution</h3>
+                            <canvas id="salaryChart"></canvas>
+                        </div>
 
-                                        </tr>
-                                    </thead>
-                                    <tbody id="showdata">
-                                        <?php if ($result && $result->num_rows > 0): ?>
-                                            <?php while ($row = $result->fetch_assoc()):
-                                                // pull names
-                                                $e_res = $conn->query(
-                                                    "SELECT lastname, firstname, middlename
-                                                    FROM tbl_emp_acc
-                                                    WHERE emp_id = '{$conn->real_escape_string($row['emp_id'])}'
-                                                    LIMIT 1"
-                                                    );
-                                                $last = $first = $middle = '';
-                                                if ($e_res && $e_res->num_rows) {
-                                                    $e = $e_res->fetch_assoc();
-                                                    $last = $e['lastname'];
-                                                    $first = $e['firstname'];
-                                                    $middle = $e['middlename'];
-                                                }
-                                                $_SESSION['fullname'] = trim("$first $middle $last"); // First, Middle, Last
-                                            ?>
-                                                <tr data-start-date="<?php echo htmlspecialchars($row['start_date']); ?>"
-                                                    data-end-date="<?php echo htmlspecialchars($row['end_date']); ?>">
-
-                                                    <td><?php echo htmlspecialchars($row['emp_id']); ?></td>
-                                                    <td><?php echo htmlspecialchars("$first $middle $last"); ?></td> <!-- Full Name in one cell -->
-                                                    <td><?php echo htmlspecialchars($row['subject']); ?></td>
-                                                    <td><?php echo htmlspecialchars($row['date_applied']); ?></td>
-                                                    <td><?php echo htmlspecialchars($row['leave_type']); ?></td>
-                                                    <td class="td-text" style="<?php echo ($row['status'] === 'Pending') ? 'color: red;' : ''; ?>">
-                                                        <?php echo htmlspecialchars($row['status']); ?>
-                                                    </td>
+<!-- Upcoming Holidays and Events -->
+<div class="Event">
+  <div class="Event-header">
+    <h3>Upcoming Events</h3>
+    
+    <!-- REMOVE the Add button -->
+    <a href="#" class="view-all" onclick="openViewAllModal()">View All</a>
+  </div>
+  <hr class="event-hr" />
+  <div id="eventItemsContainer"></div>
+</div>
 
 
-                                                </tr>
-                                            <?php endwhile; ?>
-                                        <?php else: ?>
-                                            <tr>
-                                                <td colspan="8" style="text-align:center;">No records found.</td>
+
+
+
+<!-- Add Event Modal -->
+<div id="eventModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeAddModal()">&times;</span>
+    <h3>Add Event</h3>
+    <form id="eventForm">
+      <input type="text" id="eventTitle" placeholder="Title" required />
+      <input type="text" id="eventType" placeholder="Type" required />
+      <input type="date" id="eventDate" required />
+      <button type="submit">Add</button>
+    </form>
+  </div>
+</div>
+
+<!-- View All Modal -->
+<div id="viewAllModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeViewAllModal()">&times;</span>
+    <h3>All Events</h3>
+    <div id="allEventsContainer"></div>
+  </div>
+</div>
+
+                        <div class="calendar-box">
+                            <div class="calendar-title">Calendar</div>
+                            <div class="calendar-controls">
+                                <button id="prev-month">◀</button>
+                                <select id="month-select"></select>
+                                <select id="year-select"></select>
+                                <button id="next-month">▶</button>
+                            </div>
+                            <div class="calendar" id="calendar-grid"></div>
+                        </div>
+
+                        <div class="card employee-distribution">
+                            <h3>Employee Distribution by Position</h3>
+                            <canvas id="positionChart"></canvas>
+                        </div>
+
+                        <div class="leave-requests">
+                            <h3>Leave Requests</h3>
+
+                            <!-- View All Button placed above the Action column -->
+                            <button id="view-all-btn2" class="view-all-btn2"><a href="leave_pending.php">View All</a></button>
+
+                            <table id="leave-table">
+                                <thead>
+                                    <tr>
+                                        <th>Employee ID</th>
+                                        <th>Full Name</th>
+                                        <th>Subject</th>
+                                        <th>Date Applied</th>
+                                        <th>Leave Type</th>
+                                        <th>Status</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody id="showdata">
+                                    <?php if ($result && $result->num_rows > 0): ?>
+                                        <?php while ($row = $result->fetch_assoc()):
+                                            // pull names
+                                            $e_res = $conn->query(
+                                                "SELECT lastname, firstname, middlename
+                      FROM tbl_emp_acc
+                      WHERE emp_id = '{$conn->real_escape_string($row['emp_id'])}'
+                      LIMIT 1"
+                                            );
+                                            $last = $first = $middle = '';
+                                            if ($e_res && $e_res->num_rows) {
+                                                $e = $e_res->fetch_assoc();
+                                                $last = $e['lastname'];
+                                                $first = $e['firstname'];
+                                                $middle = $e['middlename'];
+                                            }
+                                            $_SESSION['fullname'] = trim("$first $middle $last"); // First, Middle, Last
+                                        ?>
+                                            <tr data-start-date="<?php echo htmlspecialchars($row['start_date']); ?>"
+                                                data-end-date="<?php echo htmlspecialchars($row['end_date']); ?>">
+
+                                                <td><?php echo htmlspecialchars($row['emp_id']); ?></td>
+                                                <td><?php echo htmlspecialchars("$first $middle $last"); ?></td> <!-- Full Name in one cell -->
+                                                <td><?php echo htmlspecialchars($row['subject']); ?></td>
+                                                <td><?php echo htmlspecialchars($row['date_applied']); ?></td>
+                                                <td><?php echo htmlspecialchars($row['leave_type']); ?></td>
+                                                <td class="td-text" style="<?php echo ($row['status'] === 'Pending') ? 'color: red;' : ''; ?>">
+                                                    <?php echo htmlspecialchars($row['status']); ?>
+                                                </td>
+
+
                                             </tr>
-                                        <?php endif; ?>
-                                    </tbody>
-                                </table>
-                            </div>
-                            
+                                        <?php endwhile; ?>
+                                    <?php else: ?>
+                                        <tr>
+                                            <td colspan="8" style="text-align:center;">No records found.</td>
+                                        </tr>
+                                    <?php endif; ?>
+                                </tbody>
+                            </table>
                         </div>
-                        
-                        
-                        
-
-                        
                     </div>
                 </div>
                 <?php
@@ -668,51 +312,6 @@ if ($pendingLeavesResult && $row = $pendingLeavesResult->fetch_assoc()) {
                 // Convert to JSON for JavaScript
                 $positionLabelsJSON = json_encode($positionLabels);
                 $positionCountsJSON = json_encode($positionCounts);
-                ?>
-                <?php
-                // Initialize arrays to hold month names and amounts
-                $months = [];
-                $paidData = [];
-                $unpaidData = [];
-
-                // Initialize months to ensure full set
-                for ($i = 1; $i <= 12; $i++) {
-                    $monthName = date('F', mktime(0, 0, 0, $i, 1));
-                    $months[$i] = $monthName;
-                    $paidData[$i] = 0;
-                    $unpaidData[$i] = 0;
-                }
-
-                // Fetch salaries grouped by month and status
-                $query = "SELECT month, status, SUM(basic_pay + holiday_pay + ot_pay) AS total 
-          FROM tbl_salary 
-          GROUP BY month, status";
-                $result = mysqli_query($conn, $query);
-
-                if ($result) {
-                    while ($row = mysqli_fetch_assoc($result)) {
-                        $month = (int)$row['month'];
-                        $status = strtolower($row['status']);
-                        $total = (float)$row['total'];
-
-                        if ($status == 'paid') {
-                            $paidData[$month] = $total;
-                        } elseif ($status == 'unpaid') {
-                            $unpaidData[$month] = $total;
-                        }
-                    }
-                }
-
-                // Use only up to the current month
-                $currentMonth = (int)date('n');
-                $finalMonths = array_slice($months, 0, $currentMonth, true);
-                $finalPaid = array_slice($paidData, 0, $currentMonth, true);
-                $finalUnpaid = array_slice($unpaidData, 0, $currentMonth, true);
-
-                // Convert to JSON
-                $monthsJSON = json_encode(array_values($finalMonths));
-                $paidJSON = json_encode(array_values($finalPaid));
-                $unpaidJSON = json_encode(array_values($finalUnpaid));
                 ?>
 
 
@@ -858,107 +457,236 @@ if ($pendingLeavesResult && $row = $pendingLeavesResult->fetch_assoc()) {
                         },
                     });
                 </script>
-                <script>
-                    const calendarGrid = document.getElementById("calendar-grid");
-                    const monthSelect = document.getElementById("month-select");
-                    const yearSelect = document.getElementById("year-select");
 
-                    const prevMonthBtn = document.getElementById("prev-month");
-                    const nextMonthBtn = document.getElementById("next-month");
+  <script>
+    const calendarGrid = document.getElementById("calendar-grid");
+    const monthSelect = document.getElementById("month-select");
+    const yearSelect = document.getElementById("year-select");
 
-                    const months = [
-                        "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-                        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-                    ];
+    const prevMonthBtn = document.getElementById("prev-month");
+    const nextMonthBtn = document.getElementById("next-month");
 
-                    const today = new Date();
-                    let currentMonth = today.getMonth();
-                    let currentYear = today.getFullYear();
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-                    function populateSelectors() {
-                        monthSelect.innerHTML = "";
-                        yearSelect.innerHTML = "";
-                        months.forEach((m, i) => {
-                            let opt = new Option(m, i);
-                            if (i === currentMonth) opt.selected = true;
-                            monthSelect.add(opt);
-                        });
+    const today = new Date();
+    let currentMonth = today.getMonth();
+    let currentYear = today.getFullYear();
 
-                        for (let y = currentYear - 10; y <= currentYear + 10; y++) {
-                            let opt = new Option(y, y);
-                            if (y === currentYear) opt.selected = true;
-                            yearSelect.add(opt);
-                        }
-                    }
+    function populateSelectors() {
+      monthSelect.innerHTML = "";
+      yearSelect.innerHTML = "";
 
-                    function renderCalendar(month, year) {
-                        calendarGrid.innerHTML = "";
+      months.forEach((m, i) => {
+        let opt = new Option(m, i);
+        if (i === currentMonth) opt.selected = true;
+        monthSelect.add(opt);
+      });
 
-                        const days = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
-                        days.forEach(day => {
-                            const el = document.createElement("div");
-                            el.textContent = day;
-                            el.style.fontWeight = "bold";
-                            calendarGrid.appendChild(el);
-                        });
+      for (let y = currentYear - 10; y <= currentYear + 10; y++) {
+        let opt = new Option(y, y);
+        if (y === currentYear) opt.selected = true;
+        yearSelect.add(opt);
+      }
+    }
 
-                        const firstDay = new Date(year, month, 1).getDay();
-                        const daysInMonth = new Date(year, month + 1, 0).getDate();
+    function renderCalendar(month, year) {
+      calendarGrid.innerHTML = "";
+      const days = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
+      days.forEach(day => {
+        const el = document.createElement("div");
+        el.textContent = day;
+        el.style.fontWeight = "bold";
+        calendarGrid.appendChild(el);
+      });
 
-                        for (let i = 0; i < firstDay; i++) {
-                            calendarGrid.appendChild(document.createElement("div"));
-                        }
+      const firstDay = new Date(year, month, 1).getDay();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-                        for (let day = 1; day <= daysInMonth; day++) {
-                            const el = document.createElement("div");
-                            el.textContent = day;
+      for (let i = 0; i < firstDay; i++) {
+        const emptyCell = document.createElement("div");
+        emptyCell.classList.add("empty");
+        calendarGrid.appendChild(emptyCell);
+      }
 
-                            if (
-                                day === today.getDate() &&
-                                month === today.getMonth() &&
-                                year === today.getFullYear()
-                            ) {
-                                el.classList.add("today");
-                            }
+      for (let day = 1; day <= daysInMonth; day++) {
+        const el = document.createElement("div");
+        el.textContent = day;
 
-                            calendarGrid.appendChild(el);
-                        }
-                    }
+        const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+        el.addEventListener("click", () => openAddModal(dateStr));
 
-                    function updateCalendar() {
-                        currentMonth = parseInt(monthSelect.value);
-                        currentYear = parseInt(yearSelect.value);
-                        renderCalendar(currentMonth, currentYear);
-                    }
+        if (
+          day === today.getDate() &&
+          month === today.getMonth() &&
+          year === today.getFullYear()
+        ) {
+          el.classList.add("today");
+        }
 
-                    monthSelect.addEventListener("change", updateCalendar);
-                    yearSelect.addEventListener("change", updateCalendar);
+        calendarGrid.appendChild(el);
+      }
+    }
 
-                    prevMonthBtn.addEventListener("click", () => {
-                        currentMonth--;
-                        if (currentMonth < 0) {
-                            currentMonth = 11;
-                            currentYear--;
-                        }
-                        monthSelect.value = currentMonth;
-                        yearSelect.value = currentYear;
-                        updateCalendar();
-                    });
+    function updateCalendar() {
+      currentMonth = parseInt(monthSelect.value);
+      currentYear = parseInt(yearSelect.value);
+      renderCalendar(currentMonth, currentYear);
+    }
 
-                    nextMonthBtn.addEventListener("click", () => {
-                        currentMonth++;
-                        if (currentMonth > 11) {
-                            currentMonth = 0;
-                            currentYear++;
-                        }
-                        monthSelect.value = currentMonth;
-                        yearSelect.value = currentYear;
-                        updateCalendar();
-                    });
+    monthSelect.addEventListener("change", updateCalendar);
+    yearSelect.addEventListener("change", updateCalendar);
 
-                    populateSelectors();
-                    renderCalendar(currentMonth, currentYear);
-                </script>
+    prevMonthBtn.addEventListener("click", () => {
+      currentMonth--;
+      if (currentMonth < 0) {
+        currentMonth = 11;
+        currentYear--;
+      }
+      monthSelect.value = currentMonth;
+      yearSelect.value = currentYear;
+      updateCalendar();
+    });
+
+    nextMonthBtn.addEventListener("click", () => {
+      currentMonth++;
+      if (currentMonth > 11) {
+        currentMonth = 0;
+        currentYear++;
+      }
+      monthSelect.value = currentMonth;
+      yearSelect.value = currentYear;
+      updateCalendar();
+    });
+
+    populateSelectors();
+    renderCalendar(currentMonth, currentYear);
+  </script>
+
+<script>
+  const events = JSON.parse(localStorage.getItem("calendarEvents") || "[]");
+ 
+
+  function openAddModal(dateStr) {
+    const modal = document.getElementById("eventModal");
+    const dateInput = document.getElementById("eventDate");
+
+    const selected = new Date(dateStr);
+    const minDate = new Date().toISOString().split("T")[0];
+    const selectedISO = selected.toISOString().split("T")[0];
+
+    dateInput.min = minDate;
+    dateInput.value = selectedISO;
+    modal.style.display = "flex";
+  }
+
+  function closeAddModal() {
+    document.getElementById("eventModal").style.display = "none";
+  }
+
+  function openViewAllModal() {
+    document.getElementById("viewAllModal").style.display = "flex";
+    renderAllEvents();
+  }
+
+  function closeViewAllModal() {
+    document.getElementById("viewAllModal").style.display = "none";
+  }
+
+  document.getElementById("eventForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    const title = document.getElementById("eventTitle").value;
+    const type = document.getElementById("eventType").value;
+    const date = document.getElementById("eventDate").value;
+
+    const selectedDate = new Date(date);
+    if (selectedDate < today) {
+      alert("You can't add past dates!");
+      return;
+    }
+
+fetch("add_event.php", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/x-www-form-urlencoded",
+  },
+  body: `title=${encodeURIComponent(title)}&type=${encodeURIComponent(type)}&date=${encodeURIComponent(date)}`
+})
+.then(response => response.json())
+.then(data => {
+  if (data.success) {
+    // Add to local display list (optional)
+    events.push({ title, type, date });
+    localStorage.setItem("calendarEvents", JSON.stringify(events));
+    closeAddModal();
+    renderEventList();
+    renderAllEvents();
+  } else {
+    alert("Error: " + data.message);
+  }
+})
+.catch(error => {
+  alert("Request failed: " + error);
+});
+  });
+
+  function deleteEvent(index) {
+    if (confirm("Are you sure you want to delete this event?")) {
+      events.splice(index, 1);
+      localStorage.setItem("calendarEvents", JSON.stringify(events));
+      renderEventList();
+      renderAllEvents();
+    }
+  }
+
+  function renderEventList() {
+    const container = document.getElementById("eventItemsContainer");
+    container.innerHTML = "";
+
+    const upcomingEvents = events
+      .filter(e => new Date(e.date) >= today)
+      .sort((a, b) => new Date(a.date) - new Date(b.date))
+      .slice(0, 1);
+
+    upcomingEvents.forEach((event, index) => {
+      container.innerHTML += generateEventHTML(event, index);
+    });
+  }
+
+  function renderAllEvents() {
+    const container = document.getElementById("allEventsContainer");
+    container.innerHTML = "";
+
+    const sorted = events
+      .filter(e => new Date(e.date) >= today)
+      .sort((a, b) => new Date(a.date) - new Date(b.date));
+
+    sorted.forEach((event, index) => {
+      container.innerHTML += generateEventHTML(event, index);
+    });
+  }
+
+  function generateEventHTML(event, index) {
+    const d = new Date(event.date);
+    const day = d.getDate();
+    const month = d.toLocaleString("default", { month: "short" });
+    const weekday = d.toLocaleDateString("en-US", { weekday: "long" });
+
+    return `
+      <div class="event-item">
+        <div class="event-details">
+          <span class="event-title">${event.title}</span>
+          <span class="event-type">${event.type}</span>
+          <span class="event-day">${weekday}</span>
+        </div>
+        <div class="event-date">${day}<span>${month}</span></div>
+        <button class="delete-btn" onclick="deleteEvent(${index})">✕</button>
+      </div>`;
+  }
+
+  renderEventList();
+</script>
+
                 <!-- SCRIPT -->
                 <script src="./javascript/main.js"></script>
 </body>
