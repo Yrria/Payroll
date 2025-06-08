@@ -35,7 +35,10 @@ include './database/session.php';
                         <p class="label">Year Wise Report</p>
                         <div class="search-bar">
                             <form method="GET" action="">
-                                <input type="text" id="searchInput" placeholder="Search employee..." value="<?php echo isset($_GET['query']) ? htmlspecialchars($_GET['query']) : ''; ?>" />
+                                <button id="voiceSearchBtn" title="Speak to search" style="margin-right: 5px; background: none; cursor: pointer; border: 0;">
+                                    <i class="bi bi-mic-fill" style="font-size: 1.35rem; color:#20242C;"></i>
+                                </button>
+                                <input type="text" id="searchInput" class="search-box" name="query" placeholder="Search employee..." value="<?php echo isset($_GET['query']) ? htmlspecialchars($_GET['query']) : ''; ?>" />
                             </form>
                         </div>
                     </div>
@@ -156,14 +159,16 @@ include './database/session.php';
 
                         <br>
                         <div class="pagination">
-                            <p>Showing <?php echo $total_rows; ?> / <?php echo $total_rows; ?> Results</p>
-                            <div>
+                            <p>Showing <?php echo $end; ?> of <?php echo $total_rows; ?> Results</p>
+                            <!-- <div>
                                 <button <?php if ($page <= 1) echo 'disabled'; ?>
                                     onclick="window.location='?page=<?php echo $page - 1; ?>&query=<?php echo urlencode($search_query); ?>'">Prev</button>
+
                                 <input type="text" class="perpage" value="<?php echo $page; ?>" readonly />
+
                                 <button <?php if ($page * $limit >= $total_rows) echo 'disabled'; ?>
                                     onclick="window.location='?page=<?php echo $page + 1; ?>&query=<?php echo urlencode($search_query); ?>'">Next</button>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                 </div>
@@ -216,6 +221,13 @@ include './database/session.php';
         </div> <!-- #mainContent -->
     </div> <!-- .container -->
 
+
+    <!-- Bootstrap Icons for mic icon -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- jQuery (optional, in case used elsewhere) -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
     <script>
         function openModal(empId) {
             fetch('fetch_employee_info.php?emp_id=' + encodeURIComponent(empId))
@@ -313,6 +325,67 @@ include './database/session.php';
             const yearElement = document.getElementById("year");
             const currentYear = new Date().getFullYear();
             yearElement.textContent = currentYear;
+        });
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const voiceBtn = document.getElementById("voiceSearchBtn");
+            const searchInput = document.querySelector(".search-box");
+
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+            if (SpeechRecognition && voiceBtn && searchInput) {
+                const recognition = new SpeechRecognition();
+                recognition.continuous = false;
+                recognition.lang = "en-US";
+
+                voiceBtn.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    recognition.start();
+                    voiceBtn.innerHTML = `<i class="bi bi-mic-mute-fill" style="color: red;"></i>`;
+
+                    Swal.fire({
+                        title: 'Listening...',
+                        text: 'Please speak now',
+                        icon: 'info',
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        showConfirmButton: false,
+                        didOpen: () => Swal.showLoading()
+                    });
+                });
+
+                recognition.onresult = function(event) {
+                    const transcript = event.results[0][0].transcript;
+                    searchInput.value = transcript;
+                    if (searchInput.form) {
+                        searchInput.form.submit();
+                    }
+                    recognition.stop();
+                    voiceBtn.innerHTML = `<i class="bi bi-mic-fill"></i>`;
+                    Swal.close();
+                };
+
+                recognition.onerror = function(event) {
+                    console.error("Voice recognition error:", event.error);
+                    recognition.stop();
+                    voiceBtn.innerHTML = `<i class="bi bi-mic-fill"></i>`;
+                    Swal.close();
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Voice recognition error: ' + event.error,
+                        timer: 2000,
+                        showConfirmButton: false,
+                    });
+                };
+
+                recognition.onend = function() {
+                    voiceBtn.innerHTML = `<i class="bi bi-mic-fill"></i>`;
+                    Swal.close();
+                };
+            } else if (!SpeechRecognition) {
+                alert("Sorry, your browser does not support voice recognition.");
+            }
         });
     </script>
 </body>

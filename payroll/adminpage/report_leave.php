@@ -76,29 +76,18 @@ $result = mysqli_query($conn, $sql);
                     <div class="selection_div">
                         <p style="margin: 0;font-weight: 500;">Leave Report</p>
                         <div style="display: flex;align-items: center;width:60%;justify-content:right;margin-right:-4%;">
-                            <div class="search-bar">
-                                <form method="POST" action="report_leave.php" id="searchForm" style="display: flex; align-items: center;">
-                                    <input type="text" name="search" id="searchInput" placeholder="Search employee..." value="<?php echo htmlspecialchars($search); ?>" />
-                                </form>
-                            </div>
                         </div>
                     </div>
                     <div class="content">
                         <div class="controls">
-                            <form method="POST" id="entriesForm" style=" align-items: center;">
-                                <label for="show-entries">Show
-                                    <select id="show-entries" name="show_entries">
-                                        <option value="10" <?php if ($limit == 10) echo "selected"; ?>>10</option>
-                                        <option value="25" <?php if ($limit == 25) echo "selected"; ?>>25</option>
-                                        <option value="50" <?php if ($limit == 50) echo "selected"; ?>>50</option>
-                                        <option value="100" <?php if ($limit == 100) echo "selected"; ?>>100</option>
-                                        <option value="<?php echo $total_records; ?>" <?php if ($limit == $total_records) echo "selected"; ?>>
-                                            All (<?php echo $total_records; ?> records)
-                                        </option>
-                                    </select>
-                                    entries
-                                </label>
-                            </form>
+                            <div class="search-bar">
+                                <form method="GET" action="" style="display: flex; align-items: center;">
+                                    <input type="text" id="searchInput" class="search-box" name="query" placeholder="Search employee..." value="<?php echo isset($_GET['query']) ? htmlspecialchars($_GET['query']) : ''; ?>" />
+                                    <button id="voiceSearchBtn" title="Speak to search" style="margin-left: 8px; background: none; cursor: pointer; border: 0;">
+                                        <i class="bi bi-mic-fill" style="font-size: 1.35rem; color:#20242C;"></i>
+                                    </button>
+                                </form>
+                            </div>
                             <div class="date-range">
                                 <form method="POST" action="report_leave.php" style="display: flex; align-items: center;">
                                     <label for="from-date">From:
@@ -154,12 +143,12 @@ $result = mysqli_query($conn, $sql);
                         <br>
                         <!-- Pagination -->
                         <div class="pagination">
-                            <p>Showing <?php echo $offset + 1; ?> / <?php echo $total_records; ?> results</p>
-                            <div class="pagination">
+                            <p>Showing <?php echo $total_records; ?> / <?php echo $total_records; ?> results</p>
+                            <!-- <div class="pagination">
                                 <button id="prevPage" <?php if ($page <= 1) echo "disabled"; ?>>Prev</button>
                                 <input type="text" class="perpage" value="<?php echo $page; ?>" readonly />
                                 <button id="nextPage" <?php if ($page >= $total_pages) echo "disabled"; ?>>Next</button>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                 </div>
@@ -168,6 +157,10 @@ $result = mysqli_query($conn, $sql);
     </div>
 
     <!-- JavaScript for Pagination -->
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+    <!-- SweetAlert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         document.getElementById("show-entries").addEventListener("change", function() {
             document.getElementById("entriesForm").submit();
@@ -222,6 +215,67 @@ $result = mysqli_query($conn, $sql);
                     console.error("Error:", err);
                 });
         }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const voiceBtn = document.getElementById("voiceSearchBtn");
+            const searchInput = document.querySelector(".search-box");
+
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+            if (SpeechRecognition && voiceBtn && searchInput) {
+                const recognition = new SpeechRecognition();
+                recognition.continuous = false;
+                recognition.lang = "en-US";
+
+                voiceBtn.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    recognition.start();
+                    voiceBtn.innerHTML = `<i class="bi bi-mic-mute-fill" style="color: red;"></i>`;
+
+                    Swal.fire({
+                        title: 'Listening...',
+                        text: 'Please speak now',
+                        icon: 'info',
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        showConfirmButton: false,
+                        didOpen: () => Swal.showLoading()
+                    });
+                });
+
+                recognition.onresult = function(event) {
+                    const transcript = event.results[0][0].transcript;
+                    searchInput.value = transcript;
+                    if (searchInput.form) {
+                        searchInput.form.submit();
+                    }
+                    recognition.stop();
+                    voiceBtn.innerHTML = `<i class="bi bi-mic-fill"></i>`;
+                    Swal.close();
+                };
+
+                recognition.onerror = function(event) {
+                    console.error("Voice recognition error:", event.error);
+                    recognition.stop();
+                    voiceBtn.innerHTML = `<i class="bi bi-mic-fill"></i>`;
+                    Swal.close();
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Voice recognition error: ' + event.error,
+                        timer: 2000,
+                        showConfirmButton: false,
+                    });
+                };
+
+                recognition.onend = function() {
+                    voiceBtn.innerHTML = `<i class="bi bi-mic-fill"></i>`;
+                    Swal.close();
+                };
+            } else if (!SpeechRecognition) {
+                alert("Sorry, your browser does not support voice recognition.");
+            }
+        });
     </script>
 
 
