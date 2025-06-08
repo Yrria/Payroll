@@ -5,7 +5,7 @@ include './database/session.php';
 
 $employee_id = $_SESSION['emp_id'];
 
-$sql = "SELECT subject, start_date, end_date, message, leave_type, status 
+$sql = "SELECT subject, start_date, end_date, message, leave_type, status, rejection_reason 
         FROM tbl_leave 
         WHERE emp_id = ?
         ORDER BY date_applied ASC";
@@ -76,37 +76,47 @@ $result = $stmt->get_result();
                                         <th>Message</th>
                                         <th>Type</th>
                                         <th>Status</th>
-                                        <th>Action</th>
+                                        <th>View</th>
                                     </tr>
                                     <?php
                                     $leaveCount = 1;
                                     if ($result->num_rows > 0) {
-                                        while ($row = $result->fetch_assoc()) {
-                                            $statusColor = match (strtolower($row['status'])) {
-                                                'approved' => 'rgb(0, 255, 0)',
-                                                'rejected' => 'rgb(255, 0, 0)',
-                                                default => 'rgb(97, 97, 97)'
-                                            };
-                                            echo "<tr>
-                                                    <td style='text-align: center;'>{$leaveCount}</td>
-                                                    <td>{$row['subject']}</td>
-                                                    <td>" . date("m/d/Y", strtotime($row['start_date'])) . "</td>
-                                                    <td>" . date("m/d/Y", strtotime($row['end_date'])) . "</td>
-                                                    <td>" . htmlspecialchars($row['message']) . "</td>
-                                                    <td>{$row['leave_type']}</td>
-                                                    <td style='color: $statusColor'>{$row['status']}</td>
-                                                    <td style='text-align: center;'>
-                                                        <button class='view'
-                                                            data-subject='{$row['subject']}'
-                                                            data-status='{$row['status']}'
-                                                            data-start='" . date("d/m/Y", strtotime($row['start_date'])) . "'
-                                                            data-end='" . date("d/m/Y", strtotime($row['end_date'])) . "'
-                                                            data-type='{$row['leave_type']}'
-                                                            data-message=\"" . htmlspecialchars($row['message'], ENT_QUOTES) . "\">View Info</button>
-                                                    </td>
-                                                </tr>";
+                                        while ($row = mysqli_fetch_assoc($result)) {
                                             $leaveCount++;
+
+                                            $statusColor = '';
+                                            if ($row['status'] === 'Approved') {
+                                                $statusColor = '#90EE90';
+                                            } elseif ($row['status'] === 'Declined') {
+                                                $statusColor = '#FF0000';
+                                            } elseif ($row['status'] === 'Pending') {
+                                                $statusColor = '#808080';
+                                            }
+
+                                            // ✅ Put this right before the echo
+                                            $dataReason = $row['status'] === 'Declined' ? "data-reason=\"" . htmlspecialchars($row['rejection_reason'], ENT_QUOTES) . "\"" : "";
+
+                                            echo "<tr>
+                                                <td style='text-align: center;'>{$leaveCount}</td>
+                                                <td>{$row['subject']}</td>
+                                                <td>" . date("m/d/Y", strtotime($row['start_date'])) . "</td>
+                                                <td>" . date("m/d/Y", strtotime($row['end_date'])) . "</td>
+                                                <td>" . htmlspecialchars($row['message']) . "</td>
+                                                <td>{$row['leave_type']}</td>
+                                                <td style='color: $statusColor'>{$row['status']}</td>
+                                                <td style='text-align: center;'>
+                                                    <img src='../assets/view.png' class='view' style='cursor: pointer; width: 24px; height: 24px;'
+                                                        data-subject='{$row['subject']}'
+                                                        data-status='{$row['status']}'
+                                                        data-start='" . date("d/m/Y", strtotime($row['start_date'])) . "'
+                                                        data-end='" . date("d/m/Y", strtotime($row['end_date'])) . "'
+                                                        data-type='{$row['leave_type']}'
+                                                        data-message=\"" . htmlspecialchars($row['message'], ENT_QUOTES) . "\"
+                                                        $dataReason />
+                                                </td>
+                                            </tr>";
                                         }
+
                                     } else {
                                         echo "<tr><td colspan='8' style='text-align:center;'>No data was found.</td></tr>";
                                     }
@@ -170,6 +180,7 @@ $result = $stmt->get_result();
                                     <div class="info-grid"><h4>End Date (DD/MM/YYYY)</h4><p></p></div>
                                     <div class="info-grid"><h4>Leave Type</h4><p></p></div>
                                     <div class="info-grid"><h4>Message</h4><p></p></div>
+                                    <div class="info-grid rejection-reason"><h4>Reason</h4><p></p></div>
                                     <div class="info-grid"><button class="button">Back</button></div>
                                 </div>
                             </div>
@@ -196,16 +207,17 @@ $result = $stmt->get_result();
                 data: $(this).serialize(),
                 dataType: 'json',
                 success: function(response) {
-                    Swal.fire({
-                        icon: response.status,
-                        title: response.status === 'success' ? 'Leave Application Submitted!' : 'Error',
-                        text: response.message,
-                        confirmButtonColor: '#20242C'
-                    }).then(() => {
-                        if (response.status === 'success') {
-                            window.location.href = 'leave.php';
-                        }
-                    });
+                    if (response.status === 'success') {
+                        sessionStorage.setItem('leaveSuccess', '1');
+                        window.location.href = 'leave.php';
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: response.message,
+                            confirmButtonColor: '#20242C'
+                        });
+                    }
                 },
                 error: function() {
                     Swal.fire({
@@ -235,25 +247,37 @@ $result = $stmt->get_result();
                 const end = this.getAttribute('data-end');
                 const type = this.getAttribute('data-type');
                 const message = this.getAttribute('data-message');
+                const reason = this.getAttribute('data-reason') || '';
 
-                // Fill data into <p> tags in order
+                // Fill data
                 infoGrids[0].textContent = subject;
                 infoGrids[1].textContent = status.charAt(0).toUpperCase() + status.slice(1);
                 infoGrids[2].textContent = start;
                 infoGrids[3].textContent = end;
                 infoGrids[4].textContent = type;
                 infoGrids[5].textContent = message;
+                infoGrids[6].textContent = reason;
 
-                // Reset previous status classes
+                // Rejection reason logic
+                const rejectionGrid = infoBox.querySelector('.rejection-reason');
+                if (status === 'declined') {
+                    rejectionGrid.style.display = 'grid';
+                    rejectionGrid.querySelector('p').textContent = reason;
+                } else {
+                    rejectionGrid.style.display = 'none';
+                    rejectionGrid.querySelector('p').textContent = '';
+                }
+
+                // Status class for styling
                 infoContainer.classList.remove('approved', 'rejected', 'pending');
                 if (['approved', 'rejected', 'pending'].includes(status)) {
                     infoContainer.classList.add(status);
                 }
 
-                // Show overlay
                 overlay.style.display = 'flex';
             });
         });
+
 
         // Hide overlay when "Back" button is clicked
         document.querySelector('.info-box .button').addEventListener('click', function () {
@@ -355,6 +379,24 @@ $result = $stmt->get_result();
             // Initial render
             render();
         });
+    </script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+        if (sessionStorage.getItem('leaveSuccess') === '1') {
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'success',
+                title: 'Leave filed successfully!',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true
+            });
+            // Clear the flag so it doesn't show again on refresh
+            sessionStorage.removeItem('leaveSuccess');
+        }
+    });
     </script>
 
 </body>

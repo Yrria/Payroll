@@ -98,6 +98,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($result_admin->num_rows > 0) {
       $_SESSION['inputcode'] = $otp;
+      $_SESSION['otp_verified'] = true; // ✅ Add this
       header("Location: new_pass.php");
       exit();
     }

@@ -83,12 +83,12 @@ table tr:hover {
     display: flex;
     align-items: center;
     gap: 15px;
+    width: 300px;
 }
 
 input[type="text"] {
     padding: 2px;
     font-size: 16px;
-    margin-right: 80px;
     border-radius: 5px;
 }
 
@@ -296,7 +296,7 @@ h3 {
 
 .pagination button {
     margin-left: -60px;
-    margin-right: 10px;
+    margin-right: 40px;
     padding: 2px 10px;
     border: none;
     background-color: black;

@@ -36,6 +36,15 @@ $attendance_query = mysqli_query($conn, "
 ");
 $attendance = mysqli_fetch_assoc($attendance_query);
 
+// Get Rate from tbl_emp_info
+$rate_result = mysqli_query($conn, "
+    SELECT rate 
+    FROM tbl_emp_info 
+    WHERE emp_id = '$emp_id'
+");
+$rate_row = mysqli_fetch_assoc($rate_result);
+$rate = $rate_row ? $rate_row['rate'] : 0;
+
 // Parse hours
 $total_regular = floor($attendance['total_hours']);
 $avg_minutes = floor(($attendance['avg_hours'] - floor($attendance['avg_hours'])) * 60);
@@ -44,19 +53,29 @@ $overtime = floor($attendance['overtime']);
 
 echo "
 <div class='salary-details'>
+    <button onclick='closeOverlay()' style='position: absolute; top: 10px; right: 10px; background: none; border: none; font-size: 1.5em; cursor: pointer;' title='Close'>&times;</button>
     <h2>More Info</h2>
+    <hr>
     <div class='info-box'>
-        <div class='employee-info'>
-            <h3><i class='avatar'></i> {$salary_data['employee_name']}</h3>
-            <p><strong>Avg. Daily Hours:</strong> {$avg_hours}hrs {$avg_minutes}m</p>
-            <p><strong>Total Regular Hours Worked:</strong> {$total_regular}hrs</p>
-            <p><strong>Total Overtime Hours Worked:</strong> {$overtime}h</p>
-            <p><strong>Pay Type:</strong> Hourly</p>
-            <p><strong>Rate:</strong> ₱{$salary_data['basic_pay']}/hr</p>
-            <p><strong>Total Wage:</strong> ₱" . number_format($salary_data['total_salary'], 2) . "</p>
+        <div style='display: flex; align-items: center; gap: 1em; margin: 1.5em 0;'>
+            <img src='../assets/user.png' alt='Avatar' style='width: 7em; height: 7em; border-radius: 50%; vertical-align: middle; margin-right: 10px;'>
+            <h2>{$salary_data['employee_name']}</h2>
+        </div>
+        <div class='employee-info' style='display: flex; gap: 40px;'>
+            <div style='flex: 1; display: flex; flex-direction: column; gap: 10px;'>
+                <p><strong>Avg. Daily Hours:</strong> {$avg_hours}hrs {$avg_minutes}m</p>
+                <p><strong>Total Regular Hours Worked:</strong> {$total_regular}hrs</p>
+                <p><strong>Total Overtime Hours Worked:</strong> {$overtime}h</p>
+            </div>
+            <div style='flex: 1; display: flex; flex-direction: column; gap: 10px;'>
+                <p><strong>Pay Type:</strong> Hourly</p>
+                <p><strong>Rate:</strong> ₱" . number_format($rate, 2) . "/hr</p>
+                <p><strong>Total Wage:</strong> ₱" . number_format($salary_data['total_salary'], 2) . "</p>
+            </div>
         </div>
 
-        <table class='summary-table'>
+
+        <table class='summary-table' style='margin: 2em 0;'>
             <thead>
                 <tr>
                     <th>Months</th>
@@ -82,8 +101,9 @@ echo "
             <input type='hidden' name='year' value='{$year}'>
             <input type='hidden' name='month' value='{$month}'>
             <input type='hidden' name='cutoff' value='{$cutoff}'>
-            <button type='submit' class='btn-green'>Generate Pay Slip PDF</button>
-        </form> 
+            <button type='submit' class='btn-green button'>Generate Pay Slip PDF</button>
+        </form>
+        <button onclick='closeOverlay()' class='btn button' style='background-color: #ccc;'>Back</button> 
     </div>
 </div>
 ";

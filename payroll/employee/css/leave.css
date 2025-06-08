@@ -17,6 +17,7 @@ table {
     width: 100%;
     border-collapse: collapse;
     margin: 20px 0;
+    border: 2px solid #ddd;
 }
 
 th,
@@ -45,22 +46,26 @@ tr:nth-child(1) > th {
 }
 
 tr:nth-child(even) {
-    background-color: #FFFFFF;
+    background-color: #f9f9f9;
 }
 
 tr:nth-child(odd) {
-    background-color: #F7F6Fe;
+    background-color: #FFFFFF;
+}
+
+tr:hover {
+    background-color: #f1f1f1;
 }
 
 .button {
-    background-color: #20242c;
+    background-color: #4383b3;
     color: #FFFFFF;
 }
 
-.view {
-    background-color: #324E79;
+/* .view {
+    background-color: #4383b3;
     color: #FFFFFF;
-}
+} */
 
 .pagination {
     gap: 5px;
@@ -76,7 +81,7 @@ tr:nth-child(odd) {
 
 .button, .textbox, .view {
     font-size: 15px;
-    border-radius: 5px;
+    border-radius: 3px;
     padding: 5px;
     border: none;
     transition: 0.3s;
@@ -84,6 +89,7 @@ tr:nth-child(odd) {
 
 .textbox {
     width: 100%;
+    border: 1px solid #dad9d9;
 }
 
 textarea {
@@ -91,11 +97,11 @@ textarea {
 }
 
 .button:hover {
-    background-color: #10131C;
+    background-color: #6f9fce;
 }
 
 .view:hover {
-    background-color: #20242c;
+    background-color: #ddd;
 }
 
 .pagination:hover {
@@ -107,7 +113,7 @@ textarea {
 }
 
 .textbox:focus {
-    background-color: #F7F6FE;
+    background-color: #f1f1f1;
 }
 
 /* css for altering content (file leave) */
@@ -156,7 +162,7 @@ textarea {
     justify-content: center;
     align-items: center;
     border-radius: 5px;
-    background-color: #F6F7FA;
+    background-color: #FFFFFF;
     padding: 20px 20px;
     width: 70%;
 }
@@ -167,9 +173,9 @@ textarea {
     grid-template-columns: 1fr 1fr 1fr 1fr;
     padding: 20px;
     margin: 30px 15px 15px;
-    background-color: #F4F4F4;
+    background-color: #FFFFFF;
     border-radius: 5px;
-    box-shadow: 5px 5px 10px #888888;
+    box-shadow: 2px 3px 5px #a0a0a0;
     gap: 10px;
 }
 
@@ -183,7 +189,8 @@ textarea {
 }
 
 .info-grid:nth-child(5),
-.info-grid:nth-child(6) {
+.info-grid:nth-child(6),
+.info-grid:nth-child(7) {
     grid-column: span 4;
 }
 
@@ -192,7 +199,7 @@ textarea {
     flex-direction: column;
 }
 
-.info-grid:nth-child(7) {
+.info-grid:nth-child(8) {
     display: flex;
     justify-content: right;
     grid-column: span 4;
@@ -208,6 +215,7 @@ textarea {
 
 .info-grid > p {
     background-color: #FFFFFF;
+    border: 1px solid #ddd;
     margin: 10px 0px;
     padding: 10px 10px;
     border-radius: 5px;

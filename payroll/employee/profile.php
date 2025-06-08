@@ -54,6 +54,7 @@ if (!$emp) {
             margin: 0;
             background-color: #f1f3f6;
             display: flex;
+<<<<<<< HEAD
             flex-direction: column;
             box-sizing: border-box;
         }
@@ -84,6 +85,14 @@ if (!$emp) {
             width: calc(100% - 260px);
         }
 
+=======
+            justify-content: center;
+            padding-left: 260px;
+            /* Adjust if your sidenav width is different */
+            box-sizing: border-box;
+        }
+
+>>>>>>> 38efcbed42ee3f57fde4c715773432957703d8e0
         .container {
             width: 100%;
             max-width: 1100px;
@@ -94,8 +103,11 @@ if (!$emp) {
             box-sizing: border-box;
             margin-top: 40px;
             margin-bottom: 40px;
+<<<<<<< HEAD
             margin-left: auto;
             margin-right: auto;
+=======
+>>>>>>> 38efcbed42ee3f57fde4c715773432957703d8e0
         }
 
         .profile-header {
@@ -119,7 +131,11 @@ if (!$emp) {
         .section-title {
             font-size: 18px;
             margin-bottom: 10px;
+<<<<<<< HEAD
             border-left: 4px solid #AAC7D8;
+=======
+            border-left: 4px solid #ffd000;
+>>>>>>> 38efcbed42ee3f57fde4c715773432957703d8e0
             padding-left: 10px;
             font-weight: 600;
             color: #333;
@@ -157,7 +173,11 @@ if (!$emp) {
         .update_btn {
             margin-top: auto;
             padding: 10px 25px;
+<<<<<<< HEAD
             background: #AAC7D8;
+=======
+            background: linear-gradient(to right, #fbb034, #ffdd00);
+>>>>>>> 38efcbed42ee3f57fde4c715773432957703d8e0
             border: none;
             border-radius: 8px;
             font-weight: bold;
@@ -171,15 +191,36 @@ if (!$emp) {
             border: none;
             border-top: 1px solid #ccc;
         }
+<<<<<<< HEAD
         .head-title {
             margin: 10px;
         }
 
+=======
+
+        @media (max-width: 768px) {
+            body {
+                padding-left: 0;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .form-group {
+                flex: 1 1 100%;
+            }
+
+            .container {
+                padding: 20px;
+                margin: 20px;
+            }
+        }
+>>>>>>> 38efcbed42ee3f57fde4c715773432957703d8e0
     </style>
 </head>
 
 <body>
     <?php include 'sidenav.php'; ?>
+<<<<<<< HEAD
     <div>
         <div id="mainContent" class="main">
              <!-- Header beside sidenav -->
@@ -188,10 +229,33 @@ if (!$emp) {
                 <div class="breadcrumb">
                     <h5><a href="./dashboard.php">Dashboard </a></h5>>
                     <h5>Profile</h5>
+=======
+
+    <div class="container">
+        <div class="profile-header">
+            <img src="../assets/marc.png" alt="Profile Picture">
+            <h2><?= htmlspecialchars($emp['firstname'] . ' ' . $emp['lastname']); ?></h2>
+        </div>
+
+        <div>
+            <div class="section-title">Employee Account</div>
+            <div class="form-section">
+                <div class="form-group">
+                    <label>Employee ID</label>
+                    <input type="text" value="<?= htmlspecialchars($emp['emp_id']); ?>" readonly>
                 </div>
-                <hr>
+                <div class="form-group">
+                    <label>Pay Type</label>
+                    <input type="text" value="<?= htmlspecialchars($emp['pay_type']); ?>" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Rate</label>
+                    <input type="text" value="₱<?= htmlspecialchars($emp['rate']); ?>/hr" readonly>
+>>>>>>> 38efcbed42ee3f57fde4c715773432957703d8e0
+                </div>
             </div>
 
+<<<<<<< HEAD
             <div class="container">
                 <div>
                     <div class="profile-header">
@@ -264,11 +328,65 @@ if (!$emp) {
                             <button class="update_btn">Update</button>
                         </div>
                     </div>
+=======
+            <div class="form-section">
+                <div class="form-group">
+                    <label>Contact Number</label>
+                    <input type="text" value="<?= htmlspecialchars($emp['phone_no']); ?>" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Position</label>
+                    <input type="text" value="<?= htmlspecialchars($emp['position']); ?>" readonly>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <div class="form-group">
+                    <label>Bank Name</label>
+                    <input type="text" value="Power Bank" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Bank Account</label>
+                    <input type="text" value="<?= htmlspecialchars($emp['bank_acc']); ?>" readonly>
+                </div>
+                <div class="form-group">
+                    <label>&nbsp;</label>
+                    <button class="update_btn">Update</button>
+                </div>
+            </div>
+
+            <hr class="horizontal-line">
+
+            <div class="section-title">Others</div>
+            <div class="form-section">
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="text" value="<?= htmlspecialchars($emp['email']); ?>" readonly>
+                </div>
+                <div class="form-group">
+                    <label>&nbsp;</label>
+                    <button class="update_btn">Update</button>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="text" value="***********" readonly>
+                </div>
+                <div class="form-group">
+                    <label>&nbsp;</label>
+                    <button class="update_btn">Update</button>
+>>>>>>> 38efcbed42ee3f57fde4c715773432957703d8e0
                 </div>
             </div>
         </div>
     </div>
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> 38efcbed42ee3f57fde4c715773432957703d8e0
     <script src="./javascript/main.js"></script>
 </body>
 
