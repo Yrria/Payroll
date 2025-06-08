@@ -154,7 +154,7 @@ $result = mysqli_query($conn, $sql);
                         <br>
                         <!-- Pagination -->
                         <div class="pagination">
-                            <p>Showing <?php echo $offset + 1; ?> / <?php echo $total_records; ?> results</p>
+                            <p>Showing <?php echo $total_records; ?> / <?php echo $total_records; ?> results</p>
                             <div class="pagination">
                                 <button id="prevPage" <?php if ($page <= 1) echo "disabled"; ?>>Prev</button>
                                 <input type="text" class="perpage" value="<?php echo $page; ?>" readonly />
@@ -169,6 +169,7 @@ $result = mysqli_query($conn, $sql);
 
     <!-- JavaScript for Pagination -->
     <script>
+        
         document.getElementById("show-entries").addEventListener("change", function() {
             document.getElementById("entriesForm").submit();
         });

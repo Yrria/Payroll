@@ -3,22 +3,23 @@ session_start();
 include '../assets/databse/connection.php';
 include './database/session.php';
 
-// Fixed query - extract month from date string and convert to month name
+// Fixed query - extract month and year from date string and convert to month name
 $query = "
     SELECT 
         MONTHNAME(STR_TO_DATE(month, '%Y-%m-%d')) as month,
         MONTH(STR_TO_DATE(month, '%Y-%m-%d')) as month_num,
+        YEAR(STR_TO_DATE(month, '%Y-%m-%d')) as year,
         SUM(CASE WHEN cutoff = 'First Cutoff' THEN total_salary ELSE 0 END) as first_cutoff,
         SUM(CASE WHEN cutoff = 'Second Cutoff' THEN total_salary ELSE 0 END) as second_cutoff,
         SUM(total_salary) as total
     FROM tbl_salary 
-    GROUP BY MONTH(STR_TO_DATE(month, '%Y-%m-%d'))
-    ORDER BY MONTH(STR_TO_DATE(month, '%Y-%m-%d'))
+    GROUP BY YEAR(STR_TO_DATE(month, '%Y-%m-%d')), MONTH(STR_TO_DATE(month, '%Y-%m-%d'))
+    ORDER BY YEAR(STR_TO_DATE(month, '%Y-%m-%d')), MONTH(STR_TO_DATE(month, '%Y-%m-%d'))
 ";
 $result = mysqli_query($conn, $query);
 
 // Get total results count
-$total_query = "SELECT COUNT(DISTINCT MONTH(STR_TO_DATE(month, '%Y-%m-%d'))) AS total_results FROM tbl_salary";
+$total_query = "SELECT COUNT(DISTINCT CONCAT(YEAR(STR_TO_DATE(month, '%Y-%m-%d')), '-', MONTH(STR_TO_DATE(month, '%Y-%m-%d')))) AS total_results FROM tbl_salary";
 $total_result = mysqli_query($conn, $total_query);
 $total_row = mysqli_fetch_assoc($total_result);
 $total_results = $total_row['total_results'];
@@ -32,11 +33,12 @@ $view_query = "
         s.cutoff,
         s.total_salary as total,
         MONTHNAME(STR_TO_DATE(s.month, '%Y-%m-%d')) as month,
-        MONTH(STR_TO_DATE(s.month, '%Y-%m-%d')) as month_num
+        MONTH(STR_TO_DATE(s.month, '%Y-%m-%d')) as month_num,
+        YEAR(STR_TO_DATE(s.month, '%Y-%m-%d')) as year
     FROM tbl_emp_acc e
     JOIN tbl_emp_info i ON e.emp_id = i.emp_id
     JOIN tbl_salary s ON e.emp_id = s.emp_id
-    ORDER BY MONTH(STR_TO_DATE(s.month, '%Y-%m-%d')), s.cutoff
+    ORDER BY YEAR(STR_TO_DATE(s.month, '%Y-%m-%d')), MONTH(STR_TO_DATE(s.month, '%Y-%m-%d')), s.cutoff
 ";
 $view_result = mysqli_query($conn, $view_query);
 
@@ -146,7 +148,7 @@ $total_modal_payment = $total_modal_row['total_payment'] ? number_format($total_
                                 if (mysqli_num_rows($result) > 0) {
                                     while ($row = mysqli_fetch_assoc($result)) {
                                 ?>
-                                        <tr data-month="<?php echo strtolower($row['month']); ?>" data-month-num="<?php echo $row['month_num']; ?>">
+                                        <tr data-month="<?php echo strtolower($row['month']); ?>" data-month-num="<?php echo $row['month_num']; ?>" data-year="<?php echo $row['year']; ?>">
                                             <td><?php echo $row['month']; ?></td>
                                             <td>₱<?php echo number_format($row['first_cutoff'], 2); ?></td>
                                             <td>₱<?php echo number_format($row['second_cutoff'], 2); ?></td>
@@ -187,10 +189,10 @@ $total_modal_payment = $total_modal_row['total_payment'] ? number_format($total_
                 <span class="close-btn" onclick="closeModal()">&times;</span>
                 <h2>RECORDS</h2>
                 <div class="modal-header">
-                    <div class="search-container">
+                    <!-- <div class="search-container">
                         <input type="text" class="search-box" placeholder="Search Employee...">
-                        <!-- <button class="search-btn">Search</button> -->
-                    </div>
+                        <button class="search-btn">Search</button>
+                    </div> -->
                     <p class="results-count">Showing All Results</p>
                     <p class="total-payment">Total Payment: <span>₱<?php echo $total_modal_payment; ?></span></p>
                 </div>
@@ -210,7 +212,7 @@ $total_modal_payment = $total_modal_row['total_payment'] ? number_format($total_
                         if (mysqli_num_rows($view_result) > 0) {
                             while ($row = mysqli_fetch_assoc($view_result)) {
                         ?>
-                                <tr data-month-num="<?php echo $row['month_num']; ?>">
+                                <tr data-month-num="<?php echo $row['month_num']; ?>" data-year="<?php echo $row['year']; ?>">
                                     <td><?php echo $row['emp_id']; ?></td>
                                     <td><?php echo htmlspecialchars($row['name']); ?></td>
                                     <td><?php echo $row['position']; ?></td>
@@ -257,6 +259,54 @@ $total_modal_payment = $total_modal_row['total_payment'] ? number_format($total_
                 'december': '12'
             };
 
+            // Global filter state
+            let selectedYear = '';
+            let selectedMonth = '';
+            let selectedCutoff = '';
+
+            function applyFilters() {
+                const tableRows = document.querySelectorAll('table tbody tr');
+                let visibleCount = 0;
+
+                tableRows.forEach(row => {
+                    const rowYear = row.getAttribute('data-year');
+                    const rowMonthNum = row.getAttribute('data-month-num');
+
+                    let showRow = true;
+
+                    // Apply year filter
+                    if (selectedYear && rowYear !== selectedYear) {
+                        showRow = false;
+                    }
+
+                    // Apply month filter
+                    if (selectedMonth && rowMonthNum !== selectedMonth) {
+                        showRow = false;
+                    }
+
+                    // Show/hide row based on filters
+                    if (showRow) {
+                        row.style.display = '';
+                        visibleCount++;
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+
+                // Handle "No Records Found" message
+                let noRow = document.getElementById('noRecordsFound');
+                if (visibleCount === 0) {
+                    if (!noRow) {
+                        noRow = document.createElement('tr');
+                        noRow.id = 'noRecordsFound';
+                        noRow.innerHTML = `<td colspan="5" style="text-align:center; font-weight:bold;">No Records Found</td>`;
+                        document.querySelector('table tbody').appendChild(noRow);
+                    }
+                } else if (noRow) {
+                    noRow.remove();
+                }
+            }
+
             document.querySelectorAll('.dropdown-wrapper').forEach(wrapper => {
                 const input = wrapper.querySelector('.dropdown-input');
                 const content = wrapper.querySelector('.dropdown-content');
@@ -269,58 +319,54 @@ $total_modal_payment = $total_modal_row['total_payment'] ? number_format($total_
                 items.forEach(item => {
                     item.addEventListener('click', () => {
                         const selectedText = item.textContent.trim();
-                        const selectedMonth = selectedText.toLowerCase();
-                        const tableRows = document.querySelectorAll('table tbody tr');
-                        let visibleCount = 0;
+                        const selectedValue = item.getAttribute('data-value');
 
-                        // If "Select Month" is clicked, reset everything to show all rows
-                        if (selectedMonth === '' || selectedMonth === 'select month') {
-                            input.value = 'Select Month';
+                        // Determine which dropdown this is
+                        const isYearDropdown = wrapper.querySelector('.dropdown-input').placeholder.includes('Year');
+                        const isMonthDropdown = wrapper.querySelector('.dropdown-input').placeholder.includes('Month');
+                        const isCutoffDropdown = wrapper.querySelector('.dropdown-input').placeholder.includes('Cutoff');
+
+                        // Handle clearing selections
+                        if (selectedText.toLowerCase().includes('select')) {
+                            input.value = selectedText;
                             input.setAttribute('data-value', '');
                             content.classList.remove('show');
 
-                            // Reset all rows to show
-                            tableRows.forEach(row => {
-                                row.style.display = ''; // Show all rows
-                            });
+                            if (isYearDropdown) {
+                                selectedYear = '';
+                            } else if (isMonthDropdown) {
+                                selectedMonth = '';
+                            } else if (isCutoffDropdown) {
+                                selectedCutoff = '';
+                            }
 
-                            // Handle "No Records Found" row
-                            let noRow = document.getElementById('noRecordsFound');
-                            if (noRow) noRow.remove(); // Remove "No Records Found" if it exists
+                            // If all filters are cleared, show all rows
+                            if (!selectedYear && !selectedMonth && !selectedCutoff) {
+                                document.querySelectorAll('table tbody tr').forEach(row => {
+                                    row.style.display = '';
+                                });
+                                let noRow = document.getElementById('noRecordsFound');
+                                if (noRow) noRow.remove();
+                                return;
+                            }
+                        } else {
+                            input.value = selectedText;
+                            input.setAttribute('data-value', selectedValue);
+                            content.classList.remove('show');
 
-                            return; // Do not proceed further if "Select Month" is clicked
+                            // Update filter state
+                            if (isYearDropdown) {
+                                selectedYear = selectedValue;
+                            } else if (isMonthDropdown) {
+                                const monthNum = monthMapping[selectedText.toLowerCase()];
+                                selectedMonth = monthNum;
+                            } else if (isCutoffDropdown) {
+                                selectedCutoff = selectedValue;
+                            }
                         }
 
-                        input.value = selectedText;
-                        input.setAttribute('data-value', item.getAttribute('data-value'));
-                        content.classList.remove('show');
-
-                        // Get the month number for filtering
-                        const monthNum = monthMapping[selectedMonth];
-
-                        // Filter rows based on the selected month
-                        tableRows.forEach(row => {
-                            const rowMonthNum = row.getAttribute('data-month-num');
-                            if (!monthNum || rowMonthNum === monthNum) {
-                                row.style.display = ''; // Show matching rows
-                                visibleCount++;
-                            } else {
-                                row.style.display = 'none'; // Hide non-matching rows
-                            }
-                        });
-
-                        // Handle "No Records Found" message
-                        let noRow = document.getElementById('noRecordsFound');
-                        if (visibleCount === 0) {
-                            if (!noRow) {
-                                noRow = document.createElement('tr');
-                                noRow.id = 'noRecordsFound';
-                                noRow.innerHTML = `<td colspan="5" style="text-align:center; font-weight:bold;">No Records Found</td>`;
-                                document.querySelector('table tbody').appendChild(noRow);
-                            }
-                        } else if (noRow) {
-                            noRow.remove();
-                        }
+                        // Apply filters
+                        applyFilters();
                     });
                 });
 
@@ -362,27 +408,26 @@ $total_modal_payment = $total_modal_row['total_payment'] ? number_format($total_
                 }
             });
 
-            // Modal functionality - updated to filter by month
-            function openModal(monthNum = null) {
+            // Modal functionality - updated to filter by month and year
+            function openModal(monthNum = null, year = null) {
                 const modal = document.getElementById('infoModal');
                 const modalRows = document.querySelectorAll('#modalTableBody tr');
 
-                // Filter modal rows by month if monthNum is provided
-                if (monthNum) {
-                    modalRows.forEach(row => {
-                        const rowMonthNum = row.getAttribute('data-month-num');
-                        if (rowMonthNum === monthNum) {
-                            row.style.display = '';
-                        } else {
-                            row.style.display = 'none';
-                        }
-                    });
-                } else {
-                    // Show all rows if no specific month
-                    modalRows.forEach(row => {
-                        row.style.display = '';
-                    });
-                }
+                // Filter modal rows by month and year if provided
+                modalRows.forEach(row => {
+                    const rowMonthNum = row.getAttribute('data-month-num');
+                    const rowYear = row.getAttribute('data-year');
+                    let showRow = true;
+
+                    if (monthNum && rowMonthNum !== monthNum) {
+                        showRow = false;
+                    }
+                    if (year && rowYear !== year) {
+                        showRow = false;
+                    }
+
+                    row.style.display = showRow ? '' : 'none';
+                });
 
                 modal.style.display = 'block';
             }

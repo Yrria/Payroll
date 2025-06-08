@@ -43,6 +43,73 @@ include './database/session.php';
 
                 <div class="content">
                     <div class="table-container">
+                        <?php
+                        // Pagination variables
+                        $limit = 10; // rows per page
+                        $page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] : 1;
+                        $offset = ($page - 1) * $limit;
+
+                        $search_query = isset($_GET['query']) ? $_GET['query'] : '';
+                        $search_query_escaped = $conn->real_escape_string($search_query);
+
+                        // Count total matching rows
+                        $count_sql = "
+            SELECT COUNT(DISTINCT e.emp_id) AS total
+            FROM tbl_emp_acc e
+        ";
+
+                        if (!empty($search_query_escaped)) {
+                            $count_sql .= "
+            WHERE (
+                e.emp_id LIKE '%$search_query_escaped%'
+                OR e.firstname LIKE '%$search_query_escaped%'
+                OR e.lastname LIKE '%$search_query_escaped%'
+                OR e.middlename LIKE '%$search_query_escaped%'
+            )";
+                        }
+
+                        $count_result = $conn->query($count_sql);
+                        $total_rows = 0;
+                        if ($count_result && $row = $count_result->fetch_assoc()) {
+                            $total_rows = (int)$row['total'];
+                        }
+
+                        // Main query with GROUP BY and pagination
+                        $sql = "
+            SELECT e.emp_id, e.lastname, e.firstname, e.middlename, i.rate,
+                COALESCE(SUM(a.hours_overtime), 0) AS total_overtime,
+                COALESCE(SUM(a.hours_present), 0) AS total_worked,
+                COALESCE(SUM(a.present_days), 0) AS total_present_days,
+                COALESCE(SUM(d.pagibig_deduction + d.philhealth_deduction + d.sss_deduction + d.other_deduction), 0) AS total_deductions,
+                COALESCE(SUM(s.total_salary), 0) AS total_wage
+            FROM tbl_emp_acc e
+            LEFT JOIN tbl_emp_info i ON e.emp_id = i.emp_id
+            LEFT JOIN tbl_attendance a ON e.emp_id = a.emp_id
+            LEFT JOIN tbl_deduction d ON e.emp_id = d.emp_id
+            LEFT JOIN tbl_salary s ON e.emp_id = s.emp_id
+        ";
+
+                        if (!empty($search_query_escaped)) {
+                            $sql .= "
+            WHERE (
+                e.emp_id LIKE '%$search_query_escaped%'
+                OR e.firstname LIKE '%$search_query_escaped%'
+                OR e.lastname LIKE '%$search_query_escaped%'
+                OR e.middlename LIKE '%$search_query_escaped%'
+            )
+            ";
+                        }
+
+                        $sql .= " GROUP BY e.emp_id
+                  LIMIT $limit OFFSET $offset";
+
+                        $result = $conn->query($sql);
+
+                        // Calculate showing range
+                        $start = ($total_rows > 0) ? $offset + 1 : 0;
+                        $end = min($offset + $limit, $total_rows);
+                        ?>
+
                         <table>
                             <thead>
                                 <tr>
@@ -57,37 +124,6 @@ include './database/session.php';
                             </thead>
                             <tbody id="showdata">
                                 <?php
-                                // Search logic
-                                $search_query = isset($_GET['query']) ? $_GET['query'] : '';
-                                $search_query_escaped = $conn->real_escape_string($search_query);
-
-                                $sql = "
-    SELECT e.emp_id, e.lastname, e.firstname, e.middlename, i.rate,
-        COALESCE(SUM(a.hours_overtime), 0) AS total_overtime,
-        COALESCE(SUM(a.hours_present), 0) AS total_worked,
-        COALESCE(SUM(a.present_days), 0) AS total_present_days,
-        COALESCE(SUM(d.pagibig_deduction + d.philhealth_deduction + d.sss_deduction + d.other_deduction), 0) AS total_deductions
-    FROM tbl_emp_acc e
-    LEFT JOIN tbl_emp_info i ON e.emp_id = i.emp_id
-    LEFT JOIN tbl_attendance a ON e.emp_id = a.emp_id
-    LEFT JOIN tbl_deduction d ON e.emp_id = d.emp_id
-";
-
-                                if (!empty($search_query_escaped)) {
-                                    $sql .= "
-    WHERE (
-        e.emp_id LIKE '%$search_query_escaped%'
-        OR e.firstname LIKE '%$search_query_escaped%'
-        OR e.lastname LIKE '%$search_query_escaped%'
-        OR e.middlename LIKE '%$search_query_escaped%'
-    )
-    ";
-                                }
-
-                                $sql .= " GROUP BY e.emp_id";
-
-                                $result = $conn->query($sql);
-
                                 if ($result && $result->num_rows > 0) {
                                     while ($row = $result->fetch_assoc()) {
                                         $empId = htmlspecialchars($row['emp_id']);
@@ -95,40 +131,43 @@ include './database/session.php';
                                         $overtimeHours = number_format((float)$row['total_overtime'], 2) . 'h';
                                         $workedHours = number_format((float)$row['total_worked'], 2) . 'h';
                                         $totalDeductions = '₱' . number_format($row['total_deductions'], 2);
-                                        $totalWage = '₱' . number_format($row['rate'] * $row['total_present_days'], 2);
+                                        $totalWage = '₱' . number_format($row['total_wage'], 2);
 
                                         echo "<tr>
-            <td>{$empId}</td>
-            <td>{$empName}</td>
-            <td>{$overtimeHours}</td>
-            <td>{$workedHours}</td>
-            <td>{$totalDeductions}</td>
-            <td>{$totalWage}</td>
-            <td class='td-text'>
-                <div class='action-buttons'>
-                    <button class='view-btn' onclick='openModal(\"{$empId}\")'>View Info</button>
-                </div>
-            </td>
-        </tr>";
+                            <td>{$empId}</td>
+                            <td>{$empName}</td>
+                            <td>{$overtimeHours}</td>
+                            <td>{$workedHours}</td>
+                            <td>{$totalDeductions}</td>
+                            <td>{$totalWage}</td>
+                            <td class='td-text'>
+                                <div class='action-buttons'>
+                                    <button class='view-btn' onclick='openModal(\"{$empId}\")'>View Info</button>
+                                </div>
+                            </td>
+                        </tr>";
                                     }
                                 } else {
                                     echo "<tr><td colspan='7' style='text-align:center;'>No data found.</td></tr>";
                                 }
                                 ?>
                             </tbody>
-
                         </table>
+
                         <br>
                         <div class="pagination">
-                            <p>Showing 1 / 100 Results</p>
+                            <p>Showing <?php echo $total_rows; ?> / <?php echo $total_rows; ?> Results</p>
                             <div>
-                                <button>Prev</button>
-                                <input type="text" class="perpage" value="1" readonly />
-                                <button>Next</button>
+                                <button <?php if ($page <= 1) echo 'disabled'; ?>
+                                    onclick="window.location='?page=<?php echo $page - 1; ?>&query=<?php echo urlencode($search_query); ?>'">Prev</button>
+                                <input type="text" class="perpage" value="<?php echo $page; ?>" readonly />
+                                <button <?php if ($page * $limit >= $total_rows) echo 'disabled'; ?>
+                                    onclick="window.location='?page=<?php echo $page + 1; ?>&query=<?php echo urlencode($search_query); ?>'">Next</button>
                             </div>
                         </div>
                     </div>
                 </div>
+
 
                 <!-- MODAL -->
                 <div id="infoModal" class="modal">

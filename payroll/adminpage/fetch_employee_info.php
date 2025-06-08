@@ -20,8 +20,8 @@ $sql_summary = "
         i.rate,
         COALESCE(SUM(a.hours_present), 0) AS total_worked_hours,
         COALESCE(SUM(a.hours_overtime), 0) AS total_overtime_hours,
-        COALESCE(SUM(d.pagibig_deduction + d.philhealth_deduction + d.sss_deduction + d.other_deduction), 0) AS total_deductions,
-        COALESCE(SUM(s.basic_pay + s.holiday_pay + s.ot_pay), 0) AS total_wage,
+        COALESCE(SUM(s.pagibig_deduction + s.philhealth_deduction + s.sss_deduction + s.other_deduction), 0) AS total_deductions,
+        COALESCE(SUM(s.total_salary), 0) AS total_wage,
         MAX(YEAR(a.attendance_date)) AS last_year -- get latest year with attendance
     FROM tbl_emp_acc e
     LEFT JOIN tbl_emp_info i ON e.emp_id = i.emp_id
@@ -75,19 +75,15 @@ LEFT JOIN
     (
         SELECT 
             MONTH(a.attendance_date) AS month,
-            COALESCE(SUM(a.hours_present), 0) AS worked_hours,
-            COALESCE(SUM(a.hours_overtime), 0) AS overtime_hours,
-            COALESCE(SUM(d.pagibig_deduction + d.philhealth_deduction + d.sss_deduction + d.other_deduction), 0) AS deductions,
-            COALESCE(SUM(s.basic_pay + s.holiday_pay + s.ot_pay), 0) AS total_wage
+            SUM(a.hours_present) AS worked_hours,
+            SUM(a.hours_overtime) AS overtime_hours,
+            SUM(s.pagibig_deduction + s.philhealth_deduction + s.sss_deduction + s.other_deduction) AS deductions,
+            SUM(s.total_salary) AS total_wage
         FROM tbl_attendance a
-        LEFT JOIN tbl_deduction d 
-            ON a.emp_id = d.emp_id 
-            AND MONTH(a.attendance_date) = MONTH(d.deduction_date) 
-            AND YEAR(a.attendance_date) = YEAR(d.deduction_date)
         LEFT JOIN tbl_salary s
             ON a.emp_id = s.emp_id
             AND YEAR(a.attendance_date) = s.year
-            AND MONTHNAME(a.attendance_date) = s.month
+            AND MONTH(a.attendance_date) = MONTH(s.month)
         WHERE a.emp_id = '$emp_id' AND YEAR(a.attendance_date) = $year
         GROUP BY MONTH(a.attendance_date)
     ) AS t ON m.month = t.month
