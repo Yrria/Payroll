@@ -75,19 +75,33 @@ $result = mysqli_query($conn, $sql);
                 <div class="sub-content">
                     <div class="selection_div">
                         <p style="margin: 0;font-weight: 500;">Leave Report</p>
-                        <div style="display: flex;align-items: center;width:60%;justify-content:right;margin-right:-4%;">
+                        <div style="display: flex;align-items: center;width:60%;justify-content:right;">
+                            <div class="search-bar">
+                                <button id="voiceSearchBtn" title="Speak to search" style="margin-left: 10px; background: none; cursor: pointer; border: 0;">
+                                    <i class="bi bi-mic-fill" style="font-size: 1.35rem; color:#20242C;"></i>
+                                </button>
+                                <form method="POST" action="report_leave.php" id="searchForm" style="display: flex; align-items: center;">
+                                    <input type="text" name="search" id="searchInput" class="search-box" placeholder="Search employee..." value="<?php echo htmlspecialchars($search); ?>" />
+                                </form>
+                            </div>
                         </div>
                     </div>
                     <div class="content">
                         <div class="controls">
-                            <div class="search-bar">
-                                <form method="GET" action="" style="display: flex; align-items: center;">
-                                    <input type="text" id="searchInput" class="search-box" name="query" placeholder="Search employee..." value="<?php echo isset($_GET['query']) ? htmlspecialchars($_GET['query']) : ''; ?>" />
-                                    <button id="voiceSearchBtn" title="Speak to search" style="margin-left: 8px; background: none; cursor: pointer; border: 0;">
-                                        <i class="bi bi-mic-fill" style="font-size: 1.35rem; color:#20242C;"></i>
-                                    </button>
-                                </form>
-                            </div>
+                            <form method="POST" id="entriesForm" style=" align-items: center;">
+                                <label for="show-entries">Show
+                                    <select id="show-entries" name="show_entries">
+                                        <option value="10" <?php if ($limit == 10) echo "selected"; ?>>10</option>
+                                        <option value="25" <?php if ($limit == 25) echo "selected"; ?>>25</option>
+                                        <option value="50" <?php if ($limit == 50) echo "selected"; ?>>50</option>
+                                        <option value="100" <?php if ($limit == 100) echo "selected"; ?>>100</option>
+                                        <option value="<?php echo $total_records; ?>" <?php if ($limit == $total_records) echo "selected"; ?>>
+                                            All (<?php echo $total_records; ?> records)
+                                        </option>
+                                    </select>
+                                    entries
+                                </label>
+                            </form>
                             <div class="date-range">
                                 <form method="POST" action="report_leave.php" style="display: flex; align-items: center;">
                                     <label for="from-date">From:
@@ -144,11 +158,11 @@ $result = mysqli_query($conn, $sql);
                         <!-- Pagination -->
                         <div class="pagination">
                             <p>Showing <?php echo $total_records; ?> / <?php echo $total_records; ?> results</p>
-                            <!-- <div class="pagination">
+                            <div class="pagination">
                                 <button id="prevPage" <?php if ($page <= 1) echo "disabled"; ?>>Prev</button>
                                 <input type="text" class="perpage" value="<?php echo $page; ?>" readonly />
                                 <button id="nextPage" <?php if ($page >= $total_pages) echo "disabled"; ?>>Next</button>
-                            </div> -->
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -239,7 +253,14 @@ $result = mysqli_query($conn, $sql);
                         allowOutsideClick: false,
                         allowEscapeKey: false,
                         showConfirmButton: false,
+                        showCancelButton: true,
+                        cancelButtonText: 'Cancel',
                         didOpen: () => Swal.showLoading()
+                    }).then((result) => {
+                        if (result.dismiss === Swal.DismissReason.cancel) {
+                            recognition.abort(); // Stop listening if canceled
+                            voiceBtn.innerHTML = `<i class="bi bi-mic-fill"></i>`;
+                        }
                     });
                 });
 

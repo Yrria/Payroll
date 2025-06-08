@@ -159,7 +159,17 @@ include './database/session.php';
 
                         <br>
                         <div class="pagination">
-                            <p>Showing <?php echo $end; ?> of <?php echo $total_rows; ?> Results</p>
+                            <?php
+                            $limit = 10; // or your current LIMIT per page
+                            $page = isset($_GET['page']) && $_GET['page'] > 0 ? (int)$_GET['page'] : 1;
+
+                            $start = ($page - 1) * $limit + 1;
+                            $end = min($start + $limit - 1, $total_rows);
+                            ?>
+
+                            <p>
+                                Showing <?php echo ($total_rows > 0) ? "$end / $total_rows" : "0"; ?> Results
+                            </p>
                             <!-- <div>
                                 <button <?php if ($page <= 1) echo 'disabled'; ?>
                                     onclick="window.location='?page=<?php echo $page - 1; ?>&query=<?php echo urlencode($search_query); ?>'">Prev</button>
@@ -350,7 +360,14 @@ include './database/session.php';
                         allowOutsideClick: false,
                         allowEscapeKey: false,
                         showConfirmButton: false,
+                        showCancelButton: true,
+                        cancelButtonText: 'Cancel',
                         didOpen: () => Swal.showLoading()
+                    }).then((result) => {
+                        if (result.dismiss === Swal.DismissReason.cancel) {
+                            recognition.abort(); // Stop listening if canceled
+                            voiceBtn.innerHTML = `<i class="bi bi-mic-fill"></i>`;
+                        }
                     });
                 });
 
