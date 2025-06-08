@@ -104,6 +104,22 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             // Attendance logic
             $now = new DateTime();
             $today = $now->format('Y-m-d');
+            // Check if today is a holiday (event)
+            $holiday_check = $conn->prepare("SELECT * FROM tbl_events WHERE event_date = ?");
+            $holiday_check->bind_param("s", $today);
+            $holiday_check->execute();
+            $holiday_result = $holiday_check->get_result();
+
+            $isHoliday = false;
+            if ($holiday_result->num_rows > 0) {
+                $isHoliday = true;
+
+                // Update holiday column in tbl_attendance if attendance exists
+                $update_holiday = $conn->prepare("UPDATE tbl_attendance SET holiday = 1 WHERE emp_id = ? AND attendance_date = ?");
+                $update_holiday->bind_param("is", $emp_id, $today);
+                $update_holiday->execute();
+            }
+
             $hour = (int)$now->format('H');
 
             // Adjust for night shift employees logging in past midnight
@@ -166,14 +182,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             if ($attendance_result->num_rows === 0) {
                 $present_inc = $status !== "Absent" ? 1 : 0;
                 $absent_inc = $status === "Absent" ? 1 : 0;
+                $holiday_flag = $isHoliday ? 1 : 0;
 
                 $insert_attendance = $conn->prepare("
                     INSERT INTO tbl_attendance (
                         emp_id, attendance_date, attendance_today, 
-                        present_days, absent_days, hours_late, hours_present
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?)
+                        present_days, absent_days, hours_late, hours_present, holiday
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                 ");
-                $insert_attendance->bind_param("issiiid", $emp_id, $today, $status, $present_inc, $absent_inc, $hours_late, $hours_present);
+                $insert_attendance->bind_param("issiiidi", $emp_id, $today, $status, $present_inc, $absent_inc, $hours_late, $hours_present, $holiday_flag);
                 $insert_attendance->execute();
             } else {
                 $existing = $attendance_result->fetch_assoc();
@@ -216,14 +233,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 
 
-            header("Location: ./employee/dashboard.php");
+            header("Location: ./employee/dashboard.php?status=success");
             exit();
         }
     } elseif ($result_admin->num_rows > 0) {
         $admin_row = $result_admin->fetch_assoc();
         $_SESSION['email'] = $admin_row['email'];
         $_SESSION['account_id'] = $admin_row['admin_id'];
-        header("Location: ./adminpage/dashboard.php");
+        header("Location: ./adminpage/dashboard.php?status=success");
         exit();
     } else {
         echo "Invalid login credentials.";

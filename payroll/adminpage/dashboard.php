@@ -133,11 +133,563 @@ if ($pendingLeavesResult && $row = $pendingLeavesResult->fetch_assoc()) {
     <link rel="shortcut icon" href="../assets/logowhite-.png" type="image/svg+xml">
     <link rel="stylesheet" href="./css/main.css">
     <link rel="stylesheet" href="./css/dashboard.css">
+    <script src="https://kit.fontawesome.com/3b07bc6295.js" crossorigin="anonymous"></script>
     <title>Dashboard</title>
+    <style>
+      /* Add the CSS styles from your code */
+
+
+      .content {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          grid-template-rows: auto;
+          gap: 15px;
+          margin-top: 20px;
+      }
+
+      /* Use grid-area to control placement */
+      .active-employees {
+          grid-column: 1;
+          /* First column */
+          grid-row: 1;
+          /* First row */
+          height: 150px;
+      }
+
+      .pending-leaves {
+          grid-column: 2;
+          /* Second column */
+          grid-row: 1;
+          /* First row */
+          height: 150px;
+      }
+
+      .payroll-report {
+          grid-column: 1;
+          /* First column */
+          grid-column: span 2;
+          grid-row: 2;
+          /* Second row */
+      }
+
+      .salary-distribution {
+          grid-column: 1;
+          /* Second column */
+          grid-column: span 2;
+          grid-row: 3;
+          /* Second row */
+      }
+
+      .holiday-events {
+          grid-column: 3;
+          /* First column */
+          grid-row: 1;
+          /* Third row */
+      }
+
+      .calendar {
+          grid-column: 3;
+          /* Second column */
+          grid-row: 2;
+          /* Third row */
+      }
+
+      .employee-distribution {
+          grid-column: 3;
+          /* Second column */
+          grid-row: 3;
+          /* Fourth row */
+      }
+
+      .leave-requests {
+          grid-column: 1 / 4;
+          /* Span across both columns */
+          grid-row: 4;
+          /* Fifth row */
+      }
+
+      /* Responsive stacking for smaller screens */
+      @media (max-width: 768px) {
+          .content {
+              grid-template-columns: 1fr;
+          }
+      }
+
+      .card {
+          background-color: #ffffff;
+          color: rgb(0, 0, 0);
+          padding: 20px;
+          border-radius: 10px;
+          box-shadow: 0 5px 10px rgba(0, 0, 0, 0.05);
+          text-align: center;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          margin: 10px;
+      }
+
+      /* Payroll Report Styles */
+      .payroll-report {
+          background-color: #ffffff;
+          padding: 20px;
+          border-radius: 5px;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+          text-align: center;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          margin: 10px;
+      }
+
+      /* Salary Distribution Styles */
+      .salary-distribution {
+          background-color: #ffffff;
+          padding: 20px;
+          border-radius: 5px;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+          text-align: center;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          margin: 10px;
+      }
+
+      /* Upcoming and Holiday Event Styles */
+      .Event {
+        background: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        padding: 12px;
+        width: fit-content;
+        width: 350px;
+        margin: 20px auto;
+        margin-right: 7px;
+      }
+
+
+
+      .Event-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 10px;
+      }
+
+      .Event-header h3 {
+        margin: 0;
+        color: #333333;
+        font-size: 20px;
+        font-weight: bold;
+      }
+
+      .event-hr {
+        border: none;
+        border-bottom: 2px solid #cfcfcf; /* blue line matching event-title color */
+        margin: 8px 0 12px 0;
+        width: 100%;
+        max-width: 350px; /* match container width or adjust */
+      }
+
+      .view-all {
+        color: #007bff;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: bold;
+        margin-bottom: -10px;
+      }
+
+      .event-item {
+        background-color: #f1f1f1; /* Light gray background */
+        border-top: 1px solid #e0e0e0;
+        padding: 10px 12px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-radius: 6px;
+        margin-bottom: 8px; /* space between events */
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05); /* subtle shadow */
+      }
+      .event-item:first-child {
+        border-top: none;
+      }
+
+      .event-details {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .event-title {
+        color: #00a7e1;
+        font-weight: bold;
+        font-size: 13px;
+        margin-bottom: 2px;
+      }
+
+      .event-type {
+        color: #666666;
+        font-size: 11px;
+      }
+
+      .event-day {
+        color: #333333;
+        font-size: 11px;
+        margin-top: 3px;
+      }
+
+      .event-date {
+        background: #e0e0e0;
+        color: #333;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        font-size: 12px;
+        font-weight: bold;
+        text-align: center;
+      }
+
+      .event-date span {
+        display: block;
+        font-size: 9px;
+        color: #888888;
+      }
+
+      #addBtn {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 4px 8px;
+        font-size: 13px;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      #addBtn:hover {
+        background-color: #0056b3;
+      }
+
+      /* Common Modal Wrapper */
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(5px);
+        justify-content: center;
+        align-items: center;
+      }
+
+      /* =======================
+        Add Event Modal Styles
+        ======================= */
+      #eventModal .modal-content {
+        background-color: #ffffff;
+        width: 500px;
+        height: 250px;
+        border-radius: 10px;
+        padding: 16px;
+        box-sizing: border-box;
+        position: relative;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        margin-left: 50px;
+        margin-top: 10px;
+
+      }
+
+      #eventModal h3 {
+        margin-top: 0;
+        margin-bottom: 10px;
+        text-align: center;
+        font-size: 20px;
+      }
+
+      #eventModal input,
+      #eventModal button {
+        width: 100%;
+        margin-bottom: 8px;
+        padding: 6px;
+        font-size: 14px;
+        box-sizing: border-box;
+      }
+
+      #eventModal .close {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        font-size: 24px;
+        cursor: pointer;
+      }
+
+      /* ==========================
+        View All Modal Styles
+        ========================== */
+      #viewAllModal .modal-content {
+        background-color: #ffffff;
+        width: 600px;
+        height: 450px;
+        border: 2px solid #000000; /* Added border color */
+        border-radius: 10px;
+        padding: 16px;
+        box-sizing: border-box;
+        position: relative;
+        overflow-y: auto;
+        margin-left: 50px;
+        margin-top: 10px;
+      }
+
+      #viewAllModal h3 {
+        margin-top: 0;
+        margin-bottom: 10px;
+        text-align: center;
+        font-size: 16px;
+      }
+
+      #viewAllModal .close {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        font-size: 24px;
+        cursor: pointer;
+      }
+
+      .delete-btn {
+        background-color: transparent;
+        border: none;
+        color: red;
+        font-size: 16px;
+        cursor: pointer;
+        margin-left: 8px;
+      }
+
+
+
+
+      /* Calendar Styles */
+      .calendar-title {
+          text-align: center;
+          font-size: 22px;
+          font-weight: bold;
+          margin-bottom: 12px;
+          color: #333;
+          text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+      }
+
+      .calendar-box {
+          grid-column: 3;
+          grid-row: 2;
+          border-radius: 10px;
+          background-color: #ffffff;
+          padding: 30px;
+          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+          text-align: center;
+          flex: 1;
+          min-width: 280px;
+          max-width: 360px;
+      }
+
+      .calendar-controls {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          gap: 10px;
+          margin-bottom: 10px;
+      }
+
+      .calendar-controls select,
+      .calendar-controls button {
+          padding: 5px 10px;
+          font-size: 14px;
+          border-radius: 5px;
+          border: 1px solid #ccc;
+          background-color: white;
+      }
+
+      .calendar {
+          display: grid;
+          grid-template-columns: repeat(7, 1fr);
+          column-gap: 5px;
+          row-gap: 10px;
+          text-align: center;
+          font-size: 14px;
+      }
+
+      .calendar div {
+          padding: 10px;
+          border-radius: 50%;
+          transition: background-color 0.3s;
+      }
+
+      .calendar div.today {
+          background-color: #e0f7fa;
+          color: #000;
+          font-weight: bold;
+      }
+
+
+      .calendar-title {
+          font-size: 18px;
+          font-weight: bold;
+          margin-bottom: 10px;
+          color: #333;
+      }
+
+      .calendar-controls {
+          display: flex;
+          gap: 5px;
+          margin-bottom: 10px;
+      }
+
+      .calendar div {
+          padding: 8px;
+          border: 1px solid #ccc;
+          border-radius: 50%;
+          text-align: center;
+          cursor: pointer;
+          font-size: 12px;
+          transition: background-color 0.3s;
+      }
+
+      .calendar .today {
+          background-color: #007bff;
+          color: white;
+          font-weight: bold;
+      }
+
+      /* Employee Distribution */
+      .employee-distribution {
+          background-color: #ffffff;
+          padding: 20px;
+          border-radius: 5px;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+          text-align: center;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          margin: 10px;
+          color: black;
+      }
+
+      /* Leave Requests Table */
+      #view-all-btn2 {
+          position: absolute;
+          right: 20px;
+          top: 20px;
+          padding: 8px 16px;
+          cursor: pointer;
+          border: none;
+          border-radius: 4px;
+          font-size: 14px;
+          background-color: #4b6bfa;
+          color: white;
+          transition: all 0.5s ease;
+      }
+
+      #view-all-btn2 a {
+          color: white;
+          text-decoration: none;
+          display: block;
+      }
+
+      #view-all-btn2:hover {
+          background-color: #1f8af5;
+          box-shadow: 0 0 8px rgb(98, 184, 235);
+      }
+
+      .leave-requests {
+          background-color: #ffffff;
+          padding: 20px;
+          border-radius: 5px;
+          box-shadow: 1px 0px 5px rgba(0, 0, 0, 0.3);
+          text-align: center;
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-start;
+          align-items: stretch;
+          margin: 10px;
+          position: relative;
+      }
+
+      table {
+          width: 100%;
+          border-collapse: collapse;
+      }
+
+      table th,
+      table td {
+          padding: 10px;
+          border: 2px solid #ddd;
+          text-align: left;
+      }
+
+      /* Center the Action column heading */
+      th:nth-child(8) {
+          text-align: center;
+      }
+
+        #toastBox {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .toast {
+            background-color: #1BCD80;
+            color: white;
+            padding: 12px 18px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            min-width: 200px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: slideIn 0.3s ease, fadeOut 0.3s ease 2.7s forwards;
+        }
+
+        .toast.error {
+            background-color: #e74c3c;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+        }
+    </style>
 </head>
 
 <body>
     <?php include 'sidenav.php'; ?>
+    <div id="toastBox"></div>
     <div class="container">
         <div id="mainContent" class="main">
             <div class="head-title">
@@ -685,6 +1237,33 @@ fetch("add_event.php", {
   }
 
   renderEventList();
+    let toastBox = document.getElementById('toastBox');
+    let successMess = '<img src="../assets/salute_icon.png" style="height: 40px;"> Welcome back!';
+
+    function showToast(msg) {
+        let toast = document.createElement('div'); 
+        toast.classList.add('toast');
+        toast.innerHTML = msg;
+        toastBox.appendChild(toast); 
+
+        if (msg.includes('error')) {
+            toast.classList.add('error');
+        }
+
+        // Play notification sound
+        const sound = document.getElementById('notifySound');
+        if (sound) sound.play();
+
+        setTimeout(() => {
+            toast.remove();
+        }, 3000);
+    }
+
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('status') === 'success') {
+        showToast(successMess);
+        window.history.replaceState(null, null, window.location.pathname);
+    }
 </script>
 
                 <!-- SCRIPT -->

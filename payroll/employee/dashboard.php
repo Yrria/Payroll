@@ -60,13 +60,61 @@ if ($pendingResult && $row = mysqli_fetch_assoc($pendingResult)) {
     <link rel="stylesheet" href="./css/main.css" />
     <link rel="stylesheet" href="./css/dashboard.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="https://kit.fontawesome.com/3b07bc6295.js" crossorigin="anonymous"></script>
     <title>Dashboard</title>
+    <style>
+        #toastBox {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .toast {
+            background-color: #1BCD80;
+            color: white;
+            padding: 12px 18px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            min-width: 200px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: slideIn 0.3s ease, fadeOut 0.3s ease 2.7s forwards;
+        }
+
+        .toast.error {
+            background-color: #e74c3c;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+        }
+    </style>
 </head>
 
 <body>
     <?php include 'sidenav.php'; ?>
+    <div id="toastBox"></div>
     <div class="main-content">
-<div class="head-title" style="margin: 20px 40px 10px -10px;">
+<div class="head-title">
     <div style="display: flex; justify-content: space-between; align-items: center;">
         <div>
             <h1 style="margin-top: 50px; margin-right: 730px;  font-size: 28px;">Welcome Employee!</h1>
@@ -279,6 +327,34 @@ if ($pendingResult && $row = mysqli_fetch_assoc($pendingResult)) {
 
         populateSelectors();
         renderCalendar(currentMonth, currentYear);
+
+        let toastBox = document.getElementById('toastBox');
+        let successMess = '<img src="../assets/salute_icon.png" style="height: 40px;"></i>Welcome back <?php echo $user['firstname']; ?>!';
+
+        function showToast(msg) {
+            let toast = document.createElement('div'); 
+            toast.classList.add('toast');
+            toast.innerHTML = msg;
+            toastBox.appendChild(toast); 
+
+            if (msg.includes('error')) {
+                toast.classList.add('error');
+            }
+
+            // Play notification sound
+            const sound = document.getElementById('notifySound');
+            if (sound) sound.play();
+
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('status') === 'success') {
+            showToast(successMess);
+            window.history.replaceState(null, null, window.location.pathname);
+        }
     </script>
 </body>
 
