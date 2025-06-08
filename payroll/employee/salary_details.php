@@ -103,7 +103,7 @@ echo "
             <input type='hidden' name='cutoff' value='{$cutoff}'>
             <button type='submit' class='btn-green button'>Generate Pay Slip PDF</button>
         </form>
-        <button onclick='closeOverlay()' class='btn button' style='background-color: #ccc;'>Back</button> 
+        <button onclick='closeOverlay()' class='btn button' style='background-color:#ccc; color: black;  cursor: pointer;'>Back</button> 
     </div>
 </div>
 ";

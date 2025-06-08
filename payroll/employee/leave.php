@@ -47,7 +47,7 @@ $result = $stmt->get_result();
                         <!-- Leave Table -->
                         <div id="maindiv">
                             <div class="grid-item">
-                                <button class="button" onclick="alter()" style="width: 30%;">+ File a Leave</button>
+                                <button class="button" onclick="alter()" style="width: 30%; cursor: pointer;">+ File a Leave</button>
                             </div>
                             <div class="grid-item">
                                 <select name="leavefilter" id="leavefilter" class="textbox">
@@ -105,7 +105,7 @@ $result = $stmt->get_result();
                                                 <td>{$row['leave_type']}</td>
                                                 <td style='color: $statusColor'>{$row['status']}</td>
                                                 <td style='text-align: center;'>
-                                                    <img src='../assets/view.png' class='view' style='cursor: pointer; width: 24px; height: 24px;'
+                                                    <img src='../assets/view.png' class='view' style='cursor: pointer; width: 24px; height: 24px; background-color: #AAC7D8;'
                                                         data-subject='{$row['subject']}'
                                                         data-status='{$row['status']}'
                                                         data-start='" . date("d/m/Y", strtotime($row['start_date'])) . "'

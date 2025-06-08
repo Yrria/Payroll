@@ -30,7 +30,7 @@ while ($row = mysqli_fetch_assoc($result)) {
         <td>{$row['status']}</td>
         <td>" . ($row['status'] == 'Paid' ? '₱ ' . number_format($row['total_salary'], 2) : '------') . "</td>
         <td>
-            <button id='viewBtn' class='view-btn'>
+            <button id='viewBtn' class='view-btn' style = 'background-color: #AAC7D8; cursor: pointer;'>
                 <img src='../assets/view.png' alt='View' style='width: 24px; height: 24px; padding: 0;' />
             </button>
         </td>
