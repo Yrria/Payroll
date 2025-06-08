@@ -3,7 +3,7 @@ session_start();
 include '../assets/databse/connection.php';
 include './database/session.php';
 
-$records_per_page = 1; // Number of records to display per page
+$records_per_page = 5; // Number of records to display per page
 $current_page = isset($_GET['page']) ? $_GET['page'] : 1; // Get current page number, default to 1
 
 // Calculate the limit clause for SQL query
@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['decline_leave_id'])) 
   $update_sql = "UPDATE tbl_leave SET status = 'Declined', rejection_reason = '$reason' WHERE leave_id = '$leave_id'";
 
   if ($conn->query($update_sql)) {
-    header("Location: leave_declined.php");
+    header("Location: leave_declined.php?status=success");
     exit();
   } else {
     echo "<script>alert('Failed to decline leave request.');</script>";
@@ -39,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['approve_btn'])) {
   $leave_id = $conn->real_escape_string($_POST['approve_leave_id']);
   $update_sql = "UPDATE tbl_leave SET status = 'Approved' WHERE leave_id = '$leave_id'";
   if ($conn->query($update_sql)) {
-    header("Location: leave_approved.php");
+    header("Location: leave_approved.php?status=success");
     exit();
   } else {
     echo "<script>alert('Failed to approve leave request.');</script>";
@@ -230,7 +230,7 @@ $qp = !empty($_GET['query']) ? '&query=' . urlencode($_GET['query']) : '';
                       <td><?php echo htmlspecialchars($row['date_applied']); ?></td>
                       <td><?php echo htmlspecialchars($row['leave_type']); ?></td>
                       <td><?php echo htmlspecialchars($row['message']); ?></td>
-                      <td class="td-text" style="<?php echo ($row['status'] === 'Pending') ? 'color: red;' : ''; ?>">
+                      <td class="td-text" style="<?php echo ($row['status'] === 'Pending') ? 'color: orange;' : ''; ?>">
                         <?php echo htmlspecialchars($row['status']); ?>
                       </td>
 

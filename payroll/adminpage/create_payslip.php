@@ -25,6 +25,7 @@ if (isset($_GET['id'])) {
             i.rate,
             i.position,
             s.basic_pay,
+            s.cutoff,
             s.pagibig_deduction,
             s.philhealth_deduction,
             s.sss_deduction,
@@ -44,6 +45,7 @@ if (isset($_GET['id'])) {
     if ($result->num_rows > 0) {
         $employee = $result->fetch_assoc();
         $emp_id = $employee['emp_id'];
+        $cutoff = $employee['cutoff'];
         $gender = $employee['gender'];
         $address = $employee['address'];
         $position_name = $employee['position'];
@@ -139,11 +141,12 @@ if (isset($_POST['gen_payslip'])) {
     <?php include 'sidenav.php'; ?>
     <audio id="notifySound" src="../assets/sound/Error.mp3" preload="auto"></audio>
     <div class="container">
+        <input type="hidden" value="<?php echo $cutoff; ?>" id="cutoff">
         <div id="mainContent" class="main">
             <div class="head-title">
                 <h1>Payroll</h1>
                 <div class="breadcrumb">
-                    <h5><a href="./dashboard.php">Dashboard </a></h5>
+                    <h5><a href="./dashboard.php">Dashboard</a></h5>
                     <span> > </span>
                     <h5>Create Payslip</h5>
                 </div>
@@ -263,15 +266,30 @@ if (isset($_POST['gen_payslip'])) {
         const baseSalary = <?php echo $computed_present_holiday; ?>;
 
         function updateDeductions() {
-            // Get benefits
-            const philHealth = parseFloat(document.getElementById('philhealth').value) || 0;
-            const pagibig = parseFloat(document.getElementById('pagibig').value) || 0;
-            const sss = parseFloat(document.getElementById('sss_total').value) || 0;
+            // Check current cutoff
+            const cutoff = document.getElementById('cutoff').value; // assuming this is the dropdown/select
 
-            // Sum only visible other deductions (exclude hidden input)
+            let philHealth = 0;
+            let pagibig = 0;
+            let sss = 0;
+
+            // If it's the first cutoff, include government benefits
+            if (cutoff === 'First Cutoff') {
+                philHealth = parseFloat(document.getElementById('philhealth').value) || 0;
+                pagibig = parseFloat(document.getElementById('pagibig').value) || 0;
+                sss = parseFloat(document.getElementById('sss_total').value) || 0;
+            } 
+            else{
+                // Reset benefit values to 0 in UI if it's second cutoff
+                document.getElementById('philhealth').value = "0.00";
+                document.getElementById('pagibig').value = "0.00";
+                document.getElementById('sss_total').value = "0.00";
+            }
+
+            // Sum only visible other deductions
             let otherTotal = 0;
             document.querySelectorAll('.other-deduction-value').forEach(input => {
-                if (!input.hasAttribute('hidden')) {
+                if (input.offsetParent !== null) {
                     const val = parseFloat(input.value) || 0;
                     otherTotal += val;
                 }
@@ -279,12 +297,13 @@ if (isset($_POST['gen_payslip'])) {
 
             const totalDeductions = philHealth + pagibig + sss + otherTotal;
 
-            // Set values in the corresponding fields
+            // Update fields
             document.getElementById('total_deductions').value = totalDeductions.toFixed(2);
-            document.getElementById('total_other_deduction').value = otherTotal.toFixed(2); // Only the 'other' part goes here
+            document.getElementById('total_other_deduction').value = otherTotal.toFixed(2);
 
             updateNetIncome(totalDeductions);
         }
+
 
 
         function updateNetIncome(totalDeductions) {

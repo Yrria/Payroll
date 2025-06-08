@@ -105,6 +105,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $now = new DateTime();
             $today = $now->format('Y-m-d');
             $hour = (int)$now->format('H');
+
+            // Adjust for night shift employees logging in past midnight
             if ($emp_data['shift'] === 'Night' && $hour < 6) {
                 $today = (new DateTime('yesterday'))->format('Y-m-d');
             }
@@ -114,48 +116,73 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $attendance_check->execute();
             $attendance_result = $attendance_check->get_result();
 
-            if ($attendance_result->num_rows === 0) {
-                // No attendance record yet for today - create initial record
-                $insert_attendance = $conn->prepare("INSERT INTO tbl_attendance (emp_id, attendance_date) VALUES (?, ?)");
-                $insert_attendance->bind_param("is", $emp_id, $today);
-                $insert_attendance->execute();
+            $status = null;
+            $now_ts = $now->getTimestamp();
 
-                // Now compute status and update once, only after first insert
+            // Shift-based logic
+            if ($emp_data['shift'] === 'Morning') {
+                $present_start = strtotime("$today 06:45:00");
+                $present_end = strtotime("$today 07:15:00");
+                $late_end = strtotime("$today 15:00:00");
 
-                $status = null;
-                $now_ts = $now->getTimestamp();
-
-                if ($emp_data['shift'] === 'Morning') {
-                    $present_start = strtotime("$today 06:45:00");
-                    $present_end = strtotime("$today 07:15:00");
-                    $late_end = strtotime("$today 15:00:00");
-
-                    if ($now_ts < $present_start) {
-                        $status = null;
-                    } elseif ($now_ts <= $present_end) {
-                        $status = "Present";
-                    } elseif ($now_ts <= $late_end) {
-                        $status = "Late";
-                    } else {
-                        $status = "Absent";
-                    }
-                } elseif ($emp_data['shift'] === 'Night') {
-                    $night_start = strtotime("$today 18:45:00");
-                    $present_end = strtotime("$today 19:15:00");
-                    $late_end = strtotime("$today +1 day 03:00:00");
-
-                    if ($now_ts < $night_start) {
-                        $status = null;
-                    } elseif ($now_ts <= $present_end) {
-                        $status = "Present";
-                    } elseif ($now_ts <= $late_end) {
-                        $status = "Late";
-                    } else {
-                        $status = "Absent";
-                    }
+                if ($now_ts >= $present_start && $now_ts <= $present_end) {
+                    $status = "Present";
+                } elseif ($now_ts > $present_end && $now_ts <= $late_end) {
+                    $status = "Late";
+                } else {
+                    $status = "Absent"; // <-- Ensure it always falls back to Absent
                 }
+            } elseif ($emp_data['shift'] === 'Night') {
+                $night_start = strtotime("$today 18:45:00");
+                $present_end = strtotime("$today 19:15:00");
+                $late_end = strtotime("$today +1 day 03:00:00");
 
-                if ($status !== null) {
+                if ($now_ts >= $night_start && $now_ts <= $present_end) {
+                    $status = "Present";
+                } elseif ($now_ts > $present_end && $now_ts <= $late_end) {
+                    $status = "Late";
+                } else {
+                    $status = "Absent"; // <-- Same fallback
+                }
+            }
+
+
+            // Calculate hours
+            $default_hours = 8;
+            $hours_late = 0;
+            $hours_present = 0;
+
+            if ($status === "Present") {
+                $hours_present = $default_hours;
+            } elseif ($status === "Late") {
+                $late_time = ($now_ts - $present_end) / 3600;
+                $hours_late = round(min(max($late_time, 0), 8), 2);
+                $hours_present = max($default_hours - $hours_late, 0);
+            } elseif ($status === "Absent") {
+                $hours_late = $default_hours;
+            }
+
+            // Insert or update attendance
+            if ($attendance_result->num_rows === 0) {
+                $present_inc = $status !== "Absent" ? 1 : 0;
+                $absent_inc = $status === "Absent" ? 1 : 0;
+
+                $insert_attendance = $conn->prepare("
+                    INSERT INTO tbl_attendance (
+                        emp_id, attendance_date, attendance_today, 
+                        present_days, absent_days, hours_late, hours_present
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?)
+                ");
+                $insert_attendance->bind_param("issiiid", $emp_id, $today, $status, $present_inc, $absent_inc, $hours_late, $hours_present);
+                $insert_attendance->execute();
+            } else {
+                $existing = $attendance_result->fetch_assoc();
+
+                if (is_null($existing['attendance_today'])) {
+                    // Redo timestamp and status logic here or reuse previous $status
+
+                    // Calculate $status as above...
+
                     $default_hours = 8;
                     $hours_late = 0;
                     $hours_present = 0;
@@ -173,7 +200,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     $present_inc = $status !== "Absent" ? 1 : 0;
                     $absent_inc = $status === "Absent" ? 1 : 0;
 
-                    // Update the newly inserted attendance record
                     $update_attendance = $conn->prepare("
                         UPDATE tbl_attendance 
                         SET attendance_today = ?, 
@@ -186,9 +212,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     $update_attendance->bind_param("siiddis", $status, $present_inc, $absent_inc, $hours_late, $hours_present, $emp_id, $today);
                     $update_attendance->execute();
                 }
-            } else {
-                // Attendance record already exists for today, do nothing to avoid multiple increments
             }
+
 
 
             header("Location: ./employee/dashboard.php");

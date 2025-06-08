@@ -89,11 +89,59 @@ $qp = !empty($_GET['query']) ? '&query=' . urlencode($_GET['query']) : '';
   <link rel="shortcut icon" href="../assets/logowhite-.png" type="image/svg+xml">
   <link rel="stylesheet" href="./css/main.css">
   <link rel="stylesheet" href="./css/leave.css">
+    <script src="https://kit.fontawesome.com/3b07bc6295.js" crossorigin="anonymous"></script>
   <title>Leave - Approved</title>
+  <style>
+    #toastBox {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .toast {
+        background-color: #1BCD80;
+        color: white;
+        padding: 12px 18px;
+        border-radius: 8px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        min-width: 200px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        animation: slideIn 0.3s ease, fadeOut 0.3s ease 2.7s forwards;
+    }
+
+    .toast.error {
+        background-color: #e74c3c;
+    }
+
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateX(100%);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    @keyframes fadeOut {
+        to {
+            opacity: 0;
+            transform: translateX(100%);
+        }
+    }
+  </style>
 </head>
 
 <body>
   <?php include 'sidenav.php'; ?>
+    <div id="toastBox"></div>
   <div class="container">
     <div id="mainContent" class="main">
       <div class="head-title">
@@ -314,4 +362,32 @@ $qp = !empty($_GET['query']) ? '&query=' . urlencode($_GET['query']) : '';
     };
     xhr.send();
   });
+
+  //toast notification
+  let toastBox = document.getElementById('toastBox');
+  let successMess = '<i class="fa-solid fa-circle-check"></i>Leave approved successful!';
+
+  function showToast(msg) {
+      let toast = document.createElement('div'); 
+      toast.classList.add('toast');
+      toast.innerHTML = msg;
+      toastBox.appendChild(toast); 
+
+      if (msg.includes('error')) {
+          toast.classList.add('error');
+      }
+
+      // Play notification sound
+      const sound = document.getElementById('notifySound');
+      if (sound) sound.play();
+
+      setTimeout(() => {
+          toast.remove();
+      }, 3000);
+  }
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('status') === 'success') {
+      showToast(successMess);
+      window.history.replaceState(null, null, window.location.pathname);
+  }
 </script>
