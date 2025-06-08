@@ -21,3 +21,24 @@ function fetchSalaryData() {
 
 // Initial load
 window.onload = fetchSalaryData;
+
+// Details
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelector('#salaryData').addEventListener('click', async (e) => {
+        if (e.target.tagName === 'BUTTON' && e.target.id === 'viewBtn') {
+            const row = e.target.closest('tr');
+            const year = row.children[0].textContent;
+            const month = row.children[1].textContent;
+            const cutoff = row.children[2].textContent;
+
+            const overlay = document.querySelector('#overlay');
+            const infoContainer = document.querySelector('.info-container');
+
+            const response = await fetch(`salary_details.php?year=${year}&month=${month}&cutoff=${cutoff}`);
+            const html = await response.text();
+
+            infoContainer.innerHTML = html;
+            overlay.style.display = 'flex'; // Show overlay
+        }
+    });
+});
