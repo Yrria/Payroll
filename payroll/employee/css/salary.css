@@ -1,12 +1,13 @@
 table {
     width: 100%;
     border-collapse: collapse;
+    border: 2px solid #ddd;
 }
 
 th,
 td {
     flex-grow: 1;
-    padding: 5px;
+    padding: 12px;
     text-align: center;
     border: 1px solid #CCC;
     overflow: hidden;
@@ -19,31 +20,35 @@ th {
     font-weight: 600;
 }
 
-button {
-    background-color: #052659;
+.button {
+    background-color: #4383b3;
     color: #FFFFFF;
     border-radius: 5px;
-    height: 33px;
+    height: 40px;
     width: 30%;
     border: none;
     transition: 0.3s;
 }
 
 tr:nth-child(odd) {
-    background-color: #F7F6FE;
+    background-color: #FFFFFF;
 }
 
 tr:nth-child(even) {
-    background-color: #FFFFFF;
+    background-color: #f9f9f9;
+}
+
+tr:hover {
+    background-color: #f1f1f1;
 }
 
 tr:nth-child(14) {
     color: #FFFFFF;
-    background-color: #20242C;
+    background-color: #6f9fce;
 }
 
 button:hover {
-    background-color: #20242C;
+    background-color: #6f9fce;
 }
 
 .filterDiv {
@@ -56,10 +61,11 @@ button:hover {
 .textbox {
     width: 100%;
     font-size: 15px;
-    border-radius: 5px;
-    padding: 5px;
+    border-radius: 3px;
+    padding: 10px;
     border: none;
     transition: 0.3s;
+    border: 1px solid #dad9d9;
 }
 
 .textbox:focus {
@@ -67,7 +73,20 @@ button:hover {
 }
 
 .textbox:focus {
-    background-color: #F7F6FE;
+    background-color: #f1f1f1;
+}
+
+.view-btn {
+    background-color: none;
+    border-radius: 3px;
+    padding: 3px;
+    border: none;
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+.view-btn:hover {
+    background-color: #ddd;
 }
 
 /* view */
@@ -82,7 +101,7 @@ button:hover {
 }
 
 .info-container {
-    background-color: #F7F6FE;
+    background-color: #FFFFFF;
     position: absolute;
     top: 50%;
     left: 50%;

@@ -60,6 +60,20 @@ include './assets/databse/login.php';
                 this.classList.toggle('fa-eye-slash');
             });
     </script>
+    <?php if (isset($_SESSION['password_reset'])): ?>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Password successfully changed!',
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 2500
+            });
+        </script>
+        <?php unset($_SESSION['password_reset']); ?>
+    <?php endif; ?>
 </body>
 
 </html>

@@ -71,7 +71,7 @@ $emp_id = $_SESSION['emp_id'];
                         <table id="salaryTable">
                             <tr>
                                 <th>Year</th>
-                                <th>Month</th>
+                                <th>Date</th>
                                 <th>Cutoff</th>
                                 <th>Status</th>
                                 <th>Total Salary</th>
@@ -96,6 +96,11 @@ $emp_id = $_SESSION['emp_id'];
     <!-- SCRIPT -->
     <script src="./javascript/main.js"></script>
     <script src="./javascript/salary.js"></script>
+    <script>
+        function closeOverlay() {
+            document.getElementById('overlay').style.display = 'none';
+        }
+    </script>
 </body>
 
 </html>

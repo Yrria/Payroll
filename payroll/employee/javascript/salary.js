@@ -25,8 +25,9 @@ window.onload = fetchSalaryData;
 // Details
 document.addEventListener('DOMContentLoaded', () => {
     document.querySelector('#salaryData').addEventListener('click', async (e) => {
-        if (e.target.tagName === 'BUTTON' && e.target.id === 'viewBtn') {
-            const row = e.target.closest('tr');
+        const viewBtn = e.target.closest('button#viewBtn');
+        if (viewBtn) {
+            const row = viewBtn.closest('tr');
             const year = row.children[0].textContent;
             const month = row.children[1].textContent;
             const cutoff = row.children[2].textContent;
@@ -42,3 +43,4 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
