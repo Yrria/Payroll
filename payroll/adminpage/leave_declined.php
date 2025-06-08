@@ -217,7 +217,7 @@ $qp = !empty($_GET['query']) ? '&query=' . urlencode($_GET['query']) : '';
                       </td>
                       <td class="td-text">
                         <div class="action-buttons" style="display:flex; gap: 5px;">
-                          <button class="view-btn btn-view-info">View Info</button>
+                          <button class="view-btn btn-view-info"><i class="fa-solid fa-eye"></i></button>
                         </div>
                       </td>
                     </tr>

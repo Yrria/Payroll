@@ -118,11 +118,13 @@ $qp = !empty($_GET['query']) ? '&query=' . urlencode($_GET['query']) : '';
 <html lang="en">
 
 <head>
+
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
   <link rel="shortcut icon" href="../assets/logowhite-.png" type="image/svg+xml" />
   <link rel="stylesheet" href="./css/main.css" />
   <link rel="stylesheet" href="./css/leave.css" />
+  <script src="https://kit.fontawesome.com/3b07bc6295.js" crossorigin="anonymous"></script>
   <title>Leave - Pending</title>
   <style>
     /* Basic modal styling, adjust or replace with your CSS */
@@ -236,17 +238,17 @@ $qp = !empty($_GET['query']) ? '&query=' . urlencode($_GET['query']) : '';
 
                       <td class="td-text">
                         <div class="action-buttons" style="display:flex; gap: 5px;">
-                          <button class="view-btn btn-view-info">View Info</button>
+                          <button class="view-btn btn-view-info"><i class="fa-solid fa-eye"></i></button>
 
                           <form method="post"
                             onsubmit="return confirm('Are you sure you want to approve this leave request?');"
                             style="margin: 0;">
                             <input type="hidden" name="approve_leave_id"
                               value="<?php echo htmlspecialchars($row['leave_id']); ?>" />
-                            <button type="submit" name="approve_btn" class="view-btn btn-approve">Approve</button>
+                            <button type="submit" name="approve_btn" class="view-btn btn-approve"><i class="fa-solid fa-thumbs-up"></i></button>
                           </form>
 
-                          <button class="view-btn btn-decline">Decline</button>
+                          <button class="view-btn btn-decline"><i class="fa-solid fa-xmark"></i></button>
                         </div>
                       </td>
                     </tr>
