@@ -20,7 +20,7 @@
     margin-right: 10px;
     cursor: pointer;
     transition: all 0.5s ease;
-    height:10px ;
+    height: 10px;
 }
 
 .file-upload:hover {
@@ -82,6 +82,7 @@
     margin: 10px;
     /* position: relative; */
 }
+
 .option-button {
     margin-top: 100;
 }
@@ -93,13 +94,14 @@
     align-items: center;
     margin-bottom: 20px;
 }
+
 /* Style for the search box */
 .search-box {
-    padding: 10px; 
+    padding: 10px;
     border: 1px solid #ccc;
-    border-radius: 5px; 
-    margin-right: 5px; 
-    flex: 0 1 200px; 
+    border-radius: 5px;
+    margin-right: 5px;
+    flex: 0 1 200px;
 }
 
 /* Style for the search button */
@@ -108,9 +110,9 @@
     background-color: #20242C;
     color: #ffffff;
     border: none;
-    border-radius: 5px; 
-    cursor: pointer; 
-    margin-right: 5px; 
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 5px;
     transition: all 0.5s ease;
     margin-left: 10px
 }
@@ -137,6 +139,7 @@
     margin-top: 70px;
 
 }
+
 .add-new-btn1:hover {
     background-color: #000000;
     color: #ffffff;
@@ -157,6 +160,7 @@
     transition: all 0.5s ease;
     margin-top: 70px;
 }
+
 .add-new-btn2:hover {
     background-color: #000000;
     color: #ffffff;
@@ -177,6 +181,7 @@
     transition: all 0.5s ease;
     margin-top: 70px;
 }
+
 .add-new-btn3:hover {
     background-color: #000000;
     color: #ffffff;
@@ -186,16 +191,24 @@
 
 
 /* Table styles */
-table {
+.att-table {
     width: 100%;
     border-collapse: collapse;
 }
 
-table th, table td {
+.att-header {
+    padding: 10px;
+    border: 2px solid #ddd;
+    text-align: center;
+    font-weight: bold;
+}
+
+.att-cell {
     padding: 10px;
     border: 2px solid #ddd;
     text-align: center;
 }
+
 
 button.view-info {
     background-color: #324e79;
@@ -218,9 +231,9 @@ button.view-info {
 /* Pagination Styles */
 .pagination {
     display: flex;
-    justify-content: space-between; 
-    align-items: center; 
-    margin-top: 20px; 
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
 }
 
 .results-info {
@@ -242,7 +255,8 @@ button.view-info {
     border-radius: 4px;
 }
 
-.prev-btn, .next-btn {
+.prev-btn,
+.next-btn {
     padding: 8px 16px;
     background-color: #20242C;
     color: #ffffff;
@@ -252,7 +266,8 @@ button.view-info {
     transition: all 0.5s ease;
 }
 
-.prev-btn:hover, .next-btn:hover {
+.prev-btn:hover,
+.next-btn:hover {
     background-color: #000000;
     color: #ffffff;
     box-shadow: 0 0 8px rgb(98, 184, 235);
@@ -315,7 +330,8 @@ button.view-info {
 }
 
 .info-table {
-    margin-left: 20px; /* Space between profile name and table */
+    margin-left: 20px;
+    /* Space between profile name and table */
 }
 
 .table-container {
@@ -325,9 +341,12 @@ button.view-info {
 }
 
 button.back-btn {
-    position: absolute; /* Position at the bottom */
-    bottom: 20px; /* Space from bottom */
-    right: 20px; /* Space from right */
+    position: absolute;
+    /* Position at the bottom */
+    bottom: 20px;
+    /* Space from bottom */
+    right: 20px;
+    /* Space from right */
     padding: 10px 20px;
     border: none;
     background-color: #20242C;
@@ -341,3 +360,328 @@ button.back-btn:hover {
     color: #ffffff;
     box-shadow: 0 0 8px rgb(98, 184, 235);
 }
+
+/* MODAL VIEW INFO */
+.body-wrapper {
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #f1f1f1;
+    margin: 0;
+}
+
+.modal-container {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.4);
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-box {
+    background: white;
+    padding: 30px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    width: 95%;
+    max-width: 800px;
+    padding-top: 6%;
+    padding-left: 40px;
+    padding-right: 40px;
+}
+
+.custom-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.custom-th,
+.custom-td {
+    border: 1px solid #e0e0e0;
+    padding: 10px;
+    text-align: center;
+}
+
+.custom-th {
+    background-color: #f5f5fa;
+}
+
+.profile-cell {
+    border: none !important;
+    background: none !important;
+}
+
+.profile-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding-right: 10px;
+}
+
+.profile-img {
+    width: 70px;
+    height: 70px;
+}
+
+.profile-name {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.btn,
+.btn-view {
+    background-color: #1d1d1d;
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.btn {
+    float: right;
+}
+
+.btn:hover,
+.btn-view:hover {
+    background-color: #333;
+}
+
+.view-section {
+    text-align: center;
+    margin: 40px 0;
+}
+
+@media (max-width: 600px) {
+    .profile-box {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .profile-name {
+        font-size: 16px;
+    }
+
+    .modal-box {
+        padding: 20px 10px;
+    }
+}
+
+/* PAYROLL */
+.payroll_contents {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    margin: 10px;
+    box-shadow: 0px 0px 5px #ccc;
+}
+
+/* Dropdown Container */
+.dropdown {
+    width: 200px;
+    position: relative;
+    /* Needed for absolute positioning of content */
+}
+
+/* Dropdown Input */
+.dropdown-input {
+    width: 75%;
+    padding: 6px 10px;
+    border: 1px solid #aaaaaa6c;
+    border-radius: 5px;
+    outline: none;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+
+.dropdown-input:hover {
+    color: #7DA0CA;
+    transition: all 0.3s ease-in-out;
+    /* Smooth animation */
+}
+
+.dropdown-input:focus {
+    color: #fff;
+    background-color: #AAC7D8;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.13);
+
+}
+
+/* Dropdown Indicator */
+.dropdown-indicator {
+    font-size: 27px;
+    position: absolute;
+    right: 55px;
+    transition: transform 0.3s ease;
+    /* Smooth rotation animation */
+    cursor: pointer;
+}
+
+.dropdown-indicator.rotated {
+    transform: rotate(180deg);
+    /* Flip the arrow */
+}
+
+/* Dropdown Content */
+.dropdown-content {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 75%;
+    /* Match input width */
+    background-color: #fff;
+    border: 1px solid #ddd;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    /* Ensure it stays on top */
+    border-radius: 5px;
+    overflow-y: auto;
+    max-height: 150px;
+    opacity: 0;
+    transform: scaleY(0);
+    transform-origin: top;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    /* Smooth transition */
+    pointer-events: none;
+    /* Prevent clicks when hidden */
+}
+
+.dropdown-content.show {
+    opacity: 1;
+    transform: scaleY(1);
+    /* Expand dropdown */
+    pointer-events: auto;
+    /* Enable clicks */
+}
+
+
+.dropdown-content .dropdown-item {
+    padding: 5px 5px;
+    cursor: pointer;
+}
+
+.dropdown-content .dropdown-item:hover {
+    background-color: #AAC7D8;
+    transition: all 0.2s ease-in-out;
+    /* Smooth animation */
+}
+
+/* Dropdown Wrapper */
+.dropdown-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+
+}
+
+.dropdown-div {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.selection_div {
+    margin: 50px 0 10px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: auto;
+    padding: 20px;
+    border-radius: 3px;
+    box-shadow: 1px 0px 5px rgba(0, 0, 0, 0.3);
+    background-color: #fff;
+}
+
+.action-buttons,
+.action-tb {
+    max-width: 100px;
+    /* Set max width for the cell */
+}
+
+.slip-btn {
+    background-color: #1BCD80;
+    color: #fff;
+    padding: 4px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 1px;
+    font-size: smaller;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.slip-btn:hover {
+    background-color: #39d491;
+    transition: all 0.3s ease-in-out;
+    /* Smooth animation */
+}
+
+.slip-btn:active {
+    background-color: #33996d;
+    transition: all 0.1s ease-in-out;
+    /* Smooth animation */
+}
+
+.view-btn {
+    background-color: #5483B3;
+    color: #fff;
+    padding: 4px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 1px;
+    font-size: smaller;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.view-btn:hover {
+    background-color: #6f9fce;
+    transition: all 0.3s ease-in-out;
+    /* Smooth animation */
+}
+
+.view-btn:active {
+    background-color: #506c88;
+    transition: all 0.1s ease-in-out;
+    /* Smooth animation */
+}
+
+input[type="text"] {
+    font-size: 16px;
+}
+
+/* Header cells */
+.att-table .att-header {
+    background-color: white;
+    color: black;
+}
+
+/* Even rows */
+.att-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+/* Hover effect */
+.att-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+.no-data {
+    text-align: center;
+    font-weight: bold;
+    color: gray;
+    padding: 20px;
+}   
+
+.att-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-height: 250px;
+    margin-top: 20px;
+  }

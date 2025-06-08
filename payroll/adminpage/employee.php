@@ -82,8 +82,6 @@ while ($row = $position_result->fetch_assoc()) {
 }
 ?>
 
-
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -140,7 +138,9 @@ while ($row = $position_result->fetch_assoc()) {
                             <input type="text" placeholder="Search employee..." class="search-box">
                         </div>
 
-                        <button class="add-new-btn"><span class="plus-icon">+</span>Add New</button>
+                        <button class="add-new-btn" onclick="openAddModal()">
+                            <span class="plus-icon">+</span>Add New
+                        </button>
 
                         <table id="leave-table">
                             <thead>
@@ -165,7 +165,7 @@ while ($row = $position_result->fetch_assoc()) {
                                         $emp_id = $row['emp_id'];
 
                                         // Fetch additional info from tbl_emp_info using emp_id
-                                        $info_sql = "SELECT shift, position, rate FROM tbl_emp_info WHERE emp_id = '$emp_id' LIMIT 1";
+                                        $info_sql = "SELECT shift, position, rate, pay_type FROM tbl_emp_info WHERE emp_id = '$emp_id' LIMIT 1";
                                         $info_result = $conn->query($info_sql);
                                         $info = $info_result->fetch_assoc();
 
@@ -191,12 +191,27 @@ while ($row = $position_result->fetch_assoc()) {
                                             <td><?php echo $row['phone_no'] ?></td>
                                             <td><?php echo $row['address'] ?></td>
                                             <td><?php echo $rate ?></td>
+                                            <td hidden><?php echo $row['date_join'] ?></td>
+                                            <td hidden><?php echo $info['pay_type'] ?></td>
                                             <td class="td-text" style="color: <?php echo (strtolower(trim($row['status'])) === 'active') ? 'green' : 'red'; ?>; font-weight: 500;">
                                                 <?php echo htmlspecialchars($row['status']); ?>
                                             </td>
                                             <td class="td-text">
                                                 <div class="action-buttons">
-                                                    <button class="view-btn">View Info</button>
+                                                    <button class="view-btn"
+                                                        data-empid="<?php echo $row['emp_id']; ?>"
+                                                        data-paytype="<?php echo htmlspecialchars($info['pay_type']); ?>"
+                                                        data-rate="<?php echo htmlspecialchars($rate); ?>"
+                                                        data-position="<?php echo htmlspecialchars($position); ?>"
+                                                        data-gender="<?php echo htmlspecialchars($row['gender']); ?>"
+                                                        data-shift="<?php echo htmlspecialchars($shift); ?>"
+                                                        data-phone="<?php echo htmlspecialchars($row['phone_no']); ?>"
+                                                        data-address="<?php echo htmlspecialchars($row['address']); ?>"
+                                                        data-email="<?php echo htmlspecialchars($row['email']); ?>"
+                                                        data-joindate="<?php echo htmlspecialchars(date("F j, Y", strtotime($row['date_join']))); ?>"
+                                                        data-fullname="<?php echo htmlspecialchars($fullname); ?>"
+                                                        onclick="openModal(this)">View Info</button>
+
                                                 </div>
                                             </td>
                                         </tr>
@@ -227,238 +242,316 @@ while ($row = $position_result->fetch_assoc()) {
         </div>
     </div>
 
-    <!-- view-info Modal -->
-    <div class="modal2-info-backdrop" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 99;"></div>
-    <div class="modal2-info" style="display: none;">
-        <div class="profile-container2">
-            <div class="employee-details4">
-                <h3>Employee ID:</h3>
-                <input type="text" class="search-boxs" readonly>
+    <!-- Modal -->
+    <div class="modal-overlay" id="employeeModal">
+        <div class="modal">
+            <div class="modal-header">
+                <img src="../assets/avatar.png" alt="Avatar" class="profile-img" />
+                <div class="profile-name" id="modal-fullname">Marc Andrei A. Toledo</div>
             </div>
 
-            <div class="employee-details5">
-                <h3>Employee Name:</h3>
-                <input type="text" class="search-boxs" readonly>
-            </div>
+            <div class="modal-grid">
+                <div class="form-group">
+                    <label>Employee Id</label>
+                    <input type="text" disabled id="modal-empid" value="EMP0001">
+                </div>
+                <div class="form-group">
+                    <label>Pay Type</label>
+                    <input type="text" disabled id="modal-paytype" value="Cash">
+                </div>
 
-            <div class="employee-details6">
-                <h3>Position</h3>
-                <input type="text" class="search-boxs" readonly>
-            </div>
-        </div>
+                <div class="form-group">
+                    <label>Rate</label>
+                    <input type="text" disabled id="modal-rate" value="">
+                </div>
+                <div class="form-group">
+                    <label>Position</label>
+                    <select id="modal-position">
+                        <option>Crew</option>
+                        <option>Server Crew</option>
+                        <option>Manager</option>
+                    </select>
+                </div>
 
-        <div class="detail-container">
-            <div class="detail-left">
-                <br>
-                <h3>Shift</h3>
-                <input type="text" class="search-boxes" readonly>
+                <div class="form-group">
+                    <label>Gender</label>
+                    <input type="text" disabled id="modal-gender" value="Male">
+                </div>
+                <div class="form-group">
+                    <label>Shift</label>
+                    <select id="modal-shift">
+                        <option>Morning</option>
+                        <option>Night</option>
+                    </select>
+                </div>
 
-                <h3>Gender</h3>
-                <input type="text" class="search-boxes" readonly>
+                <div class="form-group">
+                    <label>Contact Number</label>
+                    <input type="text" disabled id="modal-phone" value="09483746672">
+                </div>
+                <div class="form-group">
+                    <label>Address</label>
+                    <input type="text" disabled id="modal-address" value="10039856754894">
+                </div>
 
-                <h3>Email Address:</h3>
-                <input type="text" class="search-boxes" readonly>
-            </div>
-            <div class="detail-right">
-                <br>
-                <h3>Position:</h3>
-                <select class="search-boxes" disabled>
-                    <option>Crew</option>
-                    <option>Manager</option>
-                </select>
-
-                <h3>Address</h3>
-                <input type="text" class="search-boxes" readonly>
-
-                <div class="inline-inputs">
-                    <div class="pay-type-container">
-                        <h3>Pay Type:</h3>
-                        <input type="text" class="search-boxes pay-type-input" readonly>
-                    </div>
-                    <div class="rate-container">
-                        <h3>Rate:</h3>
-                        <input type="text" class="search-boxes rate-input" readonly>
-                    </div>
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="text" disabled id="modal-email" value="johndoe@gmail.com">
+                </div>
+                <div class="form-group">
+                    <label>Joining Date</label>
+                    <input type="text" disabled id="modal-joindate" value="June 15, 2020">
                 </div>
             </div>
-        </div>
 
-        <div class="button-container">
-            <button class="save_btn" id="add-employee">Save</button>
-            <button class="back-btn" id="cancel-add">Back</button>
-        </div>
-    </div>
-
-
-
-    <!-- Confirmation Modal -->
-    <div class="confirm-modal2">
-        <div class="confirm-content">
-            <h2 class="confirm-title">CONFIRM</h2>
-            <p>Are you sure you want to update employee info?</p>
-            <div class="confirm-button-container">
-                <button class="yes-btn" id="save-employee">Yes</button>
-                <button class="cancel-btn" id="close-view-modal">Cancel</button>
+            <div class="modal-actions">
+                <button class="btn-save" onclick="saveInfo()">Save</button>
+                <button class="btn-back" onclick="closeModal()">Back</button>
             </div>
         </div>
     </div>
 
-    <!-- Success Modal -->
-    <div class="success-modal2">
-        <div class="success-content">
-            <img src="https://img.icons8.com/color/48/000000/checkmark.png" alt="Success Icon" class="success-icon" />
-            <p class="success-message">Employee info updated successfully!</p>
-            <div class="success-button-container">
-                <button class="close-btn" id="close-success">Close</button>
-            </div>
-        </div>
-    </div>
-
-
-
-    <!-- Modal Backdrop for Adding Employee -->
-    <div class="modal-backdrop2"></div>
-    <!-- Add New Modal -->
-    <div class="modal2">
-        <div class="profile-container2">
-            <div class="employee-details4">
-                <h3>First Name:</h3>
-                <input type="text" placeholder="Enter Firstname" class="search-boxs" required>
+    <!-- Add Employee Modal -->
+    <div class="modal-overlay" id="addEmployeeModal">
+        <div class="modal">
+            <div class="modal-header">
+                <img src="../assets/avatar.png" alt="Avatar" class="profile-img" />
+                <div class="profile-name">Add New Employee</div>
             </div>
 
-            <div class="employee-details5">
-                <h3>Middle Name:</h3>
-                <input type="text" placeholder="Enter Middlename" class="search-boxs" required>
-            </div>
-
-            <div class="employee-details6">
-                <h3>Lastname:</h3>
-                <input type="text" placeholder="Enter Lastname" class="search-boxs" required>
-            </div>
-        </div>
-        <div class="detail-container">
-            <div class="detail-left">
-                <h3>Contact Number:</h3>
-                <input type="text" placeholder="Input Number..." class="search-boxes" required>
-
-                <h3>Shift:</h3>
-                <select class="search-boxes">
-                    <option>Morning</option>
-                    <option>Night</option>
-                </select>
-
-                <h3>Email Address:</h3>
-                <input type="text" placeholder="Input Your Email..." class="search-boxes" required>
-            </div>
-            <div class="detail-right">
-                <h3>Position:</h3>
-
-                <select class="search-boxes">
-                    <option>Crew</option>
-                    <option>Serving Crew</option>
-                    <option>Manager</option>
-                </select>
-
-                <h3>Gender:</h3>
-                <select class="search-boxes">
-                    <option>Male</option>
-                    <option>Female</option>
-                </select>
-
-                <div class="inline-inputs">
-                    <div class="pay-type-container">
-                        <h3>Pay Type:</h3>
-                        <input type="text" placeholder="Input Pay Type..." class="search-boxes pay-type-input" required>
-                    </div>
-                    <div class="rate-container">
-                        <h3>Rate:</h3>
-                        <input type="text" placeholder="Input Rate..." class="search-boxes rate-input" required>
-                    </div>
+            <div class="name-row">
+                <div class="name-group">
+                    <label>First Name</label>
+                    <input type="text" id="add-fname" required>
+                </div>
+                <div class="name-group">
+                    <label>Middle Name</label>
+                    <input type="text" id="add-mname" required>
+                </div>
+                <div class="name-group">
+                    <label>Last Name</label>
+                    <input type="text" id="add-lname" required>
                 </div>
             </div>
-        </div>
+            <div class="modal-grid">
+                <div class="form-group">
+                    <label>Employee Id</label>
+                    <input type="text" id="add-empid" disabled value="EMPXXXX">
+                </div>
+                <div class="form-group">
+                    <label>Pay Type</label>
+                    <input type="text" id="add-paytype" value="Cash" disabled>
+                </div>
+                <div class="form-group">
+                    <label>Rate</label>
+                    <input type="text" id="add-rate" disabled>
+                </div>
+                <div class="form-group">
+                    <label>Position</label>
+                    <select id="add-position" onchange="updateRate()" required>
+                        <option value="">Select Position</option>
+                        <option value="Crew">Crew</option>
+                        <option value="Server Crew">Server Crew</option>
+                        <option value="Manager">Manager</option>
+                    </select>
+                </div>
 
-        <div class="button-container">
-            <button class="back-btn" id="add-employee">Add</button>
-            <button class="back-btn" id="cancel-add">Cancel</button>
-        </div>
-    </div>
+                <div class="form-group">
+                    <label>Gender</label>
+                    <select id="add-gender">
+                        <option value="" required>Select Gender</option>
+                        <option>Male</option>
+                        <option>Female</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Shift</label>
+                    <select id="add-shift" onchange="updateRate()" required>
+                        <option value="">Select Shift</option>
+                        <option value="Morning">Morning</option>
+                        <option value="Night">Night</option>
+                    </select>
+                </div>
 
-    <!-- Confirmation Modal -->
-    <div class="confirm-modal">
-        <div class="confirm-content">
-            <h2 class="confirm-title">CONFIRM</h2>
-            <p>Are you sure you want to add a new employee?</p>
-            <div class="confirm-button-container">
-                <button class="yes-btn" id="confirm-add">Yes</button>
-                <button class="cancel-btn" id="cancel-confirm">Cancel</button>
+                <div class="form-group">
+                    <label>Contact Number</label>
+                    <input type="text" id="add-phone" maxlength="11" placeholder="e.g. 09XXXXXXXXX" oninput="validatePhone(this)" required>
+                </div>
+                <div class="form-group">
+                    <label>Address</label>
+                    <input type="text" id="add-address" placeholder="Enter full address" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="text" id="add-email" placeholder="e.g. email@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Joining Date</label>
+                    <input type="text" id="add-joindate" disabled>
+                </div>
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn-save" onclick="addNewEmployee()">Add</button>
+                <button class="btn-back" onclick="closeAddModal()">Cancel</button>
             </div>
         </div>
     </div>
-
-    <!-- Success Modal -->
-    <div class="success-modal">
-        <div class="success-content">
-            <img src="https://img.icons8.com/color/48/000000/checkmark.png" alt="Success Icon" class="success-icon" />
-            <p class="success-message">Employee added successfully!</p>
-            <div class="success-button-container">
-                <button class="close-btn" id="closes-success">Close</button>
-            </div>
-        </div>
-    </div>
-
 
     <!-- SCRIPT -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        const addNewButton = document.querySelector('.add-new-btn');
-        const modal2 = document.querySelector('.modal2');
-        const backdrop2 = document.querySelector('.modal-backdrop2');
-        const cancelAddButton = document.getElementById('cancel-add');
+        // Rate mapping
+        const rates = {
+            "Crew": 520,
+            "Server Crew": 570,
+            "Manager": 720
+        };
 
-        const viewInfoButtons = document.querySelectorAll('.view-info');
-        const modal = document.querySelector('.modal');
-        const modalBackdrop = document.querySelector('.modal-backdrop');
+        const positionSelect = document.getElementById("modal-position");
+        const shiftSelect = document.getElementById("modal-shift");
+        const rateInput = document.getElementById("modal-rate");
 
-        // Show modal2 when "Add New" button is clicked
-        addNewButton.addEventListener('click', () => {
-            modal2.style.display = 'flex';
-            backdrop2.style.display = 'block';
+        let originalValues = {
+            position: '',
+            shift: '',
+            rate: ''
+        };
+
+        // Calculate rate based on position and shift
+        function calculateRate(position, shift) {
+            let baseRate = rates[position] || 0;
+            if (shift === "Night") {
+                baseRate *= 1.10;
+            }
+            return baseRate.toFixed(2);
+        }
+
+        // Update rate field when position or shift changes
+        function updateRate() {
+            const position = positionSelect.value;
+            const shift = shiftSelect.value;
+            rateInput.value = calculateRate(position, shift);
+        }
+
+        // Store original modal values when it's opened
+        function storeOriginalValues() {
+            originalValues = {
+                position: positionSelect.value,
+                shift: shiftSelect.value,
+                rate: rateInput.value
+            };
+        }
+
+        // Add listeners to update rate on dropdown change
+        document.addEventListener("DOMContentLoaded", () => {
+            positionSelect.addEventListener("change", updateRate);
+            shiftSelect.addEventListener("change", updateRate);
         });
 
-        // Close modal2 when "Cancel" button is clicked
-        cancelAddButton.addEventListener('click', () => {
-            modal2.style.display = 'none';
-            backdrop2.style.display = 'none';
-        });
+        // Call this after opening modal and filling in data
+        function openEmployeeModal() {
+            updateRate(); // Recalculate rate
+            storeOriginalValues(); // Capture initial state
+            document.getElementById("employeeModal").style.display = "block";
+        }
 
-        // Close modal2 on backdrop click
-        backdrop2.addEventListener('click', () => {
-            modal2.style.display = 'none';
-            backdrop2.style.display = 'none';
-        });
+        // Save button handler
+        function saveInfo() {
+            const newPosition = positionSelect.value;
+            const newShift = shiftSelect.value;
+            const newRate = rateInput.value;
 
-        // Show modal when "View Info" button is clicked
-        viewInfoButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                modal.style.display = 'flex';
-                modalBackdrop.style.display = 'block';
+            // Compare current with original values
+            const hasChanged =
+                newPosition !== originalValues.position ||
+                newShift !== originalValues.shift ||
+                newRate !== originalValues.rate;
+
+            if (!hasChanged) {
+                alert("No changes detected.");
+                return;
+            }
+
+            const confirmed = confirm(`You're about to update the employee's info:\n\nPosition: ${newPosition}\nShift: ${newShift}\nRate: ${newRate}\n\nDo you want to continue?`);
+            if (!confirmed) return;
+
+            const empId = document.getElementById("modal-empid").value;
+
+            fetch("update_employee.php", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        empId: empId,
+                        position: newPosition,
+                        shift: newShift,
+                        rate: newRate
+                    })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        alert("Employee record updated successfully.");
+                        location.reload(); // Refresh to reflect changes
+                    } else {
+                        alert("Update failed: " + data.message);
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert("An error occurred while updating.");
+                });
+        }
+
+        // Optional: modal close
+        function closeModal() {
+            document.getElementById("employeeModal").style.display = "none";
+        }
+
+
+        // ADD EMP SCRIPT
+        // Auto-set today's date in joining date field
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date();
+            const formattedDate = today.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
             });
+            document.getElementById('add-joindate').value = formattedDate;
         });
 
-        // Close modal when "Back" button is clicked for the modal
-        const closeModalButtons = document.querySelectorAll('#close-view-modal, #save-employee');
-        closeModalButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                modal.style.display = 'none';
-                modalBackdrop.style.display = 'none';
-            });
-        });
+        // Position → Base Rate mapping
+        const baseRates = {
+            "Crew": 520,
+            "Server Crew": 570,
+            "Manager": 720
+        };
 
-        // Close modal on backdrop click
-        modalBackdrop.addEventListener('click', () => {
-            modal.style.display = 'none';
-            modalBackdrop.style.display = 'none';
-        });
+        // Update rate when position or shift changes
+        function updateRate() {
+            const position = document.getElementById('add-position').value;
+            const shift = document.getElementById('add-shift').value;
+            const rateInput = document.getElementById('add-rate');
+
+            if (baseRates[position]) {
+                let rate = baseRates[position];
+                if (shift === "Night") {
+                    rate += rate * 0.10; // Add 10%
+                }
+                rateInput.value = rate.toFixed(2);
+            } else {
+                rateInput.value = '';
+            }
+        }
+
+        // Validate contact number
+        function validatePhone(input) {
+            input.value = input.value.replace(/[^0-9]/g, '').slice(0, 11);
+        }
 
         // Pagination Logic
         const prevBtn = document.querySelector('.prev-btn');
@@ -489,60 +582,7 @@ while ($row = $position_result->fetch_assoc()) {
         // Initial display
         updateResultsDisplay();
 
-        // Your existing JavaScript logic
-        const confirmModal = document.querySelector('.confirm-modal');
-        const confirmAddButton = document.getElementById('confirm-add');
-        const cancelConfirmButton = document.getElementById('cancel-confirm');
-        const successModal = document.querySelector('.success-modal');
-        const closeSuccessButton = document.getElementById('closes-success');
-
-
-        document.getElementById('add-employee').addEventListener('click', () => {
-            confirmModal.style.display = 'flex';
-        });
-
-        confirmAddButton.addEventListener('click', () => {
-            confirmModal.style.display = 'none';
-            successModal.style.display = 'flex'; // Show success modal
-        });
-
-        cancelConfirmButton.addEventListener('click', () => {
-            confirmModal.style.display = 'none';
-        });
-
-        closeSuccessButton.addEventListener('click', () => {
-            successModal.style.display = 'none'; // Close success modal
-        });
-
-        const confirmModal2 = document.querySelector('.confirm-modal2'); // Confirm modal for updating employee info
-        const successModal2 = document.querySelector('.success-modal2'); // Success modal for employee update
-        const saveEmployeeButton = document.getElementById('save-employee'); // Save button
-
-        // Trigger confirmation modal when the Save button is clicked
-        saveEmployeeButton.addEventListener('click', () => {
-            confirmModal2.style.display = 'flex'; // Show confirmation modal
-        });
-
-        // If the user confirms the update
-        document.querySelector('.yes-btn').addEventListener('click', () => {
-            confirmModal2.style.display = 'none'; // Close the confirmation modal
-            successModal2.style.display = 'flex'; // Show success modal
-        });
-
-        // If the user cancels the update
-        document.querySelector('.cancel-btn').addEventListener('click', () => {
-            confirmModal2.style.display = 'none'; // Close the confirmation modal
-        });
-
-        // Close the success modal
-        document.getElementById('close-success').addEventListener('click', () => {
-            successModal2.style.display = 'none'; // Close success modal
-        });
-    </script>
-
-    <!-- LIVE SEARCH -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
+        //    LIVE SEARCH
         $(document).ready(function() {
             // When the user types in the search input
             $(".search-box").keyup(function() {
@@ -562,68 +602,66 @@ while ($row = $position_result->fetch_assoc()) {
                 });
             });
         });
-    </script>
 
-    <!-- VIEW INFO -->
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const viewButtons = document.querySelectorAll(".view-btn");
-            const modal = document.querySelector(".modal2-info");
-            const modalBackdrop = document.querySelector(".modal2-info-backdrop");
-            const backBtn = document.querySelector(".modal2-info .back-btn");
+        // VIEW Modal
+        function openModal() {
+            document.getElementById('employeeModal').style.display = 'flex';
+        }
 
-            viewButtons.forEach(button => {
-                button.addEventListener("click", function() {
-                    const row = this.closest("tr");
-                    const cells = row.querySelectorAll("td");
+        function closeModal() {
+            document.getElementById('employeeModal').style.display = 'none';
+        }
 
-                    // Populate modal fields
-                    const firstName = cells[0].textContent.trim();
-                    const middleName = cells[1].textContent.trim();
-                    const lastName = cells[2].textContent.trim();
-                    const contact = cells[3].textContent.trim();
-                    const bankName = cells[4].textContent.trim();
-                    const email = cells[5].textContent.trim();
-                    const position = cells[6].textContent.trim();
-                    const bankAccount = cells[7].textContent.trim();
-                    const payType = cells[8].textContent.trim();
-                    const rate = cells[9].textContent.trim();
+        // function saveInfo() {
+        //     alert('Information saved!');
+        //     closeModal();
+        // }
 
-                    const inputs = modal.querySelectorAll("input.search-boxs, input.search-boxes, input.pay-type-input, input.rate-input");
-                    const selects = modal.querySelectorAll("select.search-boxes");
+        window.addEventListener('click', function(e) {
+            const modal = document.getElementById('employeeModal');
+            if (e.target === modal) {
+                closeAddModal();
+            }
+        });
 
-                    inputs[0].value = firstName;
-                    inputs[1].value = middleName;
-                    inputs[2].value = lastName;
-                    inputs[3].value = contact;
-                    inputs[4].value = bankName;
-                    inputs[5].value = email;
-                    selects[0].value = position;
-                    inputs[6].value = bankAccount;
-                    inputs[7].value = payType;
-                    inputs[8].value = rate;
+        // MODAL INPUT VIEW DETAILS
+        function openModal(button) {
+            document.getElementById('modal-fullname').textContent = button.getAttribute('data-fullname');
+            document.getElementById('modal-empid').value = button.getAttribute('data-empid');
+            document.getElementById('modal-paytype').value = button.getAttribute('data-paytype');
+            document.getElementById('modal-rate').value = button.getAttribute('data-rate');
+            document.getElementById('modal-position').value = button.getAttribute('data-position');
+            document.getElementById('modal-gender').value = button.getAttribute('data-gender');
+            document.getElementById('modal-shift').value = button.getAttribute('data-shift');
+            document.getElementById('modal-phone').value = button.getAttribute('data-phone');
+            document.getElementById('modal-address').value = button.getAttribute('data-address');
+            document.getElementById('modal-email').value = button.getAttribute('data-email');
+            document.getElementById('modal-joindate').value = button.getAttribute('data-joindate');
 
-                    // Show modal and backdrop
-                    modal.style.display = "block";
-                    modalBackdrop.style.display = "block";
-                });
-            });
+            // Show modal with flex for centering
+            document.getElementById('employeeModal').style.display = 'flex';
+        }
 
-            // Back button closes the modal
-            backBtn.addEventListener("click", () => {
-                modal.style.display = "none";
-                modalBackdrop.style.display = "none";
-            });
+        function closeModal() {
+            document.getElementById('employeeModal').style.display = 'none';
+        }
 
-            // Click outside modal to close
-            modalBackdrop.addEventListener("click", () => {
-                modal.style.display = "none";
-                modalBackdrop.style.display = "none";
-            });
+
+        // ADD NEW EMP
+        function openAddModal() {
+            document.getElementById('addEmployeeModal').style.display = 'flex';
+        }
+
+        function closeAddModal() {
+            document.getElementById('addEmployeeModal').style.display = 'none';
+        }
+        window.addEventListener('click', function(e) {
+            const modal = document.getElementById('addEmployeeModal');
+            if (e.target === modal) {
+                closeAddModal();
+            }
         });
     </script>
-
-
     <script src="./javascript/main.js"></script>
 </body>
 

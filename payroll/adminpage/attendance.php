@@ -84,7 +84,7 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
         <link rel="stylesheet" href="./css/main.css">
         <link rel="stylesheet" href="./css/attendance.css">
-        <link rel="stylesheet" href="./css/payroll.css">
+        <!-- <link rel="stylesheet" href="./css/payroll.css"> -->
         <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
         <script src="https://kit.fontawesome.com/3b07bc6295.js" crossorigin="anonymous"></script>
         <title>Attendance</title>
@@ -217,16 +217,16 @@
                                 </div>
                             </div>
 
-                            <table id="leave-table">
+                            <table id="leave-table" class="att-table">
                                 <thead>
                                     <tr>
-                                        <th>Employee ID</th>
-                                        <th>Name</th>
-                                        <th>Position</th>
-                                        <th>Shift</th>
-                                        <th>Total Present</th>
-                                        <th>Total Hours</th>
-                                        <th>Action</th>
+                                        <th class="att-header">Employee ID</th>
+                                        <th class="att-header">Name</th>
+                                        <th class="att-header">Position</th>
+                                        <th class="att-header">Shift</th>
+                                        <th class="att-header">Total Present</th>
+                                        <th class="att-header">Total Hours</th>
+                                        <th class="att-header">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody id="showdata">
@@ -246,6 +246,10 @@
                                             $acc_result = $conn->query($acc_sql);
                                             $account = $acc_result->fetch_assoc();
 
+                                            $leave_sql = "SELECT * FROM tbl_leave WHERE emp_id = '$emp_id' LIMIT 1";
+                                            $leave_result = $conn->query($leave_sql);
+                                            $leave_acc = $leave_result->fetch_assoc();
+
                                             if (!empty($account['middlename'])) {
                                                 $fullname = $account['firstname'] . " " . $account['middlename'][0] . ". " . $account['lastname'];
                                             } else {
@@ -255,23 +259,44 @@
                                             $_SESSION['fullname'] = $fullname;
                                     ?>
                                             <tr>
-                                                <td><?= $row['emp_id'] ?></td>
+                                                <td class="att-cell"><?= $row['emp_id'] ?></td>
                                                 <td hidden><?= $row['attendance_id'] ?></td>
-                                                <td><?= htmlspecialchars($fullname) ?></td>
-                                                <td><?= $position ?></td>
-                                                <td><?= $shift ?></td>
-                                                <td><?= $row['present_days'] ?></td>
-                                                <td><?= $row['hours_present'] ?></td>
-                                                <td class="td-text">
+                                                <td hidden><?= $row['absent_days'] ?></td>
+                                                <td hidden><?= $row['hours_late'] ?></td>
+                                                <td hidden><?= $row['holiday'] ?></td>
+                                                <td hidden><?= $row['hours_overtime'] ?></td>
+                                                <td hidden><?= $leave_acc['remaining_leave'] ?></td>
+                                                <td class="att-cell emp-name"><?= htmlspecialchars($fullname) ?></td>
+                                                <td class="att-cell"><?= $position ?></td>
+                                                <td class="att-cell"><?= $shift ?></td>
+                                                <td class="att-cell"><?= $row['present_days'] ?></td>
+                                                <td class="att-cell"><?= $row['hours_present'] ?></td>
+                                                <td class="att-cell td-text">
                                                     <div class="action-buttons" style="max-width: 100%;">
-                                                        <a href="#"><button class="slip-btn" style="width: 100px;height:40px;">View info</button></a>
+                                                        <button
+                                                            class="slip-btn btn-view"
+                                                            style="width: 100px;height:40px;"
+                                                            onclick="openEmployeeModal(this)"
+                                                            data-empid="<?= $row['emp_id'] ?>"
+                                                            data-fullname="<?= htmlspecialchars($fullname) ?>"
+                                                            data-position="<?= $position ?>"
+                                                            data-shift="<?= $shift ?>"
+                                                            data-present="<?= $row['present_days'] ?>"
+                                                            data-hours="<?= $row['hours_present'] ?>"
+                                                            data-late="<?= $row['hours_late'] ?>"
+                                                            data-leave="<?= $leave_acc['remaining_leave'] ?? 0 ?>"
+                                                            data-holiday="<?= $row['holiday'] ?>"
+                                                            data-overtime="<?= $row['hours_overtime'] ?>"
+                                                            data-absent="<?= $row['absent_days'] ?>">
+                                                            View info
+                                                        </button>
                                                     </div>
                                                 </td>
                                             </tr>
                                     <?php
                                         }
                                     } else {
-                                        echo "<tr><td colspan='8' style='text-align:center;'>No attendance records found.</td></tr>";
+                                        echo "<tr><td colspan='8' class='att-cell' style='text-align:center;'>No attendance records found.</td></tr>";
                                     }
                                     ?>
                                 </tbody>
@@ -295,6 +320,54 @@
                 </div>
             </div>
         </div>
+
+        <!-- MODAL VIEW INFO -->
+        <div class="modal-container" id="employeeModal">
+            <div class="modal-box">
+                <table class="custom-table">
+                    <tr>
+                        <th class="profile-cell custom-th" rowspan="2">
+                            <div class="profile-box">
+                                <img src="../assets/avatar.png" alt="Avatar" class="profile-img" />
+                                <div class="profile-name">Marc Andrei A. Toledo</div>
+                            </div>
+                        </th>
+                        <th class="custom-th">Employee Id</th>
+                        <th class="custom-th">Position</th>
+                        <th class="custom-th">Shift</th>
+                        <th class="custom-th">Total Present</th>
+                    </tr>
+                    <tr>
+                        <td class="custom-td">1</td>
+                        <td class="custom-td">Crew</td>
+                        <td class="custom-td">Morning</td>
+                        <td class="custom-td">20</td>
+                    </tr>
+                </table>
+
+                <table class="custom-table">
+                    <tr>
+                        <th class="custom-th">Total Hours</th>
+                        <th class="custom-th">Hours Late</th>
+                        <th class="custom-th">Remaining Leave</th>
+                        <th class="custom-th">Holiday</th>
+                        <th class="custom-th">Overtime Hours</th>
+                        <th class="custom-th">Absent</th>
+                    </tr>
+                    <tr>
+                        <td class="custom-td">120</td>
+                        <td class="custom-td">5</td>
+                        <td class="custom-td">0</td>
+                        <td class="custom-td">0</td>
+                        <td class="custom-td">0</td>
+                        <td class="custom-td">0</td>
+                    </tr>
+                </table>
+
+                <button class="btn" onclick="toggleModal(false)">Back</button>
+            </div>
+        </div>
+
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
         <script>
@@ -358,6 +431,58 @@
                     };
                 } else if (!SpeechRecognition) {
                     alert("Sorry, your browser does not support voice recognition.");
+                }
+            });
+
+            // VIEW INFO
+            function openEmployeeModal(button) {
+                const modal = document.getElementById("employeeModal");
+
+                // Get data from the clicked button
+                const empId = button.getAttribute("data-empid");
+                const fullname = button.getAttribute("data-fullname");
+                const position = button.getAttribute("data-position");
+                const shift = button.getAttribute("data-shift");
+                const present = button.getAttribute("data-present");
+                const hours = button.getAttribute("data-hours");
+                const late = button.getAttribute("data-late");
+                const leave = button.getAttribute("data-leave");
+                const holiday = button.getAttribute("data-holiday");
+                const overtime = button.getAttribute("data-overtime");
+                const absent = button.getAttribute("data-absent");
+
+                // Update modal content
+                modal.querySelector(".profile-name").textContent = fullname;
+
+                const firstRow = modal.querySelectorAll(".custom-table")[0].rows[1].cells;
+                firstRow[0].textContent = empId;
+                firstRow[1].textContent = position;
+                firstRow[2].textContent = shift;
+                firstRow[3].textContent = present;
+
+                const secondRow = modal.querySelectorAll(".custom-table")[1].rows[1].cells;
+                secondRow[0].textContent = hours;
+                secondRow[1].textContent = late;
+                secondRow[2].textContent = leave;
+                secondRow[3].textContent = holiday;
+                secondRow[4].textContent = overtime;
+                secondRow[5].textContent = absent;
+
+                // Show modal
+                modal.style.display = "flex";
+            }
+
+            function toggleModal(show) {
+                document.getElementById("employeeModal").style.display = show ? "flex" : "none";
+            }
+
+            // Close modal when clicking outside modal box
+            window.addEventListener("click", function(event) {
+                const modal = document.getElementById("employeeModal");
+                const modalBox = document.querySelector(".modal-box");
+
+                if (event.target === modal) {
+                    modal.style.display = "none";
                 }
             });
         </script>
