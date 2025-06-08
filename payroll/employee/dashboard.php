@@ -3,16 +3,14 @@ session_start();
 include '../assets/databse/connection.php';
 include './database/session.php';
 
-
 $emp_id = $_SESSION['emp_id'];
 
-// Get latest salary record for the employee
 $salaryQuery = "SELECT * FROM tbl_salary WHERE emp_id = '$emp_id' ORDER BY salary_id DESC LIMIT 2";
 $salaryResult = mysqli_query($conn, $salaryQuery);
 
 $latestSalary = 0;
 $lastSalary = 0;
-$upcomingDate = date("F d, Y", strtotime('+1 month')); // Placeholder
+$upcomingDate = date("F d, Y", strtotime('+1 month'));
 
 if ($salaryResult && mysqli_num_rows($salaryResult) > 0) {
     $salaryRecords = [];
@@ -25,24 +23,20 @@ if ($salaryResult && mysqli_num_rows($salaryResult) > 0) {
         $lastSalary = $salaryRecords[1]['total_salary'];
     }
 
-    // Build upcoming date based on next cutoff logic
     $upcomingDate = date("F d, Y", strtotime("first day of next month"));
 }
 
-
-$totalLeaves = 10; // Assume annual allowance (can also be fetched per employee if dynamic)
+$totalLeaves = 10;
 $leavesTaken = 0;
 $pendingLeaves = 0;
-$leavesAbsent = 0; // Optional: based on separate logic or absence logs
+$leavesAbsent = 0;
 
-// Fetch total approved leaves
 $approvedQuery = "SELECT SUM(no_of_leave) AS total_taken FROM tbl_leave WHERE emp_id = '$emp_id' AND status = 'Approved'";
 $approvedResult = mysqli_query($conn, $approvedQuery);
 if ($approvedResult && $row = mysqli_fetch_assoc($approvedResult)) {
     $leavesTaken = $row['total_taken'] ?? 0;
 }
 
-// Fetch total pending leaves
 $pendingQuery = "SELECT SUM(no_of_leave) AS pending FROM tbl_leave WHERE emp_id = '$emp_id' AND status = 'Pending'";
 $pendingResult = mysqli_query($conn, $pendingQuery);
 if ($pendingResult && $row = mysqli_fetch_assoc($pendingResult)) {
@@ -60,70 +54,21 @@ if ($pendingResult && $row = mysqli_fetch_assoc($pendingResult)) {
     <link rel="stylesheet" href="./css/main.css" />
     <link rel="stylesheet" href="./css/dashboard.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <script src="https://kit.fontawesome.com/3b07bc6295.js" crossorigin="anonymous"></script>
     <title>Dashboard</title>
-    <style>
-        #toastBox {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .toast {
-            background-color: #1BCD80;
-            color: white;
-            padding: 12px 18px;
-            border-radius: 8px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            min-width: 200px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            animation: slideIn 0.3s ease, fadeOut 0.3s ease 2.7s forwards;
-        }
-
-        .toast.error {
-            background-color: #e74c3c;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateX(100%);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        @keyframes fadeOut {
-            to {
-                opacity: 0;
-                transform: translateX(100%);
-            }
-        }
-    </style>
 </head>
 
 <body>
     <?php include 'sidenav.php'; ?>
-    <div id="toastBox"></div>
     <div class="main-content">
-<div class="head-title">
-    <div style="display: flex; justify-content: space-between; align-items: center;">
-        <div>
-            <h1 style="margin-top: 50px; margin-right: 730px;  font-size: 28px;">Welcome Employee!</h1>
-            <p style="font-size: 14px; color: #666; margin-left: -1px;">Dashboard</p>
+        <div class="head-title" style="margin: 20px 40px 10px -10px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h1 style="margin-top: 50px; margin-right: 730px; font-size: 28px;">Welcome Employee!</h1>
+                    <p style="font-size: 14px; color: #666; margin-left: -1px;">Dashboard</p>
+                </div>
+            </div>
+            <hr style="margin-top: 10px;">
         </div>
-    </div>
-    <hr style="margin-top: 10px;">
-</div>
-
 
         <div class="card-container">
             <div class="card card-blue" style="margin-left:-50px;">
@@ -144,25 +89,16 @@ if ($pendingResult && $row = mysqli_fetch_assoc($pendingResult)) {
                 <hr />
                 <div style="font-size: 30px;font-weight: bold; text-align:center; margin-top:30px;">
                     <?php
-                    // Fetch employee ID from session
-                    $emp_id = $_SESSION['emp_id']; // Adjust this key if it's different in your session
-
-                    // Fetch remaining leaves from tbl_leave
                     $leaveQuery = "SELECT remaining_leave FROM tbl_leave WHERE emp_id = '$emp_id' ORDER BY leave_id DESC LIMIT 1";
                     $leaveResult = mysqli_query($conn, $leaveQuery);
-
-                    if ($leaveResult && mysqli_num_rows($leaveResult) > 0) {
-                        $leaveRow = mysqli_fetch_assoc($leaveResult);
-                        echo $leaveRow['remaining_leave'];
-                    } else {
-                        echo "0"; // fallback if no leave record
-                    }
+                    echo ($leaveResult && mysqli_num_rows($leaveResult) > 0)
+                        ? mysqli_fetch_assoc($leaveResult)['remaining_leave']
+                        : "0";
                     ?>
                 </div>
             </div>
         </div>
 
-        <!-- Calendar and Attendance beside each other -->
         <div class="card-row" style="margin-left: -10px;">
             <div class="card half-width">
                 <h3>Attendance & Leaves</h3>
@@ -185,8 +121,11 @@ if ($pendingResult && $row = mysqli_fetch_assoc($pendingResult)) {
                         <div>Pending Approval</div>
                     </div>
                 </div>
-                <button class="btn">
-                    <a href="leave.php" class="btn-link">Apply Leave</a>
+
+                <button class="btn apply-leave-btn" title="Apply Leave">
+                    <a href="leave.php" class="btn-link">
+                        <i class="fa-solid fa-diagram-next"></i>
+                    </a>
                 </button>
             </div>
 
@@ -198,33 +137,60 @@ if ($pendingResult && $row = mysqli_fetch_assoc($pendingResult)) {
                     <select id="year-select"></select>
                     <button id="next-month">▶</button>
                 </div>
-                <div class="calendar" id="calendar-grid">
-                    <!-- Calendar grid will be injected here -->
+                <div class="calendar" id="calendar-grid"></div>
+            </div>
+        </div>
+
+        <!-- DYNAMIC HOLIDAY SECTION FROM DATABASE -->
+        <div class="holiday-section">
+            <!-- View All icon (Font Awesome) -->
+            <a href="#" class="view-all-icon" onclick="openViewAllModal()" title="View All Events">
+                <i class="fa-solid fa-expand"></i>
+            </a>
+
+            <div class="holiday-container">
+                <h3>Upcoming Holidays and Events</h3>
+                <hr />
+                <div id="inlineEventContainer">
+                    <?php
+                    include '../assets/databse/connection.php';
+
+                    $eventQuery = "SELECT * FROM tbl_events WHERE event_date >= CURDATE() ORDER BY event_date ASC";
+                    $eventResult = mysqli_query($conn, $eventQuery);
+
+                    $allEvents = [];
+                    if ($eventResult && mysqli_num_rows($eventResult) > 0) {
+                        $index = 0;
+                        while ($event = mysqli_fetch_assoc($eventResult)) {
+                            $allEvents[] = $event;
+                            if ($index < 3) {
+                                $formattedDate = date("d M", strtotime($event['event_date']));
+                                echo '<div class="holiday-card event-card">';
+                                echo '<span class="holiday-title">' . htmlspecialchars($event['title']) . '</span><br />';
+                                echo '<small>' . htmlspecialchars($event['type']) . '</small>';
+                                echo '<span class="holiday-date">' . $formattedDate . '</span>';
+                                echo '</div>';
+                            }
+                            $index++;
+                        }
+                    } else {
+                        echo "<p>No upcoming events.</p>";
+                    }
+                    ?>
                 </div>
             </div>
         </div>
 
-        <div class="holiday-section">
-            <div class="holiday-container">
-                <h3>Upcoming Holidays and Events</h3>
-                <hr />
-                <div class="holiday-card">
-                    <span class="holiday-title">NINOY AQUINO DAY</span><br />
-                    <small>National : Special Holiday</small>
-                    <span class="holiday-date">14 Nov</span>
-                </div>
-                <div class="holiday-card">
-                    <span class="holiday-title">NINOY AQUINO DAY</span><br />
-                    <small>National : Regular Holiday</small>
-                    <span class="holiday-date">08 Feb</span>
-                </div>
-                <div class="holiday-card">
-                    <span class="holiday-title">COMPANY HOLIDAY</span><br />
-                    <small>National : Regular Holiday</small>
-                    <span class="holiday-date">23 Jan</span>
-                </div>
+        <!-- View All Modal -->
+        <div id="viewAllModal" class="modal">
+            <div class="modal-content styled-modal">
+                <span class="modal-close" onclick="closeViewAllModal()">&times;</span>
+                <h3 class="modal-title">All Events</h3>
+                <div id="allEventsContainer" class="events-wrapper"></div>
             </div>
         </div>
+
+
     </div>
 
     <script>
@@ -235,8 +201,7 @@ if ($pendingResult && $row = mysqli_fetch_assoc($pendingResult)) {
         const prevMonthBtn = document.getElementById("prev-month");
         const nextMonthBtn = document.getElementById("next-month");
 
-        const months = [
-            "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
             "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
         ];
 
@@ -262,7 +227,6 @@ if ($pendingResult && $row = mysqli_fetch_assoc($pendingResult)) {
 
         function renderCalendar(month, year) {
             calendarGrid.innerHTML = "";
-
             const days = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
             days.forEach(day => {
                 const el = document.createElement("div");
@@ -281,7 +245,6 @@ if ($pendingResult && $row = mysqli_fetch_assoc($pendingResult)) {
             for (let day = 1; day <= daysInMonth; day++) {
                 const el = document.createElement("div");
                 el.textContent = day;
-
                 if (
                     day === today.getDate() &&
                     month === today.getMonth() &&
@@ -289,7 +252,6 @@ if ($pendingResult && $row = mysqli_fetch_assoc($pendingResult)) {
                 ) {
                     el.classList.add("today");
                 }
-
                 calendarGrid.appendChild(el);
             }
         }
@@ -302,7 +264,6 @@ if ($pendingResult && $row = mysqli_fetch_assoc($pendingResult)) {
 
         monthSelect.addEventListener("change", updateCalendar);
         yearSelect.addEventListener("change", updateCalendar);
-
         prevMonthBtn.addEventListener("click", () => {
             currentMonth--;
             if (currentMonth < 0) {
@@ -313,7 +274,6 @@ if ($pendingResult && $row = mysqli_fetch_assoc($pendingResult)) {
             yearSelect.value = currentYear;
             updateCalendar();
         });
-
         nextMonthBtn.addEventListener("click", () => {
             currentMonth++;
             if (currentMonth > 11) {
@@ -327,35 +287,78 @@ if ($pendingResult && $row = mysqli_fetch_assoc($pendingResult)) {
 
         populateSelectors();
         renderCalendar(currentMonth, currentYear);
+    </script>
+    <script>
+        // ... your existing calendar script ...
 
-        let toastBox = document.getElementById('toastBox');
-        let successMess = '<img src="../assets/salute_icon.png" style="height: 40px;"></i>Welcome back <?php echo $user['firstname']; ?>!';
+        // Toggle view all/show less for events
+        const toggleBtn = document.getElementById("toggleEvents");
+        if (toggleBtn) {
+            toggleBtn.addEventListener("click", function() {
+                const cards = document.querySelectorAll(".event-card");
+                const hiddenCards = Array.from(cards).filter((c, i) => i >= 3);
+                const showingAll = hiddenCards[0].style.display === "block";
 
-        function showToast(msg) {
-            let toast = document.createElement('div'); 
-            toast.classList.add('toast');
-            toast.innerHTML = msg;
-            toastBox.appendChild(toast); 
+                hiddenCards.forEach(card => {
+                    card.style.display = showingAll ? "none" : "block";
+                });
 
-            if (msg.includes('error')) {
-                toast.classList.add('error');
-            }
-
-            // Play notification sound
-            const sound = document.getElementById('notifySound');
-            if (sound) sound.play();
-
-            setTimeout(() => {
-                toast.remove();
-            }, 3000);
-        }
-
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get('status') === 'success') {
-            showToast(successMess);
-            window.history.replaceState(null, null, window.location.pathname);
+                this.textContent = showingAll ? "View All" : "Show Less";
+            });
         }
     </script>
+
+    <script>
+        const allEvents = <?php echo json_encode($allEvents); ?>;
+
+        function openViewAllModal() {
+            document.getElementById("viewAllModal").style.display = "flex";
+            renderAllEvents();
+        }
+
+        function closeViewAllModal() {
+            document.getElementById("viewAllModal").style.display = "none";
+        }
+
+        function renderAllEvents() {
+            const container = document.getElementById("allEventsContainer");
+            container.innerHTML = "";
+
+            const sorted = allEvents
+                .filter(e => new Date(e.event_date) >= today)
+                .sort((a, b) => new Date(a.event_date) - new Date(b.event_date));
+
+            sorted.forEach(event => {
+                const d = new Date(event.event_date);
+                const day = d.getDate();
+                const month = d.toLocaleString("default", {
+                    month: "short"
+                });
+                const weekday = d.toLocaleDateString("en-US", {
+                    weekday: "long"
+                });
+
+                container.innerHTML += `
+      <div class="event-item-box">
+        <div class="event-left">
+          <span class="event-type-text">${event.title}</span>
+          <span class="event-title-text">${event.type}</span>
+          <span class="event-weekday-text">${weekday}</span>
+        </div>
+        <div class="event-date-circle">
+          <span class="event-day">${day}</span>
+          <span class="event-month">${month}</span>
+        </div>
+      </div>
+    `;
+            });
+        }
+
+        function closeViewAllModal() {
+            document.getElementById("viewAllModal").style.display = "none";
+        }
+    </script>
+
 </body>
 
 </html>

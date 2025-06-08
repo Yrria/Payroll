@@ -233,14 +233,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 
 
-            header("Location: ./employee/dashboard.php?status=success");
+            header("Location: ./employee/dashboard.php");
             exit();
         }
     } elseif ($result_admin->num_rows > 0) {
         $admin_row = $result_admin->fetch_assoc();
         $_SESSION['email'] = $admin_row['email'];
         $_SESSION['account_id'] = $admin_row['admin_id'];
-        header("Location: ./adminpage/dashboard.php?status=success");
+        header("Location: ./adminpage/dashboard.php");
         exit();
     } else {
         echo "Invalid login credentials.";
