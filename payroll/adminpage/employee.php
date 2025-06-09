@@ -105,6 +105,10 @@ while ($row = $position_result->fetch_assoc()) {
     <link rel="shortcut icon" href="../assets/logowhite-.png" type="image/svg+xml">
     <link rel="stylesheet" href="./css/main.css">
     <link rel="stylesheet" href="./css/employee.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+    <script src="https://kit.fontawesome.com/3b07bc6295.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
     <title>Employee</title>
 </head>
 
@@ -148,9 +152,22 @@ while ($row = $position_result->fetch_assoc()) {
 
                     <div class="leave-requests">
                         <h3>Records</h3>
-                        <div class="search-filters">
-                            <input type="text" placeholder="Search employee..." class="search-box">
+                        <div class="search-filters" style="display: flex; align-items: center; margin-bottom: 20px;">
+                            <form method="GET" action="" style="margin: 0;">
+                                <input
+                                    type="text"
+                                    name="query"
+                                    placeholder="Search employee..."
+                                    class="search-box"
+                                    style="height: 36px;"
+                                    value="<?php echo isset($_GET['query']) ? htmlspecialchars($_GET['query']) : ''; ?>">
+                            </form>
+                            <button id="voiceSearchBtn" title="Speak to search"
+                                style="margin-left: 8px; background: none; cursor: pointer; border: 0;">
+                                <i class="bi bi-mic-fill" style="font-size: 1.35rem; color: #20242C;"></i>
+                            </button>
                         </div>
+
 
                         <button class="add-new-btn" onclick="openAddModal()">
                             <span class="plus-icon">+</span>Add New
@@ -228,6 +245,8 @@ while ($row = $position_result->fetch_assoc()) {
                                         </tr>
                                 <?php
                                     }
+                                } else {
+                                    echo "<tr><td colspan='7' class='att-cell' style='text-align:center;'>No attendance records found.</td></tr>";
                                 }
                                 ?>
                             </tbody>
@@ -744,6 +763,70 @@ while ($row = $position_result->fetch_assoc()) {
                 xhr.send(params);
             }
         }
+
+
+        // sweetalert sa voice search
+        document.addEventListener("DOMContentLoaded", () => {
+            const voiceBtn = document.getElementById("voiceSearchBtn"); // use id= "voiceSearchBtn"
+            const searchInput = document.querySelector(".search-box"); // use class= "search-box"
+
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+            if (SpeechRecognition && voiceBtn && searchInput) {
+                const recognition = new SpeechRecognition();
+                recognition.continuous = false;
+                recognition.lang = "en-US";
+
+                voiceBtn.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    recognition.start();
+                    voiceBtn.innerHTML = `<i class="bi bi-mic-mute-fill" style="color: red;"></i>`;
+
+                    Swal.fire({
+                        title: 'Listening...',
+                        text: 'Please speak now',
+                        icon: 'info',
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        showConfirmButton: false,
+                        didOpen: () => Swal.showLoading()
+                    });
+                });
+
+                recognition.onresult = function(event) {
+                    const transcript = event.results[0][0].transcript;
+                    searchInput.value = transcript;
+                    // Submit the form after voice input
+                    if (searchInput.form) {
+                        searchInput.form.submit();
+                    }
+                    recognition.stop();
+                    voiceBtn.innerHTML = `<i class="bi bi-mic-fill"></i>`;
+                    Swal.close();
+                };
+
+                recognition.onerror = function(event) {
+                    console.error("Voice recognition error:", event.error);
+                    recognition.stop();
+                    voiceBtn.innerHTML = `<i class="bi bi-mic-fill"></i>`;
+                    Swal.close();
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Voice recognition error: ' + event.error,
+                        timer: 2000,
+                        showConfirmButton: false,
+                    });
+                };
+
+                recognition.onend = function() {
+                    voiceBtn.innerHTML = `<i class="bi bi-mic-fill"></i>`;
+                    Swal.close();
+                };
+            } else if (!SpeechRecognition) {
+                alert("Sorry, your browser does not support voice recognition.");
+            }
+        });
     </script>
 
 
