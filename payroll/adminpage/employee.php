@@ -3,7 +3,6 @@ session_start();
 include '../assets/databse/connection.php';
 include './database/session.php';
 
-
 // Query to get max employee number
 $sql = "SELECT MAX(CAST(emp_id AS UNSIGNED)) AS max_emp_num FROM tbl_emp_acc";
 
@@ -418,7 +417,7 @@ while ($row = $position_result->fetch_assoc()) {
 
                 <div class="form-group">
                     <label>Email Address</label>
-                    <input type="text" id="add-email" placeholder="e.g. email@example.com" required>
+                    <input type="email" id="add-email" placeholder="e.g. email@example.com" required>
                 </div>
                 <div class="form-group">
                     <label>Joining Date</label>
