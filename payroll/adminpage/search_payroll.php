@@ -36,7 +36,7 @@ if (mysqli_num_rows($result) > 0) {
             <td>" . htmlspecialchars($fullname) . "</td>
             <td>{$row['position_name']}</td>
             <td>{$row['emp_shift']}</td>
-            <td>{$row['basic_pay']}</td>
+            
             <td class='td-text'>{$row['status']}</td>
             <td class='td-text'>
                 <div class='action-buttons'>

@@ -89,7 +89,7 @@ $result = mysqli_query($conn, $sql);
                     <div class="content">
                         <div class="controls">
                             <form method="POST" id="entriesForm" style=" align-items: center;">
-                                <label for="show-entries">Show
+                                <!-- <label for="show-entries">Show
                                     <select id="show-entries" name="show_entries">
                                         <option value="10" <?php if ($limit == 10) echo "selected"; ?>>10</option>
                                         <option value="25" <?php if ($limit == 25) echo "selected"; ?>>25</option>
@@ -100,7 +100,7 @@ $result = mysqli_query($conn, $sql);
                                         </option>
                                     </select>
                                     entries
-                                </label>
+                                </label> -->
                             </form>
                             <div class="date-range">
                                 <form method="POST" action="report_leave.php" style="display: flex; align-items: center;">

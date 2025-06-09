@@ -5,6 +5,17 @@ include './database/session.php';
 
 $employee_id = $_SESSION['emp_id'];
 
+// Check for existing pending leave
+$pendingLeaveStmt = $conn->prepare("SELECT COUNT(*) AS pending_count FROM tbl_leave WHERE emp_id = ? AND status = 'Pending'");
+$pendingLeaveStmt->bind_param("i", $employee_id);
+$pendingLeaveStmt->execute();
+$pendingResult = $pendingLeaveStmt->get_result();
+$hasPendingLeave = false;
+
+if ($row = $pendingResult->fetch_assoc()) {
+    $hasPendingLeave = $row['pending_count'] > 0;
+}
+
 $sql = "SELECT subject, start_date, end_date, message, leave_type, status, rejection_reason 
         FROM tbl_leave 
         WHERE emp_id = ?
@@ -47,7 +58,10 @@ $result = $stmt->get_result();
                         <!-- Leave Table -->
                         <div id="maindiv">
                             <div class="grid-item">
-                                <button class="button" onclick="alter()" style="width: 30%; cursor: pointer;">+ File a Leave</button>
+                                <button class="button" onclick="alter()" id="fileLeaveBtn" style="width: 30%; cursor: pointer;" 
+                                <?= $hasPendingLeave ? 'disabled style="background-color: gray; cursor: not-allowed;"' : '' ?>>
+                                    + File a Leave
+                                </button>
                             </div>
                             <div class="grid-item">
                                 <select name="leavefilter" id="leavefilter" class="textbox">
@@ -397,6 +411,22 @@ $result = $stmt->get_result();
             sessionStorage.removeItem('leaveSuccess');
         }
     });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const fileLeaveBtn = document.getElementById('fileLeaveBtn');
+            <?php if ($hasPendingLeave): ?>
+            fileLeaveBtn.addEventListener('click', function () {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Leave Pending',
+                    text: 'You already have a pending leave request. Please wait for it to be approved or declined before filing another.',
+                    confirmButtonColor: '#20242C'
+                });
+            });
+            <?php endif; ?>
+        });
     </script>
 
 </body>

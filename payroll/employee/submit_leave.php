@@ -9,6 +9,18 @@ if (!isset($_SESSION['emp_id'])) {
     exit;
 }
 
+// Check if the user already has a pending leave
+$checkPending = $conn->prepare("SELECT COUNT(*) AS pending_count FROM tbl_leave WHERE emp_id = ? AND status = 'Pending'");
+$checkPending->bind_param("i", $employee_id);
+$checkPending->execute();
+$result = $checkPending->get_result();
+$row = $result->fetch_assoc();
+
+if ($row['pending_count'] > 0) {
+    echo json_encode(['status' => 'error', 'message' => 'You already have a pending leave request.']);
+    exit;
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $emp_id = $_SESSION['emp_id'];
     $subject = trim($_POST['subject']);

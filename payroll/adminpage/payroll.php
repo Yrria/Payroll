@@ -205,7 +205,7 @@ $total_pages = ceil($total_records / $records_per_page);
                                     <th>Name</th>
                                     <th>Position</th>
                                     <th>Shift</th>
-                                    <th>Total Wage</th>
+                                    <!-- <th>Total Wage</th> -->
                                     <th>Status</th>
                                     <th>Action</th>
                                 </tr>
@@ -228,7 +228,7 @@ $total_pages = ceil($total_records / $records_per_page);
                                         <td><?php echo htmlspecialchars($fullname)?></td>
                                         <td><?php echo $row['position_name'] ?></td>
                                         <td><?php echo $row['emp_shift'] ?></td>
-                                        <td><?php echo $row['basic_pay'] ?></td>
+                                        
                                         <td class="td-text"><?php echo $row['status'] ?></td>
                                         <td class="td-text">
                                             <div class="action-buttons">

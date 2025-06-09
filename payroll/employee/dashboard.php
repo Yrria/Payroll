@@ -8,6 +8,8 @@ $emp_id = $_SESSION['emp_id'];
 $salaryQuery = "SELECT * FROM tbl_salary WHERE emp_id = '$emp_id' ORDER BY salary_id DESC LIMIT 2";
 $salaryResult = mysqli_query($conn, $salaryQuery);
 
+$firstname = "";
+
 $latestSalary = 0;
 $lastSalary = 0;
 $upcomingDate = date("F d, Y", strtotime('+1 month'));
@@ -55,10 +57,57 @@ if ($pendingResult && $row = mysqli_fetch_assoc($pendingResult)) {
     <link rel="stylesheet" href="./css/dashboard.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <title>Dashboard</title>
+    <style>
+        #toastBox {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .toast {
+            background-color: #1BCD80;
+            color: white;
+            padding: 12px 18px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            min-width: 200px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: slideIn 0.3s ease, fadeOut 0.3s ease 2.7s forwards;
+        }
+
+        .toast.error {
+            background-color: #e74c3c;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+        }
+    </style>
 </head>
 
 <body>
     <?php include 'sidenav.php'; ?>
+    <div id="toastBox"></div>
     <div class="main-content">
         <div class="head-title" style="margin: 20px 40px 10px -10px;">
             <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -194,6 +243,33 @@ if ($pendingResult && $row = mysqli_fetch_assoc($pendingResult)) {
     </div>
 
     <script>
+        let toastBox = document.getElementById('toastBox');
+        let successMess = '<i class="fa-solid fa-circle-check"></i>Hello employee!';
+
+        function showToast(msg) {
+            let toast = document.createElement('div'); 
+            toast.classList.add('toast');
+            toast.innerHTML = msg;
+            toastBox.appendChild(toast); 
+
+            if (msg.includes('error')) {
+                toast.classList.add('error');
+            }
+
+            // Play notification sound
+            const sound = document.getElementById('notifySound');
+            if (sound) sound.play();
+
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('status') === 'success') {
+            showToast(successMess);
+            window.history.replaceState(null, null, window.location.pathname);
+        }
         const calendarGrid = document.getElementById("calendar-grid");
         const monthSelect = document.getElementById("month-select");
         const yearSelect = document.getElementById("year-select");
