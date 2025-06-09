@@ -3,6 +3,20 @@ session_start();
 include '../assets/databse/connection.php';
 include './database/session.php';
 
+
+// Query to get max employee number
+$sql = "SELECT MAX(CAST(emp_id AS UNSIGNED)) AS max_emp_num FROM tbl_emp_acc";
+
+$result = $conn->query($sql);
+$next_emp_id = "1";  // default if no employees yet
+
+if ($result && $row = $result->fetch_assoc()) {
+    $max_num = (int)$row['max_emp_num'];
+    $next_num = $max_num + 1;
+    // No padding, just the number itself
+    $next_emp_id = (string)$next_num;
+}
+
 $records_per_page = 5;
 $current_page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
 $start_from = ($current_page - 1) * $records_per_page;
@@ -149,10 +163,6 @@ while ($row = $position_result->fetch_assoc()) {
                                     <th>Name</th>
                                     <th>Position</th>
                                     <th>Shift</th>
-                                    <th>Gender</th>
-                                    <th>Email</th>
-                                    <th>Phone No.</th>
-                                    <th>Address</th>
                                     <th>Rate Per Day</th>
                                     <th>Status</th>
                                     <th>Action</th>
@@ -186,15 +196,17 @@ while ($row = $position_result->fetch_assoc()) {
                                             <td><?php echo htmlspecialchars($fullname) ?></td>
                                             <td><?php echo $position ?></td>
                                             <td><?php echo $shift ?></td>
-                                            <td><?php echo $row['gender'] ?></td>
-                                            <td><?php echo $row['email'] ?></td>
-                                            <td><?php echo $row['phone_no'] ?></td>
-                                            <td><?php echo $row['address'] ?></td>
+                                            <td hidden><?php echo $row['gender'] ?></td>
+                                            <td hidden><?php echo $row['email'] ?></td>
+                                            <td hidden><?php echo $row['phone_no'] ?></td>
+                                            <td hidden><?php echo $row['address'] ?></td>
                                             <td><?php echo $rate ?></td>
                                             <td hidden><?php echo $row['date_join'] ?></td>
                                             <td hidden><?php echo $info['pay_type'] ?></td>
                                             <td class="td-text" style="color: <?php echo (strtolower(trim($row['status'])) === 'active') ? 'green' : 'red'; ?>; font-weight: 500;">
-                                                <?php echo htmlspecialchars($row['status']); ?>
+                                                <?php echo ucfirst(strtolower(trim($row['status']))); ?>
+                                            </td>
+                                            <?php echo htmlspecialchars($row['status']); ?>
                                             </td>
                                             <td class="td-text">
                                                 <div class="action-buttons">
@@ -210,6 +222,7 @@ while ($row = $position_result->fetch_assoc()) {
                                                         data-email="<?php echo htmlspecialchars($row['email']); ?>"
                                                         data-joindate="<?php echo htmlspecialchars(date("F j, Y", strtotime($row['date_join']))); ?>"
                                                         data-fullname="<?php echo htmlspecialchars($fullname); ?>"
+                                                        data-status="<?php echo htmlspecialchars($row['status']); ?>"
                                                         onclick="openModal(this)">View Info</button>
 
                                                 </div>
@@ -262,7 +275,7 @@ while ($row = $position_result->fetch_assoc()) {
 
                 <div class="form-group">
                     <label>Rate</label>
-                    <input type="text" disabled id="modal-rate" value="">
+                    <input type="text" readonly id="modal-rate" value="">
                 </div>
                 <div class="form-group">
                     <label>Position</label>
@@ -299,6 +312,10 @@ while ($row = $position_result->fetch_assoc()) {
                     <input type="text" disabled id="modal-email" value="johndoe@gmail.com">
                 </div>
                 <div class="form-group">
+                    <label>Status</label>
+                    <input type="text" disabled id="modal-status" value="June 15, 2020">
+                </div>
+                <div class="form-group">
                     <label>Joining Date</label>
                     <input type="text" disabled id="modal-joindate" value="June 15, 2020">
                 </div>
@@ -322,21 +339,21 @@ while ($row = $position_result->fetch_assoc()) {
             <div class="name-row">
                 <div class="name-group">
                     <label>First Name</label>
-                    <input type="text" id="add-fname" required>
+                    <input type="text" id="add-fname" placeholder="Enter Firstname" required>
                 </div>
                 <div class="name-group">
                     <label>Middle Name</label>
-                    <input type="text" id="add-mname" required>
+                    <input type="text" id="add-mname" placeholder="Enter Middlename" required>
                 </div>
                 <div class="name-group">
                     <label>Last Name</label>
-                    <input type="text" id="add-lname" required>
+                    <input type="text" id="add-lname" placeholder="Enter Lastname" required>
                 </div>
             </div>
             <div class="modal-grid">
                 <div class="form-group">
                     <label>Employee Id</label>
-                    <input type="text" id="add-empid" disabled value="EMPXXXX">
+                    <input type="text" id="add-empid" disabled value="<?php echo htmlspecialchars($next_emp_id); ?>">
                 </div>
                 <div class="form-group">
                     <label>Pay Type</label>
@@ -344,7 +361,7 @@ while ($row = $position_result->fetch_assoc()) {
                 </div>
                 <div class="form-group">
                     <label>Rate</label>
-                    <input type="text" id="add-rate" disabled>
+                    <input type="text" id="add-rate" placeholder="- - -" disabled>
                 </div>
                 <div class="form-group">
                     <label>Position</label>
@@ -429,7 +446,7 @@ while ($row = $position_result->fetch_assoc()) {
         }
 
         // Update rate field when position or shift changes
-        function updateRate() {
+        function viewupdateRate() {
             const position = positionSelect.value;
             const shift = shiftSelect.value;
             rateInput.value = calculateRate(position, shift);
@@ -446,13 +463,13 @@ while ($row = $position_result->fetch_assoc()) {
 
         // Add listeners to update rate on dropdown change
         document.addEventListener("DOMContentLoaded", () => {
-            positionSelect.addEventListener("change", updateRate);
-            shiftSelect.addEventListener("change", updateRate);
+            positionSelect.addEventListener("change", viewupdateRate);
+            shiftSelect.addEventListener("change", viewupdateRate);
         });
 
         // Call this after opening modal and filling in data
         function openEmployeeModal() {
-            updateRate(); // Recalculate rate
+            viewupdateRate(); // Recalculate rate
             storeOriginalValues(); // Capture initial state
             document.getElementById("employeeModal").style.display = "block";
         }
@@ -511,6 +528,31 @@ while ($row = $position_result->fetch_assoc()) {
             document.getElementById("employeeModal").style.display = "none";
         }
 
+
+        // EMP ADD EMP_ID
+        function generateNextEmpId() {
+            fetch("employee.php", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    body: new URLSearchParams({
+                        getNextEmpId: '1'
+                    })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById("modal-empid").value = data.nextEmpId;
+                    } else {
+                        alert("Failed to generate new Employee ID.");
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert("Error fetching new Employee ID.");
+                });
+        }
 
         // ADD EMP SCRIPT
         // Auto-set today's date in joining date field
@@ -637,10 +679,12 @@ while ($row = $position_result->fetch_assoc()) {
             document.getElementById('modal-address').value = button.getAttribute('data-address');
             document.getElementById('modal-email').value = button.getAttribute('data-email');
             document.getElementById('modal-joindate').value = button.getAttribute('data-joindate');
+            document.getElementById('modal-status').value = button.getAttribute('data-status');
 
             // Show modal with flex for centering
             document.getElementById('employeeModal').style.display = 'flex';
         }
+
 
         function closeModal() {
             document.getElementById('employeeModal').style.display = 'none';
@@ -662,6 +706,49 @@ while ($row = $position_result->fetch_assoc()) {
             }
         });
     </script>
+
+    <!-- FOR INSERT DATA -->
+    <script>
+        function addNewEmployee() {
+            // Get values
+            const fname = document.getElementById('add-fname').value.trim();
+            const mname = document.getElementById('add-mname').value.trim();
+            const lname = document.getElementById('add-lname').value.trim();
+            const email = document.getElementById('add-email').value.trim();
+            const address = document.getElementById('add-address').value.trim();
+            const phone = document.getElementById('add-phone').value.trim();
+            const gender = document.getElementById('add-gender').value;
+            const rate = document.getElementById('add-rate').value.trim();
+            const position = document.getElementById('add-position').value;
+            const shift = document.getElementById('add-shift').value;
+
+            // Confirmation
+            if (!fname || !lname || !email || !address || !phone || !gender || !position || !shift) {
+                alert("Please fill all required fields.");
+                return;
+            }
+
+            if (confirm("Are you sure you want to add this employee?")) {
+                // Send AJAX request
+                const xhr = new XMLHttpRequest();
+                xhr.open("POST", "insert_employee.php", true);
+                xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+                const params = `fname=${encodeURIComponent(fname)}&mname=${encodeURIComponent(mname)}&lname=${encodeURIComponent(lname)}&email=${encodeURIComponent(email)}&address=${encodeURIComponent(address)}&phone=${encodeURIComponent(phone)}&gender=${encodeURIComponent(gender)}&rate=${encodeURIComponent(rate)}&position=${encodeURIComponent(position)}&shift=${encodeURIComponent(shift)}`;
+
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        alert(xhr.responseText);
+                        closeAddModal(); // Optional: close modal on success
+                        location.reload(); // Optional: reload to reflect changes
+                    }
+                };
+                xhr.send(params);
+            }
+        }
+    </script>
+
+
     <script src="./javascript/main.js"></script>
 </body>
 
