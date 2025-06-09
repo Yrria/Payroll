@@ -105,7 +105,7 @@ $result = $stmt->get_result();
                                                 <td>{$row['leave_type']}</td>
                                                 <td style='color: $statusColor'>{$row['status']}</td>
                                                 <td style='text-align: center;'>
-                                                    <img src='../assets/view.png' class='view' style='cursor: pointer; width: 24px; height: 24px; background-color: #AAC7D8;'
+                                                    <img src='../assets/view.png' class='view' style='cursor: pointer; width: 24px; height: 24px;'
                                                         data-subject='{$row['subject']}'
                                                         data-status='{$row['status']}'
                                                         data-start='" . date("d/m/Y", strtotime($row['start_date'])) . "'
