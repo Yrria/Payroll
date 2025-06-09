@@ -206,8 +206,6 @@ while ($row = $position_result->fetch_assoc()) {
                                             <td class="td-text" style="color: <?php echo (strtolower(trim($row['status'])) === 'active') ? 'green' : 'red'; ?>; font-weight: 500;">
                                                 <?php echo ucfirst(strtolower(trim($row['status']))); ?>
                                             </td>
-                                            <?php echo htmlspecialchars($row['status']); ?>
-                                            </td>
                                             <td class="td-text">
                                                 <div class="action-buttons">
                                                     <button class="view-btn"
