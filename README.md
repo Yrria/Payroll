@@ -60,3 +60,12 @@ Contributors
 This project is for educational purposes only. It is used to fulfill therequirements for a course subject.
 <br/>
 ITEC 80A - HUMAN COMPUTER INTERACTION 1.
+
+
+## GIT FEATURE
+
+* **git init** - &nbsp;&nbsp;&nbsp;&nbsp; # Initialize a new Git repository locally
+* **git branch -m main** - &nbsp;&nbsp;&nbsp;&nbsp; # Rename the default branch to 'main'
+* **git remote add origin "Link"** &nbsp;&nbsp;&nbsp;&nbsp; # Add the remote repository URL (replace "Link" with your repo URL)
+
+
