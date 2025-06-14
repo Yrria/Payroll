@@ -57,6 +57,6 @@ Contributors
 
 ## Purpose
 
-This project is for educational purposes only. It is used to fulfill the \t requirements for a course subject.
+"This project is for educational purposes only. It is used to fulfill the" "\t" "requirements for a course subject."
 <br/>
 ITEC 80A - HUMAN COMPUTER INTERACTION 1.
