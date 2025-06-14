@@ -65,6 +65,7 @@ ITEC 80A - HUMAN COMPUTER INTERACTION 1.
 ## GIT FEATURE
 
 # Initialize and set up remote and branches (if not already done)
+
 | Command                                     | Description                                                       |
 |---------------------------------------------|-------------------------------------------------------------------|
 | `git init`                                  | Initialize a new Git repository locally                           |
@@ -83,6 +84,7 @@ ITEC 80A - HUMAN COMPUTER INTERACTION 1.
 
 <br>
 # Pull and merge main branch changes into feature branch workflow
+
 | Command                                     | Description                                                       |
 |---------------------------------------------|-------------------------------------------------------------------|
 | `git checkout your-branch-name`             | Switch to your feature branch                                     |
@@ -92,6 +94,7 @@ ITEC 80A - HUMAN COMPUTER INTERACTION 1.
 
 <br>
 # Push in branch and merge in main branch
+
 | Command                                     | Description                                                       |
 |---------------------------------------------|-------------------------------------------------------------------|
 | `git checkout your-branch-name`             | Switch to your feature branch                                     |
@@ -108,6 +111,7 @@ ITEC 80A - HUMAN COMPUTER INTERACTION 1.
 
 <br>
 # (Optional if merging does not work in main into feature branch)
+
 | Command                                     | Description                                                       |
 |---------------------------------------------|-------------------------------------------------------------------|
 | `git checkout branch-name`                  | Switch to feature branch                                          |
