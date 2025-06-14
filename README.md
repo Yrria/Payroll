@@ -70,7 +70,7 @@ ITEC 80A - HUMAN COMPUTER INTERACTION 1.
 
 
 | Column 1                           | Column 2                           |
-|-----------------------------------|------------------------------------|
+|----------------------------------------|-----------------------------------------|
 | `git init`                        | `git add .`                        |
 | `git branch -m main`              | `git commit -m "Initial commit"`  |
 | `git remote add origin "Link"`    | `git push -u origin main`         |
