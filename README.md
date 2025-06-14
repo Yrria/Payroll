@@ -69,3 +69,10 @@ ITEC 80A - HUMAN COMPUTER INTERACTION 1.
 * **git remote add origin "Link"** &nbsp;&nbsp;&nbsp;&nbsp; # Add the remote repository URL (replace "Link" with your repo URL)
 
 
+| Column 1                           | Column 2                           |
+|-----------------------------------|------------------------------------|
+| `git init`                        | `git add .`                        |
+| `git branch -m main`              | `git commit -m "Initial commit"`  |
+| `git remote add origin "Link"`    | `git push -u origin main`         |
+
+
