@@ -64,15 +64,53 @@ ITEC 80A - HUMAN COMPUTER INTERACTION 1.
 
 ## GIT FEATURE
 
-* **git init** - &nbsp;&nbsp;&nbsp;&nbsp; # Initialize a new Git repository locally
-* **git branch -m main** - &nbsp;&nbsp;&nbsp;&nbsp; # Rename the default branch to 'main'
-* **git remote add origin "Link"** &nbsp;&nbsp;&nbsp;&nbsp; # Add the remote repository URL (replace "Link" with your repo URL)
+# Initialize and set up remote and branches (if not already done)
+| Command                                     | Description                                                       |
+|---------------------------------------------|-------------------------------------------------------------------|
+| `git init`                                  | Initialize a new Git repository locally                           |
+| `git branch -m main`                        | Rename the default branch to 'main'                               |
+| `git remote add origin "Link"`              | Add the remote repository URL (replace "Link" with your repo URL)|
+| `git add .`                                 | Stage all files for the initial commit                            |
+| `git commit -m "Initial commit"`            | Commit the staged files with a message                            |
+| `git push -u origin main`                   | Push initial commit to remote 'main' branch and set upstream tracking |
+| `git init`                                  | Initialize repo (skip if already done)                            |
+| `git branch -m main`                        | Rename default branch to 'main'                                   |
+| `git remote add origin "Link"`              | Add remote repository URL                                         |
+| `git pull origin main`                      | Pull remote main branch changes (only if remote has commits)      |
+| `git checkout main`                         | Switch to main branch                                             |
+| `git checkout -b new-branch-name`           | Create and switch to a new feature branch                         |
+| `git push -u origin new-branch-name`        | Push new branch to remote and set upstream tracking               |
 
+<br>
+# Pull and merge main branch changes into feature branch workflow
+| Command                                     | Description                                                       |
+|---------------------------------------------|-------------------------------------------------------------------|
+| `git checkout your-branch-name`             | Switch to your feature branch                                     |
+| `git pull origin main`                      | Update local main branch with remote changes                      |
+| `git add .`                                 | Stage all changes for commit                                      |
+| `git push origin your-branch-name`          | Push the branch to the remote                                     |
 
-| Command                          | Description                           |
-|-----------------------------------|------------------------------------|
-| `git init`                        | git add .                        |
-| `git branch -m main`              | git commit -m "Initial commit"   |
-| `git remote add origin "Link"`    | git push -u origin main         |
+<br>
+# Push in branch and merge in main branch
+| Command                                     | Description                                                       |
+|---------------------------------------------|-------------------------------------------------------------------|
+| `git checkout your-branch-name`             | Switch to your feature branch                                     |
+| `git add .`                                 | Stage all changes for commit                                      |
+| `git commit -m "Resolved merge conflicts"`  | Commit with a message                                             |
+| `git push origin your-branch-name`          | Push the branch to the remote                                     |
+| `git fetch origin`                          | Fetch latest changes from remote                                  |
+| `git checkout main`                         | Switch to the main branch                                         |
+| `git pull origin main`                      | Make sure your local main is up to date                           |
+| `git merge your-branch-name`                | Merge your feature branch into main                               |
+| `git push origin main`                      | Push the updated main branch to the remote                        |
+| `git branch`                                | To know what branch you are on                                    |
+| `git status`                                | Check branch status                                               |
 
+<br>
+# (Optional if merging does not work in main into feature branch)
+| Command                                     | Description                                                       |
+|---------------------------------------------|-------------------------------------------------------------------|
+| `git checkout branch-name`                  | Switch to feature branch                                          |
+| `git fetch origin`                          | Fetch latest changes from remote                                  |
+| `git merge origin/main`                     | Merge main branch into feature branch                             |
 
